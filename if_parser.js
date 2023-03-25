@@ -15,7 +15,9 @@ var save;
 var takeCommands = ["GET","TAKE", "PICK UP"];
 var dropCommands = ["DROP", "PUT DOWN"];
 var inventoryCommands = ["INVENTORY", "INV", "I"];
+
 function gameInit() {
+    let title = $('#gameTitle').val();
     currentNode = "0,0,0";
     badAction = 0;
     save = {
@@ -23,6 +25,7 @@ function gameInit() {
         "actions": [],
         "nodes": {}
     };
+    $('#outputSim').append(`<h3>${title}</h3>`);
     parseNode(currentNode);
 }
 
