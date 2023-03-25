@@ -1,0 +1,18 @@
+{
+  "name": "ifspace",
+  "version": "1.0.0",
+  "description": "Interactive Fiction Engine",
+  "main": "index.js",
+  "scripts": {
+    "start": "electron .",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Zac Marino",
+  "license": "ISC",
+  "devDependencies": {
+    "electron": "^23.1.4"
+  },
+  "dependencies": {
+    "purecss": "^3.0.0"
+  }
+}

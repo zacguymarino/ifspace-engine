@@ -1,0 +1,121 @@
+.blockElements * {
+    display: block;
+}
+
+.container {
+    display: flex;
+    overflow: auto;
+}
+
+.bottomBar {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+}
+
+.centerText {
+    text-align: center;
+}
+
+.nodeTools {
+    overflow: auto;
+    height: 85vh;
+    border: solid 1px black;
+}
+
+.fullSize {
+    width: 100%;
+    height: 100%;
+}
+
+#deleteNode {
+    position: absolute;
+    z-index: 1;
+    top: 15px;
+    left: 10px;
+    background-color: #4d4d4d;
+    color: #f0f0f0;
+}
+
+#deleteNode:hover {
+    font-size: 105%;
+}
+
+#deleteNode:active {
+    font-size: 100%;
+}
+
+#gameList {
+    visibility: hidden;
+    position: fixed;
+    text-align: center;
+    width: 25%;
+    border: 3px solid black;
+    background-color: #F0F8FF;
+    height: 25vh;
+    top: 25%;
+    left: 37.5%;
+    z-index: 1;
+}
+
+#gameSim {
+    display: none;
+    margin: auto;
+    margin-top: 16px;
+    width: 65%;
+    height: 95vh;
+    border: 2px solid black;
+}
+
+#gameContainer {
+    margin: auto;
+    width: 90%;
+    height: 92%;
+    border: 1px solid black;
+}
+
+#outputSim {
+    margin: auto;
+    width: 90%;
+    height: 92%;
+    border-bottom: 1px solid black;
+    overflow: auto;
+}
+
+#inputSim {
+    margin: auto;
+    width: 90%;
+    height: 8%;
+    color: green;
+    font-style: bold;
+}
+
+/*TOOLTIPS*/
+
+/* Tooltip text */
+.tooltip .tooltiptext {
+    visibility: hidden;
+    width: 37%;
+    background-color: #555;
+    color: #fff;
+    text-align: center;
+    padding: 5px 0;
+    border-radius: 6px;
+
+    /* Position the tooltip text */
+    position: absolute;
+    z-index: 1;
+    bottom: 15vh;
+    left: 8px;
+
+
+    /* Fade in tooltip */
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+/* Show the tooltip text when you mouse over the tooltip container */
+.tooltip:hover .tooltiptext {
+    visibility: visible;
+    opacity: 1;
+}
