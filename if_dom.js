@@ -127,6 +127,7 @@ function loadDomFromNode(node) {
             $(`#${baseId}_Drops`).val(actions.actions[i].drops);
             $(`#${baseId}_Visibility`).val(actions.actions[i].visibility);
             $(`#${baseId}_Response`).val(actions.actions[i].response);
+            $(`#${baseId}_Fail`).val(actions.actions[i].fail);
             $(`#${baseId}_Points`).val(actions.actions[i].points);
             $(`#${baseId}_Items`).val(actions.actions[i].reqItems);
             $(`#${baseId}_Containers`).val(actions.actions[i].reqContainers);

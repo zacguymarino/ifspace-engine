@@ -7,6 +7,7 @@ var cNodeItems;
 var cPlayerItems;
 var cContainerDeposits;
 var cContainerWithdrawals;
+var cItemInspections;
 var cNodeActions;
 var badAction;
 
@@ -14,7 +15,8 @@ var save;
 
 var takeCommands = ["GET","TAKE", "PICK UP"];
 var dropCommands = ["DROP", "PUT DOWN"];
-var inventoryCommands = ["INVENTORY", "INV", "I"];
+var inventoryCommands = ["INVENTORY", "INV", "I", "INVEN"];
+var itemInspectCommands = ["INSPECT", "LOOK", "EXAMINE"];
 var ignorables = ["A", "AN", "THE", "TO", "FOR", "AT"];
 
 function gameInit() {
@@ -162,6 +164,21 @@ function getExistingItemsActions() {
         }
     }
     return itemActions;
+}
+
+function getItemInspectionActions() {
+    let items = JSON.parse(JSON.stringify(save.items));
+    let inspectActions = [];
+    for (let i = 0; i < items.length; i++) {
+        let variants = items[i].name.split(/\s*,\s*/);
+        for (let j = 0; j < variants.length; j++) {
+            for (let k = 0; k < itemInspectCommands.length; k++) {
+                let newAction = `${itemInspectCommands[k]} ${variants[j].toUpperCase()}`;
+                inspectActions.push(newAction);
+            }
+        }
+    }
+    return inspectActions;
 }
 
 function getDirectionsActions (location) {
@@ -471,6 +488,7 @@ function nodeReload() {
     cNodeItems = getDiscoveredItemsActions(currentNode);
     cPlayerItems = getExistingItemsActions();
     cContainerDeposits = getContainerDepositActions(currentNode);
+    cItemInspections = getItemInspectionActions();
     cContainerWithdrawals = getContainerWithdrawalActions(currentNode);
     cNodeActions = getActions(currentNode);
     checkWin();
@@ -551,10 +569,6 @@ function tallyPoints() {
 
 function parseAction(input) {
     let action = input.toUpperCase();
-    let actionIsDirection = false;
-    let actionIsDiscoverableItem = false;
-    let actionsIsPlayerItem = false;
-    let actionIndex;
     let sentMessage = false;
 
     displayMessage(input, true);
@@ -660,7 +674,6 @@ function parseAction(input) {
             }
         }
     }
-
 
     if (action === "LOOK") {
         displayMessage(cNodeDescription, false);
@@ -813,33 +826,20 @@ function parseAction(input) {
         }
     }
 
-    if (cNodeItems.includes(action)) {
-        actionIsDiscoverableItem = true;
-    }
-
-    if (cPlayerItems.includes(action)) {
-        actionsIsPlayerItem = true;
-    }
-
     for (let i = 0; i < cNodeDirections.length; i++) {
         if (cNodeDirections[i].alternatives.includes(action)) {
-            actionIsDirection = true;
-            actionIndex = i;
+            if (checkRequirements(cNodeDirections[i].requirements)) {
+                parseNode(cNodeDirections[i].location);
+                sentMessage = true;
+            } else {
+                displayMessage("Something is preventing you from going this way.", false);
+                sentMessage = true;
+            }
             break;
         }
     }
 
-    if (actionIsDirection) {
-        if (checkRequirements(cNodeDirections[actionIndex].requirements)) {
-            parseNode(cNodeDirections[actionIndex].location);
-            sentMessage = true;
-        } else {
-            displayMessage("Something is preventing you from going this way.", false);
-            sentMessage = true;
-        }
-    }
-
-    if (actionIsDiscoverableItem) {
+    if (cNodeItems.includes(action)) {
         let actionItem;
         for (let i = 0; i < takeCommands.length; i++) {
             let regexp = new RegExp(`\s*${takeCommands[i]}\s*`);
@@ -868,7 +868,32 @@ function parseAction(input) {
         }
     }
 
-    if (actionsIsPlayerItem) {
+    if (cItemInspections.includes(action)) {
+        let actionItem;
+        let checked = false;
+        for (let i = 0; i < itemInspectCommands.length; i++) {
+            let regexp = new RegExp(`\s*${itemInspectCommands[i]}\s*`);
+            if (action.match(regexp)) {
+                actionItem = action.slice(action.match(regexp)[0].length + 1);
+                break;
+            }
+        }
+        for (let i = 0; i < save.items.length; i++) {
+            let variants = save.items[i].name.split(/\s*,\s*/);
+            for (let j = 0; j < variants.length; j++) {
+                if (variants[j].toUpperCase() === actionItem) {
+                    displayMessage(save.items[i].description, false);
+                    sentMessage = true;
+                    checked = true;
+                }
+            }
+            if (checked) {
+                break;
+            }
+        }
+    }
+
+    if (cPlayerItems.includes(action)) {
         let actionItem;
         let checked = false;
         for (let i = 0; i < dropCommands.length; i++) {
@@ -896,6 +921,7 @@ function parseAction(input) {
             }
         }
     }
+
     if (!sentMessage) {
         badAction += 1;
         displayMessage(game[currentNode].actions.invalid, false);
