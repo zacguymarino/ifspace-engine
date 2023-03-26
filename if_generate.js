@@ -186,7 +186,6 @@ function generateNode () {
         let itemId = $(itemList[i]).attr('id');
         let name = $(`#${itemId}_Name`).val();
         let description = $(`#${itemId}_Des`).val();
-        let verbs = $(`#${itemId}_Verbs`).val();
         let points = $(`#${itemId}_Points`).val();
         let reqItems = $(`#${itemId}_Items`).val();
         let reqContainers = $(`#${itemId}_Containers`).val();
@@ -197,7 +196,6 @@ function generateNode () {
         let item = {
             "name": name,
             "description": description,
-            "verbs": verbs,
             "points": points,
             "reqItems": reqItems,
             "reqContainers": reqContainers,
@@ -282,6 +280,7 @@ function generateNode () {
         let drops = $(`#${baseId}_Drops`).val();
         let visibility = $(`#${baseId}_Visibility`).val();
         let response = $(`#${baseId}_Response`).val();
+        let fail = $(`#${baseId}_Fail`).val();
         let points = $(`#${baseId}_Points`).val();
         let reqItems = $(`#${baseId}_Items`).val();
         let reqContainers = $(`#${baseId}_Containers`).val();
@@ -297,6 +296,7 @@ function generateNode () {
             "drops": drops,
             "visibility": visibility,
             "response": response,
+            "fail": fail,
             "points": points,
             "reqItems": reqItems,
             "reqContainers": reqContainers,

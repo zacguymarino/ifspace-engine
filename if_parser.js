@@ -15,7 +15,7 @@ var save;
 var takeCommands = ["GET","TAKE", "PICK UP"];
 var dropCommands = ["DROP", "PUT DOWN"];
 var inventoryCommands = ["INVENTORY", "INV", "I"];
-var ignorables = ["A", "AN", "THE", "TO", "FOR"];
+var ignorables = ["A", "AN", "THE", "TO", "FOR", "AT"];
 
 function gameInit() {
     let title = $('#gameTitle').val();
@@ -26,6 +26,7 @@ function gameInit() {
         "actions": [],
         "nodes": {}
     };
+    $('#outputSim').empty();
     $('#outputSim').append(`<h3>${title}</h3>`);
     parseNode(currentNode);
 }
@@ -352,7 +353,7 @@ function checkRequirements(reqs) {
     }
     for (let i = 0; i < reqGlobal.length; i++) {
         if (!save.actions.includes(reqGlobal[i].toUpperCase())) {
-            console.log("Global actions req fialed");
+            console.log("Global actions req failed");
             return false;
         }
     }
@@ -567,7 +568,6 @@ function parseAction(input) {
         }
     }
     action = actionParts.join(" ");
-    console.log(action);
 
     //Handle actions
     for (let h = 0; h < cNodeActions.length; h++) {
@@ -605,7 +605,6 @@ function parseAction(input) {
 
                             //Handle action costs
                             if (costs != "" && costs != null) {
-                                console.log("should not see this");
                                 for (let k = 0; k < costs.length; k++) {
                                     for (let l = 0; l < save.items.length; l++) {
                                         if (save.items[l].name.includes(costs[k])) {
@@ -618,11 +617,8 @@ function parseAction(input) {
                             //Handle action drops
                             if (drops != "" && drops != null) {
                                 for (let k = 0; k < drops.length; k++) {
-                                    console.log(save.items);
                                     for (let l = 0; l < save.items.length; l++) {
-                                        console.log("made it here");
                                         if (save.items[l].name.includes(drops[k])) {
-                                            console.log("and here");
                                             save.nodes[currentNode].items.push(save.items[l]);
                                             save.items.splice(l, 1);
                                         }
@@ -656,6 +652,9 @@ function parseAction(input) {
                             displayMessage("Can't do that anymore.", false);
                             sentMessage = true;
                         }
+                    } else {
+                        displayMessage(actionObject.fail, false);
+                        sentMessage = true;
                     }
                 }
             }

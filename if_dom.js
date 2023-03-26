@@ -81,7 +81,6 @@ function loadDomFromNode(node) {
         let baseId = `item_${i+1}`;
         $(`#${baseId}_Name`).val(items[i].name);
         $(`#${baseId}_Des`).val(items[i].description);
-        $(`#${baseId}_Verbs`).val(items[i].verbs);
         $(`#${baseId}_Points`).val(items[i].points);
         $(`#${baseId}_Items`).val(items[i].reqItems);
         $(`#${baseId}_Containers`).val(items[i].reqContainers);
@@ -253,11 +252,6 @@ function addItem() {
                     <span class='tooltiptext'>Description of item (for "examine {item}" or "look {item}" command)</span>
                     </label>`;
     let des = `<textarea id='${itemId}_Des' rows='3' cols='23'></textarea>`;
-    let verbsLabel = `<label class='tooltip'>
-                        Verbs
-                        <span class='tooltiptext'>Comma separated accompanying verbs for this item to form actions (e.g. given a "sword" item, [swing, stab with, slash with, etc,])</span>
-                        </label>`;
-    let verbs = `<input type='text' id='${itemId}_Verbs'>`;
     let pointsLabel = `<label class='tooltip'>
                         Points
                         <span class='tooltiptext'>Number of points awarded for getting this item [default of 0]</span>
@@ -266,7 +260,7 @@ function addItem() {
     let requirements = getRequirements(itemId);
     let evoButton = "<button class='addEvoItems'>Add Evolution</button>";
     let evoListDiv = `<div id='${itemId}_EvoList'></div>`;
-    let html = newDivStart + rmvButton + nameLabel + name + desLabel + des + verbsLabel + verbs + pointsLabel + points + requirements + evoButton + evoListDiv + newDivEnd;
+    let html = newDivStart + rmvButton + nameLabel + name + desLabel + des + pointsLabel + points + requirements + evoButton + evoListDiv + newDivEnd;
 
     $('#itemList').append(html);
 }
@@ -324,7 +318,7 @@ function addAction () {
     let rmvButton = `<button class='removeObject'>Remove Action</button>`;
     let actionLabel = `<label class='tooltip'>
                         Action(s)
-                        <span class='tooltiptext'>Comma separated list of accepted action(e.g. crush egg, smash egg) [Ignores: a, an, the, to, for]</span>
+                        <span class='tooltiptext'>Comma separated list of accepted action(e.g. crush egg, smash egg) [Ignores: a, an, the, to, for, at]</span>
                         </label>`;
     let actions = `<input type='text' id='${actionId}_Actions'>`;
     let maxLabel = `<label class='tooltip'>
@@ -357,6 +351,11 @@ function addAction () {
                         <span class='tooltiptext'>Text displayed after successfully calling this action (e.g. The egg is now broken.)</span>
                         </label>`;
     let response = `<textarea id='${actionId}_Response' rows='3' cols='23'></textarea>`;
+    let failLabel = `<label class='tooltip'>
+                        Fail Response
+                        <span class='tooltiptext'>Text displayed after not meeting the action requirements (e.g. This door requires a key.)</span>
+                        </label>`;
+    let fail = `<textarea id='${actionId}_Fail' rows='3' cols='23'></textarea>`;
     let pointsLabel = `<label class='tooltip'>
                     Points
                     <span class='tooltiptext'>Points awarded for successfully calling this action [default of 0]</span>
@@ -364,7 +363,7 @@ function addAction () {
     let points = `<input type='text' id='${actionId}_Points'>`;
     let requirements = getRequirements(actionId);
 
-    let html = newDivStart + rmvButton + actionLabel + actions + maxLabel + max + costsLabel + costs + dropsLabel + drops + visibilityLabel + visibility + responseLabel + response + pointsLabel + points + requirements;
+    let html = newDivStart + rmvButton + actionLabel + actions + maxLabel + max + costsLabel + costs + dropsLabel + drops + visibilityLabel + visibility + responseLabel + response + failLabel + fail + pointsLabel + points + requirements + newDivEnd;
 
     $('#actionList').append(html);
 }
