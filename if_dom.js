@@ -324,7 +324,7 @@ function addAction () {
     let rmvButton = `<button class='removeObject'>Remove Action</button>`;
     let actionLabel = `<label class='tooltip'>
                         Action(s)
-                        <span class='tooltiptext'>Comma separated list of actions that mean the same thing (e.g. break egg, crush egg, smash egg, etc.)</span>
+                        <span class='tooltiptext'>Comma separated list of accepted action(e.g. crush egg, smash egg) [Ignores: a, an, the, to, for]</span>
                         </label>`;
     let actions = `<input type='text' id='${actionId}_Actions'>`;
     let maxLabel = `<label class='tooltip'>

@@ -15,6 +15,7 @@ var save;
 var takeCommands = ["GET","TAKE", "PICK UP"];
 var dropCommands = ["DROP", "PUT DOWN"];
 var inventoryCommands = ["INVENTORY", "INV", "I"];
+var ignorables = ["A", "AN", "THE", "TO", "FOR"];
 
 function gameInit() {
     let title = $('#gameTitle').val();
@@ -556,6 +557,17 @@ function parseAction(input) {
     let sentMessage = false;
 
     displayMessage(input, true);
+
+    //Filter out ignorables
+    let actionParts = action.split(" ");
+    for (let i = 0; i < ignorables.length; i++) {
+        if (actionParts.includes(ignorables[i])) {
+            let index = actionParts.indexOf(ignorables[i]);
+            actionParts.splice(index, 1);
+        }
+    }
+    action = actionParts.join(" ");
+    console.log(action);
 
     //Handle actions
     for (let h = 0; h < cNodeActions.length; h++) {
