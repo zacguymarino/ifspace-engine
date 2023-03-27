@@ -123,7 +123,7 @@ function getContainerWithdrawalActions(location) {
 }
 
 function getDiscoveredItemsActions(location) {
-    let items = JSON.parse(JSON.stringify(game[location].items));
+    let items = JSON.parse(JSON.stringify(save.nodes[location].items));
     let itemActions = [];
     let legalItems = [];
     for (let i = 0; i < items.length; i++) {
@@ -535,6 +535,7 @@ function getMaxPoints() {
     let quantity = 0;
     let nodes = Object.keys(game);
     for (let i = 0; i < nodes.length; i++) {
+        let actions = Object.entries(game[nodes[i]].actions.actions);
         if (game[nodes[i]].points > 0) {
             quantity += +game[nodes[i]].points;
         }
@@ -543,9 +544,9 @@ function getMaxPoints() {
                 quantity += +game[nodes[i]].items[j].points;
             }
         }
-        for (let j = 0; j < game[nodes[i]].actions.length; j++) {
-            if (game[nodes[i]].actions[j].points > 0) {
-                quantity += +game[nodes[i]].actions[j].points;
+        for (let j = 0; j < actions.length; j++) {
+            if (actions[j][1].points > 0) {
+                quantity += +actions[j][1].points;
             }
         }
     }
@@ -556,13 +557,26 @@ function tallyPoints() {
     let points = 0;
     let saveNodeKeys = Object.keys(save.nodes);
     for (let i = 0; i < saveNodeKeys.length; i++) {
-        points += +save.nodes[saveNodeKeys[i]].points;
+        if (save.nodes[saveNodeKeys[i]].points > 0) {
+            points += +save.nodes[saveNodeKeys[i]].points;
+        }
     }
     for (let i = 0; i < save.items.length; i++) {
-        points += +save.items[i].points;
+        if (save.items[i].points > 0) {
+            points += +save.items[i].points;
+        }
     }
+    let gameKeys = Object.keys(game);
     for (let i = 0; i < save.actions.length; i++) {
-        points += +save.actions[i].points;
+        for (let j = 0; j < gameKeys.length; j++) {
+            let actionObjects = Object.entries(game[gameKeys[j]].actions.actions);
+            for (let k = 0; k < actionObjects.length; k++) {
+                let mainVariant = actionObjects[k][1].actions.split(/\s*,\s*/)[0];
+                if (mainVariant.toUpperCase() == save.actions[i]) {
+                    points += +actionObjects[k][1].points;
+                }
+            }
+        }
     }
     return points;
 }
@@ -585,7 +599,7 @@ function parseAction(input) {
 
     //Handle actions
     for (let h = 0; h < cNodeActions.length; h++) {
-        if (cNodeActions[h].toUpperCase().includes(action)) {
+        if (cNodeActions[h].toUpperCase() == action) {
             for (let i = 0; i < game[currentNode].actions.actions.length; i++) {
                 if (game[currentNode].actions.actions[i].actions.toUpperCase().includes(action)) {
                     let actionObject = JSON.parse(JSON.stringify(game[currentNode].actions.actions[i]));
@@ -598,7 +612,7 @@ function parseAction(input) {
                         "itemEvos": actionObject.itemEvos
                     }
                     if (checkRequirements(reqs)) {
-                        let mainAction = actionObject.actions.split(/\s*,\s*/)[0];
+                        let mainAction = actionObject.actions.split(/\s*,\s*/)[0].toUpperCase();
                         let maxTimes;
                         if (actionObject.max !== '' && actionObject.max !== null) {
                             maxTimes = +actionObject.max;
@@ -607,7 +621,7 @@ function parseAction(input) {
                         }
                         let usedTimes = 0;
                         for (let j = 0; j < save.actions.length; j++) {
-                            if (save.actions[j].valueOf() === mainAction.valueOf()) {
+                            if (save.actions[j] == mainAction) {
                                 usedTimes++;
                             }
                         }
@@ -658,8 +672,8 @@ function parseAction(input) {
                                 default:
                                     break;
                             }
-                            save.actions.push(mainAction.toUpperCase());
-                            save.nodes[currentNode].actions.push(mainAction.toUpperCase());
+                            save.actions.push(mainAction);
+                            save.nodes[currentNode].actions.push(mainAction);
                             displayMessage(actionObject.response, false);
                             sentMessage = true;
                         } else {
@@ -933,4 +947,3 @@ function parseAction(input) {
 }
 
 export { gameInit, parseAction }
-
