@@ -947,4 +947,3 @@ function parseAction(input) {
 }
 
 export { gameInit, parseAction }
-
