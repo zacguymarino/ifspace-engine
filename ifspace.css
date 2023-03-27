@@ -1,121 +1,222 @@
+* {
+  display: block;
+  box-sizing: border-box;
+}
+title {
+  color: #fff;
+}
+body {
+  background-color: #191919;
+  color: white;
+}
+button {
+  background-color: #1b1b1b;
+  color: white;
+  border: 1px solid white;
+  border-radius: 3px;
+  margin-left: 10px;
+  margin-top: 10px;
+  padding: 1.5% 4% 1.5% 4%;
+}
+button:hover {
+  transition: 0.1s ease-in-out;
+  background-color: #4d4d4d;
+}
+
+button:active {
+  background-color: #1e1e1e;
+  transition: 0.1s ease-in-out;
+}
+input[type="text"],
+input[type="number"] {
+  border-radius: 3px;
+  border: none;
+  padding: 3% 5% 3% 5%;
+  background-color: #4d4d4d;
+  color: white;
+}
+input[type="text"]:focus,
+input[type="number"]:focus {
+  outline: 2px solid white;
+  transition: 0.04s;
+}
+
+input[type="text"]:hover,input[type="number"]:hover{
+    background-color: rgb(128, 128, 128);
+    transition: 0.1s ease-in;
+}
 .blockElements * {
-    display: block;
+  display: block;
+  border: none;
+  color: #f0f0f0;
+  padding: 0.5em;
 }
 
 .container {
-    display: flex;
-    overflow: auto;
+  display: flex;
+  overflow: auto;
 }
 
 .bottomBar {
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
 }
 
 .centerText {
-    text-align: center;
+  text-align: center;
 }
 
 .nodeTools {
-    overflow: auto;
-    height: 85vh;
-    border: solid 1px black;
+  overflow: auto;
+  height: 85vh;
+  border: solid 1px black;
 }
-
+/* input {
+  background-color: #4d4d4d;
+} */
 .fullSize {
-    width: 100%;
-    height: 100%;
+  width: 100%;
+  height: 100%;
 }
 
 #deleteNode {
-    position: absolute;
-    z-index: 1;
-    top: 15px;
-    left: 10px;
-    background-color: #4d4d4d;
-    color: #f0f0f0;
+  position: absolute;
+  z-index: 1;
+  top: 15px;
+  left: 10px;
+  background-color: #1b1b1b;
+  color: #f0f0f0;
+  padding: 1% 2% 1% 2%;
 }
 
 #deleteNode:hover {
-    font-size: 105%;
+  background-color: #4d4d4d;
+  transition: 0.1s ease-in-out;
 }
 
 #deleteNode:active {
-    font-size: 100%;
+  background-color: #1e1e1e;
+  transition: 0.1s ease-in-out;
 }
 
 #gameList {
-    visibility: hidden;
-    position: fixed;
-    text-align: center;
-    width: 25%;
-    border: 3px solid black;
-    background-color: #F0F8FF;
-    height: 25vh;
-    top: 25%;
-    left: 37.5%;
-    z-index: 1;
+  visibility: hidden;
+  position: fixed;
+  text-align: center;
+  width: 25%;
+  border: 3px solid black;
+  background-color: #f0f8ff;
+  height: 25vh;
+  top: 25%;
+  left: 37.5%;
+  z-index: 1;
 }
 
 #gameSim {
-    display: none;
-    margin: auto;
-    margin-top: 16px;
-    width: 65%;
-    height: 95vh;
-    border: 2px solid black;
+  display: none;
+  margin: auto;
+  margin-top: 16px;
+  width: 65%;
+  height: 95vh;
+  border: 2px solid black;
 }
 
 #gameContainer {
-    margin: auto;
-    width: 90%;
-    height: 92%;
-    border: 1px solid black;
+  margin: auto;
+  width: 90%;
+  height: 92%;
+  border: 1px solid black;
 }
 
 #outputSim {
-    margin: auto;
-    width: 90%;
-    height: 92%;
-    border-bottom: 1px solid black;
-    overflow: auto;
+  margin: auto;
+  width: 90%;
+  height: 92%;
+  border-bottom: 1px solid black;
+  overflow: auto;
 }
 
 #inputSim {
-    margin: auto;
-    width: 90%;
-    height: 8%;
-    color: green;
-    font-style: bold;
+  margin: auto;
+  width: 90%;
+  height: 8%;
+  color: green;
+  font-style: bold;
 }
 
 /*TOOLTIPS*/
 
 /* Tooltip text */
 .tooltip .tooltiptext {
-    visibility: hidden;
-    width: 37%;
-    background-color: #555;
-    color: #fff;
-    text-align: center;
-    padding: 5px 0;
-    border-radius: 6px;
+  visibility: hidden;
+  width: 37%;
+  background-color: #555;
+  color: #fff;
+  text-align: center;
+  padding: 5px 0;
+  border-radius: 3px;
 
-    /* Position the tooltip text */
-    position: absolute;
-    z-index: 1;
-    bottom: 15vh;
-    left: 8px;
+  /* Position the tooltip text */
+  position: absolute;
+  z-index: 1;
+  bottom: 15vh;
+  left: 8px;
 
-
-    /* Fade in tooltip */
-    opacity: 0;
-    transition: opacity 0.3s;
+  /* Fade in tooltip */
+  opacity: 0;
+  transition: opacity 0.3s;
 }
 
 /* Show the tooltip text when you mouse over the tooltip container */
 .tooltip:hover .tooltiptext {
-    visibility: visible;
-    opacity: 1;
+  visibility: visible;
+  opacity: 1;
 }
+
+#directions {
+  display: flex;
+  flex-wrap: nowrap;
+}
+#directions input {
+  margin-right: 30px;
+}
+
+input[type="checkbox"] {
+  accent-color: #4d4d4d;
+  width: 20px;
+  height: 20px;
+}
+.nodeTools button {
+  background-color: #191919;
+}
+/* I have no idea why the buttons below do not get a border so im leaving it to you! */
+/* .addAction, .addEvoDes, .addItem, .addContainer{
+    border: 1px solid white;
+    background-color: aqua;
+} */
+
+.nodeTools button:hover {
+  transition: 0.1s ease-in-out;
+  background-color: #4d4d4d;
+}
+
+.nodeTools button:active {
+  background-color: #1e1e1e;
+  transition: 0.1s ease-in-out;
+}
+
+.nodeTools textarea {
+    background-color: #4d4d4d;
+    border-radius: 0px;
+}
+.nodeTools textarea:hover{
+    background-color: rgb(128, 128, 128);
+    transition: 0.1s ease-in;
+    
+}
+.nodeTools textarea:focus{
+    border: none;
+    outline: 2px solid white;
+}
+
