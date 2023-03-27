@@ -1,117 +1,114 @@
-import {saveGame, loadGame, deleteNode, startGameSim} from './if_generate.js';
-import * as dom from './if_dom.js';
-import {nodeMap, resizeCanvas, zoom, draw} from './if_nodemap.js';
-import {gameInit, parseAction} from './if_parser.js';
+import { saveGame, loadGame, deleteNode, startGameSim } from "./if_generate.js";
+import * as dom from "./if_dom.js";
+import { nodeMap, resizeCanvas, zoom, draw } from "./if_nodemap.js";
+import { gameInit, parseAction } from "./if_parser.js";
 
-$(function() {
-    ///////////////
-    //Game Testing
-    ///////////////
-    $('#restartGameSim').click(function () {
-        gameInit();
-    })
+$(function () {
+  ///////////////
+  //Game Testing
+  ///////////////
+  $("#restartGameSim").click(function () {
+    gameInit();
+  });
 
-    $('#inputActionSim').keypress(function (e) {
-        if (e.which == 13) {
-            parseAction($('#inputActionSim').val());
-            e.preventDefault();
-            $('#inputActionSim').val('');
-        }
-    })
+  $("#inputActionSim").keypress(function (e) {
+    if (e.which == 13) {
+      parseAction($("#inputActionSim").val());
+      e.preventDefault();
+      $("#inputActionSim").val("");
+    }
+  });
 
+  //////////////////////////////
+  //Game loading/saving/deleting
+  //////////////////////////////
+  $("#saveGame").click(function () {
+    saveGame();
+  });
 
-    //////////////////////////////
-    //Game loading/saving/deleting
-    //////////////////////////////
-    $('#saveGame').click(function () {
-        saveGame();
-    });
+  $(document).on("click", "#loadGame", function (event) {
+    loadGame(gameTitle);
+  });
 
-    $(document).on("click", '#loadGame', function (event) {
-        loadGame(gameTitle);
-    })
+  $(document).on("click", "#deleteNode", function () {
+    deleteNode();
+  });
 
-    $(document).on("click", '#deleteNode', function() {
-        deleteNode();
-    })
+  /////////////////////
+  //Node Map Controls
+  /////////////////////
+  $(document).on("click", ".zoom", function (event) {
+    let baseId = $(event.currentTarget).attr("id");
+    zoom(baseId);
+  });
 
+  $("#zIndex").on("change", function (event) {
+    draw();
+  });
 
+  //////////////////////////
+  //DOM and DOM Generation
+  /////////////////////////
+  nodeMap();
 
-    /////////////////////
-    //Node Map Controls
-    /////////////////////
-    $(document).on("click", '.zoom', function (event) {
-        let baseId = $(event.currentTarget).attr('id');
-        zoom(baseId);
-    })
+  $(document).on("click", "#testGame", function () {
+    startGameSim();
+    $("html, body").animate(
+      {
+        scrollTop: $("#gameSim").offset().top,
+      },
+      500
+    );
+  });
 
-    $('#zIndex').on("change", function (event) {
-        draw();
-    })
+  $(window).on("resize", function (event) {
+    resizeCanvas();
+  });
 
+  $(document).on("click", ".removeObject", function (event) {
+    let baseId = $(event.currentTarget.parentElement).attr("id");
+    dom.removeObject(baseId);
+  });
 
+  $(document).on("click", ".addEvoItems", function (event) {
+    let baseId = $(event.currentTarget.parentElement).attr("id");
+    let listId = `${baseId}_EvoList`;
+    dom.addEvo(listId);
+  });
 
-    //////////////////////////
-    //DOM and DOM Generation
-    /////////////////////////
-    nodeMap();
+  $(document).on("click", ".addEvoDes", function (event) {
+    let listId = "evoListDescriptions";
+    dom.addEvo(listId);
+  });
 
-    $(document).on("click", '#testGame', function () {
-        startGameSim();
-        $('html, body').animate({
-        scrollTop: $("#gameSim").offset().top
-    }, 500);
-    })
+  $(document).on("click", ".removeEvo", function (event) {
+    let baseId = $(event.currentTarget.parentElement).attr("id");
+    let listId = $(event.currentTarget.parentElement.parentElement).attr("id");
+    dom.removeEvo(listId, baseId);
+  });
 
-    $(window).on("resize", function (event) {
-        resizeCanvas();
-    })
+  $(document).on("click", ".blockBtn", function (event) {
+    let baseId = $(event.currentTarget).attr("id");
+    dom.showHide(baseId);
+  });
 
-    $(document).on("click", '.removeObject', function (event) {
-        let baseId = $(event.currentTarget.parentElement).attr('id');
-        dom.removeObject(baseId);
-    });
+  $(document).on("click", "#directions", function (event) {
+    let inputs = $(event.currentTarget).find("input");
+    dom.directions(inputs);
+  });
 
-    $(document).on("click", '.addEvoItems', function (event) {
-        let baseId = $(event.currentTarget.parentElement).attr('id');
-        let listId = `${baseId}_EvoList`;
-        dom.addEvo(listId);
-    });
+  $("#addItem").click(function () {
+    dom.addItem();
+  });
 
-    $(document).on("click", '.addEvoDes', function (event) {
-        let listId = 'evoListDescriptions';
-        dom.addEvo(listId);
-    });
+  $("#addContainer").click(function () {
+    dom.addContainer();
+  });
 
-    $(document).on("click", '.removeEvo', function (event) {
-        let baseId = $(event.currentTarget.parentElement).attr('id');
-        let listId = $(event.currentTarget.parentElement.parentElement).attr('id');
-        dom.removeEvo(listId, baseId);
-    });
+  $("#addAction").click(function () {
+    dom.addAction();
+  });
 
-    $(document).on("click", '.blockBtn', function (event) {
-        let baseId = $(event.currentTarget).attr('id');
-        dom.showHide(baseId);
-    })
-
-    $(document).on("click", '#directions', function (event) {
-        let inputs = $(event.currentTarget).find('input');
-        dom.directions(inputs);
-    })
-
-    $('#addItem').click(function () {
-        dom.addItem();
-    })
-
-    $('#addContainer').click(function () {
-        dom.addContainer();
-    })
-
-    $('#addAction').click(function () {
-        dom.addAction();
-    })
-
-    $('#winBlock').append(dom.getRequirements('win'));
-    $('#loseBlock').append(dom.getRequirements('lose'));
-})
-
+  $("#winBlock").append(dom.getRequirements("win"));
+  $("#loseBlock").append(dom.getRequirements("lose"));
+});

@@ -16,11 +16,11 @@ An application for creating Interactive Fiction games.
 
 1. [Download/Install Node.js](https://nodejs.org/en/download).
 1. [Download/Install Electron](https://www.electronjs.org/).
-2. Clone repo to local.
+1. Clone repo to local.
 
-3. Run `npm i` to install project dependencies.
+1. Run `npm i` to install project dependencies.
 
-4. Run/Test project with `npm start`
+1. Run/Test project with `npm start`
 
 To do:
 
@@ -35,7 +35,6 @@ To do:
 - [ ] Make game input sim textbox value empty when submit.
 
 ---
- 
 
 MIT License
 

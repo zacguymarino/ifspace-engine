@@ -41,9 +41,10 @@ input[type="number"]:focus {
   transition: 0.04s;
 }
 
-input[type="text"]:hover,input[type="number"]:hover{
-    background-color: rgb(128, 128, 128);
-    transition: 0.1s ease-in;
+input[type="text"]:hover,
+input[type="number"]:hover {
+  background-color: rgb(128, 128, 128);
+  transition: 0.1s ease-in;
 }
 .blockElements * {
   display: block;
@@ -207,42 +208,41 @@ input[type="checkbox"] {
 }
 
 .nodeTools textarea {
-    background-color: #4d4d4d;
-    border-radius: 0px;
+  background-color: #4d4d4d;
+  border-radius: 0px;
 }
-.nodeTools textarea:hover{
-    background-color: rgb(128, 128, 128);
-    transition: 0.1s ease-in;
-    
+.nodeTools textarea:hover {
+  background-color: rgb(128, 128, 128);
+  transition: 0.1s ease-in;
 }
-.nodeTools textarea:focus{
-    border: none;
-    outline: 2px solid white;
-}
-
-.nodeTools{
-    margin-top:10px;
-    padding: 10px;
-    border: 1px solid #ffffff;
+.nodeTools textarea:focus {
+  border: none;
+  outline: 2px solid white;
 }
 
-#nodeMap{
-    margin-top:10px;
-    padding: 10px;
-    border: 1px solid #ffffff;
-}
-.bottomBar{
-    display: flex;
-    justify-content: space-around;
+.nodeTools {
+  margin-top: 10px;
+  padding: 10px;
+  border: 1px solid #ffffff;
 }
 
-#gameSim{
-    border: 1px solid white;
+#nodeMap {
+  margin-top: 10px;
+  padding: 10px;
+  border: 1px solid #ffffff;
 }
-#gameContainer{
-    border: 1px solid white;
+.bottomBar {
+  display: flex;
+  justify-content: space-around;
 }
-#inputActionSim{
-    width: 100%;
-    padding: 1% 0% 1% 0% ;
+
+#gameSim {
+  border: 1px solid white;
+}
+#gameContainer {
+  border: 1px solid white;
+}
+#inputActionSim {
+  width: 100%;
+  padding: 1% 0% 1% 0%;
 }
