@@ -27,11 +27,12 @@ To do:
 - [x] Clean up UI
 - [x] Improve README
 - [ ] Fix button border in nodetools.
-- [ ] Change window startsize.
+- [x] Change window startsize.
 - [ ] Remove electron native menu.
 - [ ] Change scrollbar colors to match UI.
 - [ ] Change checkbox colors.
 - [ ] Add scrolling and zooming with mouse for map.
+- [ ] Make game input sim textbox value empty when submit.
 
 ---
  

@@ -220,3 +220,29 @@ input[type="checkbox"] {
     outline: 2px solid white;
 }
 
+.nodeTools{
+    margin-top:10px;
+    padding: 10px;
+    border: 1px solid #ffffff;
+}
+
+#nodeMap{
+    margin-top:10px;
+    padding: 10px;
+    border: 1px solid #ffffff;
+}
+.bottomBar{
+    display: flex;
+    justify-content: space-around;
+}
+
+#gameSim{
+    border: 1px solid white;
+}
+#gameContainer{
+    border: 1px solid white;
+}
+#inputActionSim{
+    width: 100%;
+    padding: 1% 0% 1% 0% ;
+}

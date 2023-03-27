@@ -7,10 +7,10 @@ const createWindow = () => {
       webPreferences: {
         preload: path.join(__dirname, 'preload.js')
       },
-      width: 1000,
-      height: 700,
+      width: 1920,
+      height: 1080,
     });
-  
+    win.removeMenu()
     win.loadFile('if_create.html');
   }
 
