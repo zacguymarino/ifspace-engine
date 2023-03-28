@@ -38,7 +38,6 @@ input[type="number"] {
 input[type="text"]:focus,
 input[type="number"]:focus {
   outline: 2px solid white;
-  transition: 0.04s;
 }
 
 input[type="text"]:hover,
@@ -217,7 +216,6 @@ input[type="checkbox"] {
 }
 .nodeTools textarea:focus {
   border: none;
-  outline: 2px solid white;
 }
 
 .nodeTools {
@@ -245,4 +243,18 @@ input[type="checkbox"] {
 #inputActionSim {
   width: 100%;
   padding: 1% 0% 1% 0%;
+}
+
+select {
+  color: white;
+  background-color: #4d4d4d;
+  border-radius: 3px;
+}
+select:hover {
+  background-color: #737272;
+  transition: 0.1s ease-in-out;
+}
+select:focus {
+  background-color: #737272;
+  transition: 0.1s ease-in-out;
 }
