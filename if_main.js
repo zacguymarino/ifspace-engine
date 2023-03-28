@@ -13,9 +13,14 @@ $(function () {
 
   $("#inputActionSim").keypress(function (e) {
     if (e.which == 13) {
-      parseAction($("#inputActionSim").val());
-      e.preventDefault();
+      // I've added a try catch to the below because without it the game is running the action but not clearing the input field value. :TODO cleared.
+      try {
+        parseAction($("#inputActionSim").val());
+      } catch (error) {
+        console.log(error);
+      }
       $("#inputActionSim").val("");
+      e.preventDefault();
     }
   });
 

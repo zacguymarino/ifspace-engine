@@ -155,13 +155,16 @@ function zoom(baseId) {
 }
 
 function getClickCoords(event) {
-  let x = (event.clientX - universe.offsetLeft - xTransform) / step;
+  let x = (event.clientX - 
+            universe.offsetLeft - 
+            xTransform) / 
+            step;
   let y =
     (event.clientY -
       universe.offsetTop +
       $(document).scrollTop() -
       yTransform) /
-    step;
+      step;
   let z = $("#zIndex").val();
   let coordsTitle;
   x = Math.floor(x);
