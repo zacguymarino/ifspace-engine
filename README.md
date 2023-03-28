@@ -28,7 +28,7 @@ To do:
 - [x] Improve README
 - [ ] Fix button border in nodetools.
 - [x] Change window startsize.
-- [ ] Remove electron native menu.
+- [x] Remove electron native menu.
 - [ ] Change scrollbar colors to match UI.
 - [ ] Change checkbox colors.
 - [ ] Add scrolling and zooming with mouse for map.
