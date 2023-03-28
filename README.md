@@ -23,16 +23,16 @@ An application for creating Interactive Fiction games.
 1. Run/Test project with `npm start`
 
 To do:
-
-- [x] Clean up UI
-- [x] Improve README
+- [ ] **Sanitize input fields**.
 - [ ] Fix button border in nodetools.
-- [x] Change window startsize.
-- [x] Remove electron native menu.
 - [ ] Change scrollbar colors to match UI.
 - [ ] Change checkbox colors.
 - [ ] Add scrolling and zooming with mouse for map.
 - [ ] Make game input sim textbox value empty when submit.
+- [x] Clean up UI
+- [x] Improve README
+- [x] Change window startsize.
+- [x] Remove electron native menu.
 
 ---
 
