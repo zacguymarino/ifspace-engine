@@ -7,4 +7,13 @@ contextBridge.exposeInMainWorld("IFS_API", {
   loadGame: async () => {
     return await ipcRenderer.invoke("loadGame");
   },
+  createNode: async () => {
+    return await ipcRenderer.invoke("createNode");
+  },
+  deleteNode: async () => {
+    return await ipcRenderer.invoke("deleteNode");
+  },
+  deleteDenied: () => {
+    ipcRenderer.send("deleteDenied");
+  }
 });
