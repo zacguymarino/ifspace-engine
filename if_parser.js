@@ -122,15 +122,39 @@ function getContainerWithdrawalActions(location) {
     return actionParts;
 }
 
+function checkItemOrigin(item) {
+    //Checks if item is in its original node or has been moved to another node
+    //If another node, local actions requirement is void
+    let originNode = false;
+    let checked = false;
+    let gameNodes = Object.keys(game);
+    for (let i = 0; i < gameNodes.length; i++) {
+        let nodeItems = game[gameNodes[i]].items;
+        for (let j = 0; j < nodeItems.length; j++) {
+            if (nodeItems[j].name == item.name) {
+                checked = true;
+                if (gameNodes[i] == currentNode) {
+                    originNode = true;
+                }
+            }
+        }
+        if (checked) {
+            break;
+        }
+    }
+    return originNode;
+}
+
 function getDiscoveredItemsActions(location) {
     let items = JSON.parse(JSON.stringify(save.nodes[location].items));
     let itemActions = [];
     let legalItems = [];
     for (let i = 0; i < items.length; i++) {
+        let originNode = checkItemOrigin(items[i]);
         let reqs = {
             "reqItems": items[i].reqItems,
             "reqContainers": items[i].reqContainers,
-            "reqLocal": items[i].reqLocal,
+            "reqLocal": (originNode) ? items[i].reqLocal: '',
             "reqGlobal": items[i].reqGlobal,
             "locVisits": items[i].locVisits,
             "itemEvos": items[i].itemEvos
@@ -482,37 +506,15 @@ function handleHint() {
     }
 }
 
-function nodeReload() {
-    cNodeDescription = getDescription(currentNode);
-    cNodeDirections = getDirectionsActions(currentNode);
-    cNodeItems = getDiscoveredItemsActions(currentNode);
-    cPlayerItems = getExistingItemsActions();
-    cContainerDeposits = getContainerDepositActions(currentNode);
-    cItemInspections = getItemInspectionActions();
-    cContainerWithdrawals = getContainerWithdrawalActions(currentNode);
-    cNodeActions = getActions(currentNode);
-    checkWin();
-    checkLose();
-}
-
-function parseNode(location) {
-    currentNode = location;
-    addNodeToSave(currentNode);
-    addVisit(currentNode);
-    nodeReload();
-
-    displayMessage(cNodeDescription, false);
-    displayItems();
-}
-
 function displayItems() {
     let validItems = [];
     if (save.nodes[currentNode].items.length > 0 && save.nodes[currentNode].visibility == 'true') {
         for (let i = 0; i < save.nodes[currentNode].items.length; i++) {
+            let originNode = checkItemOrigin(save.nodes[currentNode].items[i]);
             let reqs = {
                 "reqItems": save.nodes[currentNode].items[i].reqItems,
                 "reqContainers": save.nodes[currentNode].items[i].reqContainers,
-                "reqLocal": save.nodes[currentNode].items[i].reqLocal,
+                "reqLocal": (originNode) ? save.nodes[currentNode].items[i].reqLocal : '',
                 "reqGlobal": save.nodes[currentNode].items[i].reqGlobal,
                 "locVisits": save.nodes[currentNode].items[i].locVisits,
                 "itemEvos": save.nodes[currentNode].items[i].itemEvos
@@ -579,6 +581,29 @@ function tallyPoints() {
         }
     }
     return points;
+}
+
+function nodeReload() {
+    cNodeDescription = getDescription(currentNode);
+    cNodeDirections = getDirectionsActions(currentNode);
+    cNodeItems = getDiscoveredItemsActions(currentNode);
+    cPlayerItems = getExistingItemsActions();
+    cContainerDeposits = getContainerDepositActions(currentNode);
+    cItemInspections = getItemInspectionActions();
+    cContainerWithdrawals = getContainerWithdrawalActions(currentNode);
+    cNodeActions = getActions(currentNode);
+    checkWin();
+    checkLose();
+}
+
+function parseNode(location) {
+    currentNode = location;
+    addNodeToSave(currentNode);
+    addVisit(currentNode);
+    nodeReload();
+
+    displayMessage(cNodeDescription, false);
+    displayItems();
 }
 
 function parseAction(input) {
