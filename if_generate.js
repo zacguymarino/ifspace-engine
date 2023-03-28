@@ -49,9 +49,9 @@ async function loadGame() {
   });
 }
 
-function deleteNode() {
+async function deleteNode() {
   if (cNode.location.toString() !== "0,0,0") {
-    if (confirm("Are you sure you want to delete the current node?")) {
+    if (await window.IFS_API.deleteNode() == 0) {
       if (game.hasOwnProperty(cNode.location.toString())) {
         delete game[cNode.location.toString()];
         cNode = JSON.parse(JSON.stringify(game["0,0,0"]));
@@ -60,7 +60,7 @@ function deleteNode() {
       }
     }
   } else {
-    alert("You cannot delete the origin node.");
+    await window.IFS_API.deleteDenied();
   }
 }
 
