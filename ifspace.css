@@ -124,7 +124,7 @@ input[type="number"]:hover {
 
 #gameContainer {
   margin: auto;
-  width: 90%;
+  /* width: 90%; */
   height: 92%;
   border: 1px solid black;
 }
@@ -133,15 +133,14 @@ input[type="number"]:hover {
   margin: auto;
   width: 90%;
   height: 92%;
-  border-bottom: 1px solid black;
+  border: 1px solid white;
+  border-top: none;
   overflow: auto;
 }
 
 #inputSim {
   margin: auto;
   width: 90%;
-  height: 8%;
-  color: green;
   font-style: bold;
 }
 
@@ -239,11 +238,17 @@ input[type="checkbox"] {
   border: 1px solid white;
 }
 #gameContainer {
-  border: 1px solid white;
+  border:  none;
 }
 #inputActionSim {
   width: 100%;
-  padding: 1% 0% 1% 0%;
+  padding: 1% 1% 1% 1%;
+}
+#inputActionSim:focus{
+  outline: 0.5px solid white;
+}
+#inputActionSim:active{
+  outline: 0.5px solid white;
 }
 
 select {
@@ -259,3 +264,4 @@ select:focus {
   background-color: #737272;
   transition: 0.1s ease-in-out;
 }
+
