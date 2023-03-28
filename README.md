@@ -28,7 +28,7 @@ To do:
 - [ ] Change scrollbar colors to match UI.
 - [ ] Change checkbox colors.
 - [ ] Add scrolling and zooming with mouse for map.
-- [ ] Make game input sim textbox value empty when submit.
+- [x] Make game input sim textbox value empty when submit.
 - [x] Clean up UI
 - [x] Improve README
 - [x] Change window startsize.
