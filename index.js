@@ -10,7 +10,7 @@ const createWindow = () => {
     width: 1920,
     height: 1080,
   });
-  win.removeMenu();
+  //win.removeMenu();
   win.loadFile("if_create.html");
 };
 
