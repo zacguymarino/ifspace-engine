@@ -228,9 +228,10 @@ input[type="checkbox"] {
 
 #nodeMap {
   margin-top: 10px;
-  padding: 10px;
+  margin-left: 5px;
   border: 1px solid #ffffff;
 }
+
 .bottomBar {
   display: flex;
   justify-content: space-around;
