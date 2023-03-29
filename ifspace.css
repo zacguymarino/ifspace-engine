@@ -135,6 +135,10 @@ input[type="number"]:hover {
   border: 1px solid white;
   border-top: none;
   overflow: auto;
+  /* Added these for improving readability, might not actually be necessary feel free to delete/modify. */
+  padding-left: 10px;
+  padding-right: 20%;
+  color: #d3d3d3;
 }
 
 #inputSim {
@@ -188,11 +192,6 @@ input[type="checkbox"] {
 .nodeTools button {
   background-color: #191919;
 }
-/* I have no idea why the buttons below do not get a border so im leaving it to you! */
-/* .addAction, .addEvoDes, .addItem, .addContainer{
-    border: 1px solid white;
-    background-color: aqua;
-} */
 
 .nodeTools button:hover {
   transition: 0.1s ease-in-out;
@@ -204,16 +203,22 @@ input[type="checkbox"] {
   transition: 0.1s ease-in-out;
 }
 
-.nodeTools textarea {
+textarea {
   background-color: #4d4d4d;
   border-radius: 0px;
 }
-.nodeTools textarea:hover {
+textarea:hover {
   background-color: rgb(128, 128, 128);
   transition: 0.1s ease-in;
+  outline: none;
 }
-.nodeTools textarea:focus {
-  border: none;
+textarea:focus {
+  outline: 1px solid white;
+  transition: 0.1s ease-in-out;
+}
+textarea:active {
+  outline: 1px solid white;
+  transition: 0.1s ease-in-out;
 }
 
 .nodeTools {
@@ -264,3 +269,15 @@ select:focus {
   transition: 0.1s ease-in-out;
 }
 
+.addEvoDes {
+    border: 1px solid white;
+}
+#addAction{
+    border: 1px solid white;
+}
+#addItem{
+    border: 1px solid white;
+}
+#addContainer{
+    border: 1px solid white;
+}
