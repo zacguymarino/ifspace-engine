@@ -10,7 +10,7 @@ const createWindow = () => {
     width: 1920,
     height: 1080,
   });
-  win.removeMenu();
+  //win.removeMenu();
   win.loadFile("if_create.html");
 };
 
@@ -19,6 +19,36 @@ function handleFileOpen() {
   if (filePaths) {
     return fs.readFileSync(filePaths[0], "utf-8");
   }
+}
+
+function createNode() {
+  var options = {
+    type: 'question',
+    buttons: ["Yes","Cancel"],
+    cancelId: 1,
+    message: 'Create a node at this location?'
+  }
+  return dialog.showMessageBoxSync(null,options);
+}
+
+function deleteNode() {
+  var options = {
+    type: 'question',
+    buttons: ["Yes","Cancel"],
+    cancelId: 1,
+    message: 'Are you sure you want to delete the current node?'
+  }
+  return dialog.showMessageBoxSync(null,options);
+}
+
+async function deleteDenied() {
+  var options = {
+    type: 'error',
+    buttons: ["Okay"],
+    cancelId: 0,
+    message: 'You cannot delete the origin node.'
+  }
+  return await dialog.showMessageBoxSync(null,options);
 }
 
 app.whenReady().then(() => {
@@ -44,3 +74,9 @@ ipcMain.on("saveGame", async (event, gameContent) => {
 });
 
 ipcMain.handle("loadGame", handleFileOpen);
+
+ipcMain.handle("createNode", createNode);
+
+ipcMain.handle("deleteNode", deleteNode);
+
+ipcMain.on("deleteDenied", deleteDenied);

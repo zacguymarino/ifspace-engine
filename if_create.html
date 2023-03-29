@@ -188,7 +188,7 @@
                                 player meets the win requirements and wins the
                                 game (leave blank if node has no win potential)</span>
                         </label>
-                        <textarea id="winDes" rows="4" style="width: 90%;"></textarea>
+                        <textarea id="winDes" rows="4" style="width: 50%;"></textarea>
                     </div>
                     <div id="loseBlock" class="pure-u-1-1 blockElements"
                         style="display: none;">
@@ -198,7 +198,7 @@
                                 player meets the lose requirements and loses the
                                 game (leave blank if node has no lose potential)</span>
                         </label>
-                        <textarea id="loseDes" rows="4" style="width: 90%;"></textarea>
+                        <textarea id="loseDes" rows="4" style="width: 50%;"></textarea>
                     </div>
                     <div id="hintBlock" class="pure-u-1-1 blockElements"
                         style="display: none;">
@@ -213,22 +213,26 @@
                 </div>
             </div>
             <div class="bottomBar">
-                <div>
+                <div class="bottomBarSection">
                     <button class="zoom" id="zoomIn">Zoom In</button>
                     <button class="zoom" id="zoomOut">Zoom Out</button>
-                    <label for="zIndex">Z-Index</label>
-                    <input id="zIndex" type="number" step="1" value="0">
+                    <div>
+                        <label for="zIndex">Z-Index</label>
+                        <input id="zIndex" type="number" step="1" value="0">
+                    </div>
                 </div>
-                <div>
+                <div class="bottomBarSection">
                     <button id="testGame">Test Game</button>
                 </div>
-                <div>
+                <div class="bottomBarSection">
+                    <div>
+                        <label class="tooltip">
+                            Game title:
+                            <span class="tooltiptext">The title of this game</span>
+                        </label>
+                        <input id="gameTitle" type="text">
+                    </div>
                     <button id="loadGame">Load Game</button>
-                    <label class="tooltip">
-                        Title:
-                        <span class="tooltiptext">The title of this game</span>
-                    </label>
-                    <input id="gameTitle" type="text">
                     <button id="saveGame">Save Game</button>
                 </div>
             </div>

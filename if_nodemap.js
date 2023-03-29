@@ -154,14 +154,17 @@ function zoom(baseId) {
   }
 }
 
-function getClickCoords(event) {
-  let x = (event.clientX - universe.offsetLeft - xTransform) / step;
+async function getClickCoords(event) {
+  let x = (event.clientX - 
+            universe.offsetLeft - 
+            xTransform) / 
+            step;
   let y =
     (event.clientY -
       universe.offsetTop +
       $(document).scrollTop() -
       yTransform) /
-    step;
+      step;
   let z = $("#zIndex").val();
   let coordsTitle;
   x = Math.floor(x);
@@ -170,7 +173,7 @@ function getClickCoords(event) {
   if (nodes.includes(coordsTitle)) {
     makeAndSwitchNode(coordsTitle);
   } else {
-    if (confirm("Create a node at this location?")) {
+    if (await window.IFS_API.createNode() == 0) {
       makeAndSwitchNode(coordsTitle);
     }
   }
