@@ -32,6 +32,7 @@
             <div class="pure-u-7-12">
                 <div class="pure-g nodeTools">
                     <div class="pure-u-1-4">
+
                         <label class="tooltip" for="location"><b>Location</b>
                             <span class="tooltiptext">Location of the current
                                 node (in x,y,z format)</span>
@@ -74,12 +75,12 @@
                     <button class="blockBtn" id="hintBlockBtn">Hint</button>
                     <div id="directionsBlock" class="pure-u-1-1" style="display:
                         none;">
-                        <label class="tooltip" for="directions">
-                            <b>Directions</b>
-                            <span class="tooltiptext">The directions in which a
+                        <details>
+                            <summary>Directions</summary>
+                            <span>The directions in which a
                                 player can move from this node (conditions may
                                 be applied below)</span>
-                        </label>
+                        </details>
                         <div id="directions">
                             <label for="N" class="pure-checkbox">
                                 <input type="checkbox" id="N" /> North
@@ -116,11 +117,12 @@
                     </div>
                     <div id="descriptionsBlock" class="pure-u-1-1 blockElements"
                         style="display: none;">
-                        <label class='tooltip'>
-                            <b>Description(s)</b>
-                            <span class='tooltiptext'>The various texts
+                        <details>
+                            <summary>Description(s)</summary>
+                            <span >The various texts
                                 displayed upon entering this node</span>
-                        </label>
+                        </details>
+                        
                         <label class='tooltip'>
                             Default
                             <span class='tooltiptext'>The default text upon

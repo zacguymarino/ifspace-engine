@@ -53,7 +53,7 @@ input[type="number"]:hover {
 }
 
 .blockElements * {
-  display: block;
+  /* display: block; */
   border: none;
   color: #f0f0f0;
   padding: 0.5em;
@@ -304,4 +304,8 @@ select:focus {
 }
 #addContainer{
     border: 1px solid white;
+}
+
+summary{
+  font-weight:bold;
 }
