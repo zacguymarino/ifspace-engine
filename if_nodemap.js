@@ -154,7 +154,7 @@ function zoom(baseId) {
   }
 }
 
-function getClickCoords(event) {
+async function getClickCoords(event) {
   let x = (event.clientX - 
             universe.offsetLeft - 
             xTransform) / 
@@ -173,7 +173,7 @@ function getClickCoords(event) {
   if (nodes.includes(coordsTitle)) {
     makeAndSwitchNode(coordsTitle);
   } else {
-    if (confirm("Create a node at this location?")) {
+    if (await window.IFS_API.createNode() == 0) {
       makeAndSwitchNode(coordsTitle);
     }
   }
