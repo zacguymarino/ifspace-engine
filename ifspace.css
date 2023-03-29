@@ -54,14 +54,18 @@ input[type="number"]:hover {
 
 .blockElements * {
   display: block;
-  border: none;
   color: #f0f0f0;
   padding: 0.5em;
 }
 
 .container {
   display: flex;
+  justify-content: flex-start;
   overflow: auto;
+}
+
+.blockElementSizer > input {
+  width: 95%;
 }
 
 .bottomBar {
@@ -84,6 +88,8 @@ input[type="number"]:hover {
 }
 
 .nodeTools {
+  display: flex;
+  justify-content: flex-start;
   overflow: auto;
   height: 85vh;
   border: solid 1px black;
@@ -140,6 +146,11 @@ input[type="number"]:hover {
   border: 2px solid black;
 }
 
+.gameSimTools {
+  display: flex;
+  justify-content: space-evenly;
+}
+
 #gameContainer {
   margin: auto;
   height: 92%;
@@ -192,6 +203,7 @@ input[type="number"]:hover {
 
 #directions {
   display: flex;
+  justify-content: space-between;
   flex-wrap: nowrap;
 }
 #directions input {
@@ -206,11 +218,6 @@ input[type="checkbox"] {
 .nodeTools button {
   background-color: #191919;
 }
-/* I have no idea why the buttons below do not get a border so im leaving it to you! */
-/* .addAction, .addEvoDes, .addItem, .addContainer{
-    border: 1px solid white;
-    background-color: aqua;
-} */
 
 .nodeTools button:hover {
   transition: 0.1s ease-in-out;

@@ -200,7 +200,7 @@ function directions(inputs) {
     if ($(input).is(":checked")) {
       if (!$(`#${inputId}_Edit`).length) {
         let newDivId = `${inputId}_Edit`;
-        let newDivStart = `<div class='blockElements' id='${newDivId}'>`;
+        let newDivStart = `<div class='blockElements blockElementSizer' id='${newDivId}'>`;
         let newDivEnd = "</div>";
         let direction = `<span class='centerText'><b>${inputId}</b></span>`;
         let divLocLabel = `<label class='tooltip'>
@@ -299,7 +299,7 @@ function addContainer() {
   } else {
     containerId = "container_1";
   }
-  let newDivStart = `<div class='blockElements' id='${containerId}'>`;
+  let newDivStart = `<div class='blockElements blockElementSizer' id='${containerId}'>`;
   let newDivEnd = "</div>";
   let rmvButton = "<button class='removeObject'>Remove Container</button>";
   let nameLabel = `<label class='tooltip'>
