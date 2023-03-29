@@ -32,7 +32,7 @@ To do:
 - [x] Clean up UI
 - [x] Improve README
 - [x] Change window startsize.
-- [x] Remove electron native menu.
+- [x] Remove electron native menu. Done but reactivating 'cause removing this disables DevTools from opening up. 
 
 ---
 
