@@ -24,9 +24,11 @@ An application for creating Interactive Fiction games.
 
 To do:
 - [ ] **Sanitize input fields**.
+- [ ] Reduce movement of input fields on accordion opening
 - [ ] Change scrollbar colors to match UI. 
 - [ ] Change checkbox colors.
 - [ ] Add scrolling and zooming with mouse for map.
+- [x] Convert tooltips to accordions for better UX.
 - [x] Fix button border in nodetools.
 - [x] Make game input sim textbox value empty when submit.
 - [x] Clean up UI

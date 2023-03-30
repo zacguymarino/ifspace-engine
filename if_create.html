@@ -76,7 +76,7 @@
                     <div id="directionsBlock" class="pure-u-1-1" style="display:
                         none;">
                         <details>
-                            <summary>Directions</summary>
+                            <summary class="boldAccordion">Directions</summary>
                             <span>The directions in which a
                                 player can move from this node (conditions may
                                 be applied below)</span>
@@ -118,97 +118,127 @@
                     <div id="descriptionsBlock" class="pure-u-1-1 blockElements"
                         style="display: none;">
                         <details>
-                            <summary>Description(s)</summary>
+                            <summary class="boldAccordion">Description(s)</summary>
                             <span >The various texts
                                 displayed upon entering this node</span>
                         </details>
                         
-                        <label class='tooltip'>
-                            Default
-                            <span class='tooltiptext'>The default text upon
+                        <details>
+                            <summary>
+                                Default
+                            </summary>
+                            <span>The default text upon
                                 first entering this node or after entering the
                                 'look' command</span>
+                        </details>
                         </label>
                         <textarea id="defaultDes" rows="4" style="width: 90%;"></textarea>
-                        <label class='tooltip'>
-                            Basic
-                            <span class='tooltiptext'>Text displayed upon
+                        <details>
+                            <summary>
+                                Basic
+                            </summary>
+                            <span>Text displayed upon
                                 revisiting this node</span>
+                        </details>
                         </label>
                         <textarea id="basicDes" rows="2" style="width: 90%;"></textarea>
-                        <label class='tooltip'>
-                            Evolution
-                            <span class='tooltiptext'>Description evolution
+                        <details>
+                            <summary>
+                                Evolution
+                            </summary>
+                            <span>Evolution
                                 settings and text</span>
+                        </details>
                         </label>
                         <button class="addEvoDes">Add Evolution</button>
                         <div id="evoListDescriptions" class="container"></div>
                     </div>
                     <div id="itemsBlock" class="pure-u-1-1 blockElements"
                         style="display: none;">
-                        <label class='tooltip'>
-                            <b>Items</b>
-                            <span class='tooltiptext'>Items to be found in this
+                        <details>
+                            <summary class="boldAccordion">
+                                Items
+                            </summary>
+                            <span>Items to be found in this
                                 node</span>
+                        </details>
                         </label>
                         <button id="addItem">Add Item</button>
                         <div id="itemList" class="container"></div>
                     </div>
                     <div id="containersBlock" class="pure-u-1-1 blockElements"
                         style="display: none;">
-                        <label class='tooltip'>
-                            <b>Containers</b>
-                            <span class='tooltiptext'>Containers within a node
+                        <details>
+                            <summary class="boldAccordion">
+                                Containers
+                            </summary>
+                            <span>Containers within a node
                                 to place/keep/store items</span>
+                        </details>
                         </label>
                         <button id="addContainer">Add Container</button>
                         <div id="containerList" class="container"></div>
                     </div>
                     <div id="actionsBlock" class="pure-u-1-1 blockElements"
                         style="display: none;">
-                        <label class='tooltip'>
-                            <b>Invalid Response</b>
-                            <span class='tooltiptext'>Text displayed after an
+                        <details>
+                            <summary class="boldAccordion">
+                                Invalid Response
+                            </summary>
+                            <span>Text displayed after an
                                 invalid action is entered</span>
+                        </details>
                         </label>
                         <textarea id='invalidAction' rows="2" style="width:
                             90%;"></textarea>
-                        <label class='tooltip'>
-                            <b>Actions</b>
-                            <span class='tooltiptext'>Custom actions for this
+                        <details>
+                            <summary class="boldAccordion">
+                                Actions
+                            </summary>
+                            <span>Custom actions for this
                                 node (not item-acquiring or direction related)
                                 [e.g. break egg, open window]</span>
+                        </details>
                         </label>
                         <button id="addAction">Add Action</button>
                         <div id="actionList" class="container"></div>
                     </div>
                     <div id="winBlock" class="pure-u-1-1 blockElements"
                         style="display: none;">
-                        <label class='tooltip'>
-                            <b>Win Description</b>
-                            <span class='tooltiptext'>Text displayed after the
+                        <details>
+                            <summary class="boldAccordion">
+                                Win Description
+                            </summary>
+                            <span>Text displayed after the
                                 player meets the win requirements and wins the
                                 game (leave blank if node has no win potential)</span>
+                        </details>
                         </label>
                         <textarea id="winDes" rows="4" style="width: 50%;"></textarea>
                     </div>
                     <div id="loseBlock" class="pure-u-1-1 blockElements"
                         style="display: none;">
-                        <label class='tooltip'>
-                            <b>Lose Description</b>
-                            <span class='tooltiptext'>Text displayed after the
+                        <details>
+                            <summary class="boldAccordion">
+                                Lose Description
+                            </summary>
+                            <span>Text displayed after the
                                 player meets the lose requirements and loses the
                                 game (leave blank if node has no lose potential)</span>
+                            </details>
                         </label>
                         <textarea id="loseDes" rows="4" style="width: 50%;"></textarea>
                     </div>
                     <div id="hintBlock" class="pure-u-1-1 blockElements"
                         style="display: none;">
-                        <label class='tooltip'>
-                            <b>Hint</b>
-                            <span class='tooltiptext'>After 5 consecutive failed
+                        <details>
+                            <summary class="boldAccordion">
+                                Hint
+                            </summary>
+                            <span>After 5 consecutive failed
                                 inputs, the player will be given the option to
                                 recieve this hint</span>
+                            </details>
                         </label>
                         <textarea id="hint" rows="4" style="width: 90%;"></textarea>
                     </div>

@@ -53,8 +53,6 @@ input[type="number"]:hover {
 }
 
 .blockElements * {
-  /* display: block; */
-  border: none;
   color: #f0f0f0;
   padding: 0.5em;
 }
@@ -261,7 +259,7 @@ textarea:active {
 }
 
 #gameContainer {
-  border:  none;
+  border: none;
 }
 
 #inputActionSim {
@@ -269,11 +267,11 @@ textarea:active {
   padding: 1% 1% 1% 1%;
 }
 
-#inputActionSim:focus{
+#inputActionSim:focus {
   outline: 0.5px solid white;
 }
 
-#inputActionSim:active{
+#inputActionSim:active {
   outline: 0.5px solid white;
 }
 
@@ -294,18 +292,38 @@ select:focus {
 }
 
 .addEvoDes {
-    border: 1px solid white;
+  border: 1px solid white;
 }
-#addAction{
-    border: 1px solid white;
+#addAction {
+  border: 1px solid white;
 }
-#addItem{
-    border: 1px solid white;
+#addItem {
+  border: 1px solid white;
 }
-#addContainer{
-    border: 1px solid white;
+#addContainer {
+  border: 1px solid white;
 }
 
-summary{
-  font-weight:bold;
+.boldAccordion {
+  font-weight: bold;
+}
+summary.boldAccordion::after {
+  content: " ";
+  margin-top: 0%;
+  background-color: rgb(0, 0, 0);
+  width: 0%;
+  transition: 100ms ease-out;
+}
+summary.boldAccordion:hover::after {
+  margin-top: 7px;
+  content: " ";
+  display: block;
+  background-color: white;
+  height: 1px;
+  width: 40%;
+  transition: 100ms ease-in-out;
+}
+/* The title for directions in nodetools didn't have whitespace around it but the other titles did, temporary fix (or is it?) */
+#directionsBlock > details > summary {
+  margin: 20px;
 }

@@ -203,21 +203,24 @@ function directions(inputs) {
         let newDivStart = `<div class='blockElements' id='${newDivId}'>`;
         let newDivEnd = "</div>";
         let direction = `<span class='centerText'><b>${inputId}</b></span>`;
-        let divLocLabel = `<label class='tooltip'>
-                                    <b>Location</b>
-                                    <span class='tooltiptext'>Location of the destination node (defaults to direction clicked, but may be edited)</span>
-                                    </label>`;
+        let divLocLabel = `
+                          <details>
+                          <summary>Location</summary>
+                          <span>Location of the destination node (defaults to direction clicked, but may be edited)</span>
+                          </details>`;
         let divLoc = `<input value='${nextLoc}' id='${inputId}_Location' type='text'>`;
-        let divAltLabel = `<label class='tooltip'>
-                                    <b>Alternatives</b>
-                                    <span class='tooltiptext'>Comma separated alternatives to "go ${inputId}"" (e.g. "follow narrow path, take narrow path, take path, etc.")</span>
-                                    </label>`;
+        let divAltLabel = `
+                          <details>
+                          <summary>Alternatives</summary>
+                          <span>Comma separated alternatives to "go ${inputId}"" (e.g. "follow narrow path, take narrow path, take path, etc.")</span>
+                          </details>`;
         let divAlt = `<input id='${inputId}_Alternatives' type='text'>`;
         let excludeDefaults = `<label class='pure-checkbox tooltip'>
-                                    Exclude Defaults
-                                    <span class='tooltiptext'>If checked, the default "go ${inputId}" (and equivalents) will not work</span>
-                                    </label>
-                                    <input type='checkbox' id='${inputId}_Exclude'/>`;
+                              <details>                      
+                              <summary>Exclude Defaults</summary>
+                              <span>If checked, the default "go ${inputId}" (and equivalents) will not work</span>
+                              </details>
+                              <input type='checkbox' id='${inputId}_Exclude'/>`;
         let requirements = getRequirements(inputId);
 
         let html =
@@ -251,20 +254,23 @@ function addItem() {
   let newDivStart = `<div class='blockElements' id='${itemId}'>`;
   let newDivEnd = "</div>";
   let rmvButton = "<button class='removeObject'>Remove Item</button>";
-  let nameLabel = `<label class='tooltip'>
-                    Name
-                    <span class='tooltiptext'>Comma separated names of item [first option has requirement precedence] (e.g. lantern, light, torch)</span>
-                    </label>`;
+  let nameLabel = `
+  <details>
+                    <summary>Name</summary>
+                    <span>Comma separated names of item [first option has requirement precedence] (e.g. lantern, light, torch)</span>
+                    </details>`;
   let name = `<input type='text' id='${itemId}_Name'>`;
-  let desLabel = `<label class='tooltip'>
-                    Description
-                    <span class='tooltiptext'>Description of item (for "examine {item}" or "look {item}" command)</span>
-                    </label>`;
+  let desLabel = `
+  <details>
+                    <summary>Description</summary>
+                    <span>Description of item (for "examine {item}" or "look {item}" command)</span>
+                    </details>`;
   let des = `<textarea id='${itemId}_Des' rows='3' cols='23'></textarea>`;
-  let pointsLabel = `<label class='tooltip'>
-                        Points
-                        <span class='tooltiptext'>Number of points awarded for getting this item [default of 0]</span>
-                        </label>`;
+  let pointsLabel = `
+  <details>
+                    <summary>Points</summary>
+                        <span>Number of points awarded for getting this item [default of 0]</span>
+                        </details>`;
   let points = `<input type='text' id='${itemId}_Points'>`;
   let requirements = getRequirements(itemId);
   let evoButton = "<button class='addEvoItems'>Add Evolution</button>";
@@ -302,26 +308,30 @@ function addContainer() {
   let newDivStart = `<div class='blockElements' id='${containerId}'>`;
   let newDivEnd = "</div>";
   let rmvButton = "<button class='removeObject'>Remove Container</button>";
-  let nameLabel = `<label class='tooltip'>
-                    Name
-                    <span class='tooltiptext'>Comma separated names of this container [first option has requirement precedence] (e.g. box, bin, cardboard box)</span>
-                    </label>`;
+  let nameLabel = `
+  <details>
+                    <summary>Name</summary>
+                    <span>Comma separated names of this container [first option has requirement precedence] (e.g. box, bin, cardboard box)</span>
+                    </details>`;
   let name = `<input type='text' id='${containerId}_Name'>`;
-  let capLabel = `<label class='tooltip'>
-                    Capacity
-                    <span class='tooltiptext'>Max number of items the container can hold (leave empty for no limit)</span>
-                    </label>`;
+  let capLabel = `
+  <details>
+                    <summary>Capacity</summary>
+                    <span>Max number of items the container can hold (leave empty for no limit)</span>
+                    </details>`;
   let cap = `<input type='text' id='${containerId}_Capacity'>`;
-  let completeLabel = `<label class='tooltip'>
-                    Completed Contents
-                    <span class='tooltiptext'>Either a number OR a comma separated list of items - Returns true if contents are >=
+  let completeLabel = `
+  <details>
+                    <summary>Completed Contents</summary>
+                    <span>Either a number OR a comma separated list of items - Returns true if contents are >=
                     the number OR if every listed item is present</span>
-                    </label>`;
+                    </details>`;
   let complete = `<input type='text' id='${containerId}_Complete'>`;
-  let illegalLabel = `<label class='tooltip'>
-                    Illegal Items
-                    <span class='tooltiptext'>Comma separated list of items which may not be deposited into container</span>
-                    </label>`;
+  let illegalLabel = `
+  <details>
+                    <summary>Illegal Items</summary>
+                    <span>Comma separated list of items which may not be deposited into container</span>
+                    </details>`;
   let illegal = `<input type='text' id='${containerId}_Illegal'>`;
   let requirements = getRequirements(containerId);
   let html =
@@ -353,50 +363,58 @@ function addAction() {
   let newDivStart = `<div class='blockElements' id='${actionId}'>`;
   let newDivEnd = "</div>";
   let rmvButton = `<button class='removeObject'>Remove Action</button>`;
-  let actionLabel = `<label class='tooltip'>
-                        Action(s)
-                        <span class='tooltiptext'>Comma separated list of accepted action(e.g. crush egg, smash egg) [Ignores: a, an, the, to, for, at]</span>
-                        </label>`;
+  let actionLabel = `
+  <details>
+                        <summary>Action(s)</summary>
+                        <span>Comma separated list of accepted action(e.g. crush egg, smash egg) [Ignores: a, an, the, to, for, at]</span>
+                        </details>`;
   let actions = `<input type='text' id='${actionId}_Actions'>`;
-  let maxLabel = `<label class='tooltip'>
-                    Max Uses
-                    <span class='tooltiptext'>A number for the maximum number of times this action can be called [leave blank for no maximum]</span>
-                    </label>`;
+  let maxLabel = `
+  <details>
+                    <summary>Max Uses</summary>
+                    <span>A number for the maximum number of times this action can be called [leave blank for no maximum]</span>
+                    </details>`;
   let max = `<input type='text' id='${actionId}_Max'>`;
-  let costsLabel = `<label class='tooltip'>
-                    Costs
-                    <span class='tooltiptext'>Comma separated list of items which are spent/destroyed to perform this action</span>
-                    </label>`;
+  let costsLabel = `
+  <details>
+                    <summary>Costs</summary>
+                    <span>Comma separated list of items which are spent/destroyed to perform this action</span>
+                    </details>`;
   let costs = `<input type='text' id='${actionId}_Costs'>`;
-  let dropsLabel = `<label class='tooltip'>
-                    Drops
-                    <span class='tooltiptext'>Comma separated list of items which are dropped to perform this action</span>
-                    </label>`;
+  let dropsLabel = `
+  <details>
+                    <summary>Drops</summary>
+                    <span>Comma separated list of items which are dropped to perform this action</span>
+                    </details>`;
   let drops = `<input type='text' id='${actionId}_Drops'>`;
-  let visibilityLabel = `<label class='tooltip'>
-                        Visibility
-                        <span class='tooltiptext'>Selection for how this action affects this node's visibility</span>
-                        </label>`;
+  let visibilityLabel = `
+  <details>
+                        <summary>Visibility</summary>
+                        <span>Selection for how this action affects this node's visibility</span>
+                        </details>`;
   let visibility = `<select id='${actionId}_Visibility'>
                         <option value='none' seleted='selected'>No change</option>
                         <option value='on'>On</option>
                         <option value='off'>Off</option>
                         <option value='switch'>Switch</option>
                         </select>`;
-  let responseLabel = `<label class='tooltip'>
-                        Action Response
-                        <span class='tooltiptext'>Text displayed after successfully calling this action (e.g. The egg is now broken.)</span>
-                        </label>`;
+  let responseLabel = `
+  <details>
+                        <summary>Action Response</summary>
+                        <span>Text displayed after successfully calling this action (e.g. The egg is now broken.)</span>
+                        </details>`;
   let response = `<textarea id='${actionId}_Response' rows='3' cols='23'></textarea>`;
-  let failLabel = `<label class='tooltip'>
-                        Fail Response
-                        <span class='tooltiptext'>Text displayed after not meeting the action requirements (e.g. This door requires a key.)</span>
-                        </label>`;
+  let failLabel = `
+  <details>
+                        <summary>Fail Response</summary>
+                        <span>Text displayed after not meeting the action requirements (e.g. This door requires a key.)</span>
+                        </details>`;
   let fail = `<textarea id='${actionId}_Fail' rows='3' cols='23'></textarea>`;
-  let pointsLabel = `<label class='tooltip'>
-                    Points
-                    <span class='tooltiptext'>Points awarded for successfully calling this action [default of 0]</span>
-                    </label>`;
+  let pointsLabel = `
+  <details>
+                    <summary>Points</summary>
+                    <span>Points awarded for successfully calling this action [default of 0]</span>
+                    </details>`;
   let points = `<input type='text' id='${actionId}_Points'>`;
   let requirements = getRequirements(actionId);
 
@@ -505,14 +523,15 @@ function addEvo(listId) {
   }
   let newDivStart = `<div class='blockElements' id='${evoId}'>`;
   let evoHeading = `<label><b>Evolution</b></label>`;
-  let newDivEnd = "</div>";
   let requirements = getRequirements(evoId);
-  let evoDesLabel = `<label class='tooltip'>
-                    <b>Evo Description</b>
-                    <span class='tooltiptext'>The text displayed for this setting after meeting the above requirements</span>
-                    </label>`;
+  let evoDesLabel = `
+  <details>
+  <summary class="boldAccordion">Evo Description</summary>
+  <span>The text displayed for this setting after meeting the above requirements</span>
+  </details>`;
   let evoDes = `<textarea id='${evoId}_Des' rows='4' cols='23'></textarea>`;
   let rmvButton = `<button class='removeEvo'>Remove Evolution</button>`;
+  let newDivEnd = "</div>";
 
   let html =
     newDivStart +
@@ -527,40 +546,47 @@ function addEvo(listId) {
 }
 
 function getRequirements(baseId) {
-  let reqLabel = `<label class='tooltip'>
-                    <b>Requirements</b>
-                    <span class='tooltiptext'>The current node setting will only exist/apply if the following conditions are met</span>
-                    </label>`;
-  let reqItems = `<label class='tooltip'>
-                    Items
-                    <span class='tooltiptext'>Comma separated items required for this setting (e.g. keys, bottle, food, etc.)</span>
-                    </label>
+  let reqLabel = `
+  <details>
+          <summary class="boldAccordion">Requirements</summary>
+          <span>The current node setting will only exist/apply if the following conditions are met</span>
+  </details>`;
+  let reqItems = `
+  <details>
+          <summary>Items</summary>
+          <span>Comma separated items required for this setting (e.g. keys, bottle, food, etc.)</span>
+  </details>
                     <input id='${baseId}_Items' type='text'>`;
-  let reqContainers = `<label class='tooltip'>
-                        Containers
-                        <span class='tooltiptext'>Comma separated containers required to be "complete" for this setting</span>
-                        </label>
+  let reqContainers = `
+  <details>
+          <summary>Containers</summary>
+          <span>Comma separated containers required to be "complete" for this setting</span>
+  </details>
                         <input id='${baseId}_Containers' type='text'>`;
-  let reqLocal = `<label class='tooltip'>
-                    Local Actions
-                    <span class='tooltiptext'>Comma separated actions which the player is required to have entered in this node location (e.g. unlock gate, break window)</span>
-                    </label>
+  let reqLocal = `
+  <details>
+          <summary>Local Actions</summary>
+          <span>Comma separated actions which the player is required to have entered in this node location (e.g. unlock gate, break window)</span>
+  </details>
                     <input id='${baseId}_Local' type='text'>`;
-  let reqGlobal = `<label class='tooltip'>
-                    Global Actions
-                    <span class='tooltiptext'>Comma separated actions which the player is required to have entered in any node (e.g. abracadabra, forge key)</span>
-                    </label>
+  let reqGlobal = `
+  <details>
+          <summary>Global Actions</summary>
+          <span>Comma separated actions which the player is required to have entered in any node (e.g. abracadabra, forge key)</span>
+  </details>
                     <input id='${baseId}_Global' type='text'>`;
-  let reqVisits = `<label class='tooltip'>
-                    Node Visits
-                    <span class='tooltiptext'>Comma separated list of locations and required number of visits to each (in form of [location, visits]) (e.g. [0,0,0,1], [0,2,0,1], [2,3,0,1])</span>
-                    </label>
-                    <input id='${baseId}_Visits' type='text'>`;
-  let reqEvos = `<label class='tooltip'>
-                    Item Evos
-                    <span class='tooltiptext'>Comma separated list of items and the required evolution stage for each (e.g. [key, 1], [knife, 2])</span>
-                    </label>
-                    <input id ='${baseId}_Evos' type='text'>`;
+  let reqVisits = `
+  <details>
+          <summary>Node Visits</summary>
+          <span>Comma separated list of locations and required number of visits to each (in form of [location, visits]) (e.g. [0,0,0,1], [0,2,0,1], [2,3,0,1])</span>
+  </details>
+          <input id='${baseId}_Visits' type='text'>`;
+  let reqEvos = `
+  <details>
+          <summary>Item Evos</summary>
+          <span>Comma separated list of items and the required evolution stage for each (e.g. [key, 1], [knife, 2])</span>
+  </details>
+  <input id ='${baseId}_Evos' type='text'>`;
 
   let html =
     reqLabel +
