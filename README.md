@@ -24,7 +24,7 @@ An application for creating Interactive Fiction games.
 
 To do:
 - [ ] **Sanitize input fields**.
-- [ ] Change scrollbar colors to match UI.
+- [ ] Change scrollbar colors to match UI. 
 - [ ] Change checkbox colors.
 - [ ] Add scrolling and zooming with mouse for map.
 - [x] Fix button border in nodetools.
