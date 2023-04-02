@@ -413,6 +413,15 @@ function checkRequirements(reqs) {
                     return false;
                 }
             }
+        } else if (quant == 0) {
+            if (!save.nodes.hasOwnProperty(loc)) {
+                continue;
+            } else {
+                if (Number(save.nodes[loc].visits) != 0) {
+                    console.log("You visited this node too many times.");
+                    return false;
+                }
+            }
         }
     }
 
@@ -879,7 +888,7 @@ function parseAction(input) {
         if (cNodeDirections[i].alternatives.includes(action)) {
             if (checkRequirements(cNodeDirections[i].requirements)) {
                 parseNode(cNodeDirections[i].location);
-                sentMessage = true;
+                return;
             } else {
                 displayMessage("Something is preventing you from going this way.", false);
                 sentMessage = true;
