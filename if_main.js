@@ -110,7 +110,7 @@ $(function () {
     dom.addContainer();
   });
 
-  $(".addAction").click(function () {
+  $("#addAction").click(function () {
     dom.addAction();
   });
 

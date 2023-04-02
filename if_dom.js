@@ -527,6 +527,7 @@ function addEvo(listId) {
 }
 
 function getRequirements(baseId) {
+  let divStart = `<div>`;
   let reqLabel = `<label class='tooltip'>
                     <b>Requirements</b>
                     <span class='tooltiptext'>The current node setting will only exist/apply if the following conditions are met</span>
@@ -561,15 +562,18 @@ function getRequirements(baseId) {
                     <span class='tooltiptext'>Comma separated list of items and the required evolution stage for each (e.g. [key, 1], [knife, 2])</span>
                     </label>
                     <input id ='${baseId}_Evos' type='text'>`;
+  let divEnd = `</div>`;
 
   let html =
+    divStart +
     reqLabel +
     reqItems +
     reqContainers +
     reqLocal +
     reqGlobal +
     reqVisits +
-    reqEvos;
+    reqEvos +
+    divEnd;
   return html;
 }
 

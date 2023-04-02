@@ -36,7 +36,6 @@ input[type="text"],
 input[type="number"] {
   border-radius: 3px;
   border: none;
-  padding: 3% 5% 3% 5%;
   background-color: #4d4d4d;
   color: white;
 }
@@ -54,6 +53,11 @@ input[type="number"]:hover {
 
 .blockElements * {
   display: block;
+  color: #f0f0f0;
+  padding: 0.5em;
+}
+
+.tabElements * {
   color: #f0f0f0;
   padding: 0.5em;
 }
@@ -299,3 +303,24 @@ select:focus {
   transition: 0.1s ease-in-out;
 }
 
+.boldAccordion {
+  font-weight: bold;
+}
+
+summary.boldAccordion::after {
+  content: " ";
+  margin-top: 0%;
+  background-color: rgb(0, 0, 0);
+  width: 0%;
+  transition: 100ms ease-out;
+}
+
+summary.boldAccordion:hover::after {
+  margin-top: 7px;
+  content: " ";
+  display: block;
+  background-color: white;
+  height: 1px;
+  width: 40%;
+  transition: 100ms ease-in-out;
+}
