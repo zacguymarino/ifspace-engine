@@ -16,6 +16,7 @@ var save;
 var takeCommands = ["GET","TAKE", "PICK UP"];
 var dropCommands = ["DROP", "PUT DOWN"];
 var inventoryCommands = ["INVENTORY", "INV", "I", "INVEN"];
+var hintCommands = ["HINT", "HELP"];
 var itemInspectCommands = ["INSPECT", "LOOK", "EXAMINE"];
 var ignorables = ["A", "AN", "THE", "TO", "FOR", "AT"];
 
@@ -730,6 +731,15 @@ function parseAction(input) {
             displayMessage(points.toString() + "/" + max.toString(), false);
             sentMessage = true;
         }
+    }
+
+    if (hintCommands.includes(action)) {
+        if (game[currentNode].hint != '') {
+            displayMessage(game[currentNode].hint, false);
+        } else {
+            displayMessage("There is no help here.", false);
+        }
+        sentMessage = true;
     }
 
     if (inventoryCommands.includes(action)) {
