@@ -636,88 +636,91 @@ function parseAction(input) {
     for (let h = 0; h < cNodeActions.length; h++) {
         if (cNodeActions[h].toUpperCase() == action) {
             for (let i = 0; i < game[currentNode].actions.actions.length; i++) {
-                if (game[currentNode].actions.actions[i].actions.toUpperCase().includes(action)) {
-                    let actionObject = JSON.parse(JSON.stringify(game[currentNode].actions.actions[i]));
-                    let reqs = {
-                        "reqItems": actionObject.reqItems,
-                        "reqContainers": actionObject.reqContainers,
-                        "reqLocal": actionObject.reqLocal,
-                        "reqGlobal": actionObject.reqGlobal,
-                        "locVisits": actionObject.locVisits,
-                        "itemEvos": actionObject.itemEvos
-                    }
-                    if (checkRequirements(reqs)) {
-                        let mainAction = actionObject.actions.split(/\s*,\s*/)[0].toUpperCase();
-                        let maxTimes;
-                        if (actionObject.max !== '' && actionObject.max !== null) {
-                            maxTimes = +actionObject.max;
-                        } else {
-                            maxTimes = 9999;
+                let variants = game[currentNode].actions.actions[i].actions.toUpperCase().split(/\s*,\s*/);
+                for (let m = 0; m < variants.length; m++) {
+                    if (variants[m] == action) {
+                        let actionObject = JSON.parse(JSON.stringify(game[currentNode].actions.actions[i]));
+                        let reqs = {
+                            "reqItems": actionObject.reqItems,
+                            "reqContainers": actionObject.reqContainers,
+                            "reqLocal": actionObject.reqLocal,
+                            "reqGlobal": actionObject.reqGlobal,
+                            "locVisits": actionObject.locVisits,
+                            "itemEvos": actionObject.itemEvos
                         }
-                        let usedTimes = 0;
-                        for (let j = 0; j < save.actions.length; j++) {
-                            if (save.actions[j] == mainAction) {
-                                usedTimes++;
+                        if (checkRequirements(reqs)) {
+                            let mainAction = actionObject.actions.split(/\s*,\s*/)[0].toUpperCase();
+                            let maxTimes;
+                            if (actionObject.max !== '' && actionObject.max !== null) {
+                                maxTimes = +actionObject.max;
+                            } else {
+                                maxTimes = 9999;
                             }
-                        }
-                        if (!(usedTimes >= maxTimes)) {
-                        //Action is valid - perform action operations
-                            let costs = actionObject.costs.split(/\s*,\s*/);
-                            let drops = actionObject.drops.split(/\s*,\s*/);
-                            let visibility = actionObject.visibility;
+                            let usedTimes = 0;
+                            for (let j = 0; j < save.actions.length; j++) {
+                                if (save.actions[j] == mainAction) {
+                                    usedTimes++;
+                                }
+                            }
+                            if (!(usedTimes >= maxTimes)) {
+                            //Action is valid - perform action operations
+                                let costs = actionObject.costs.split(/\s*,\s*/);
+                                let drops = actionObject.drops.split(/\s*,\s*/);
+                                let visibility = actionObject.visibility;
 
-                            //Handle action costs
-                            if (costs != "" && costs != null) {
-                                for (let k = 0; k < costs.length; k++) {
-                                    for (let l = 0; l < save.items.length; l++) {
-                                        if (save.items[l].name.includes(costs[k])) {
-                                            save.items.splice(l, 1);
-                                            break;
+                                //Handle action costs
+                                if (costs != "" && costs != null) {
+                                    for (let k = 0; k < costs.length; k++) {
+                                        for (let l = 0; l < save.items.length; l++) {
+                                            if (save.items[l].name.includes(costs[k])) {
+                                                save.items.splice(l, 1);
+                                                break;
+                                            }
                                         }
                                     }
                                 }
-                            }
-                            //Handle action drops
-                            if (drops != "" && drops != null) {
-                                for (let k = 0; k < drops.length; k++) {
-                                    for (let l = 0; l < save.items.length; l++) {
-                                        if (save.items[l].name.includes(drops[k])) {
-                                            save.nodes[currentNode].items.push(save.items[l]);
-                                            save.items.splice(l, 1);
+                                //Handle action drops
+                                if (drops != "" && drops != null) {
+                                    for (let k = 0; k < drops.length; k++) {
+                                        for (let l = 0; l < save.items.length; l++) {
+                                            if (save.items[l].name.includes(drops[k])) {
+                                                save.nodes[currentNode].items.push(save.items[l]);
+                                                save.items.splice(l, 1);
+                                            }
                                         }
                                     }
                                 }
-                            }
-                            //Handle action visibility
-                            switch(visibility) {
-                                case 'none':
-                                    break;
-                                case 'on':
-                                    save.nodes[currentNode].visibility = 'true';
-                                    break;
-                                case 'off':
-                                    save.nodes[currentNode].visibility = 'false';
-                                case 'switch':
-                                    if (save.nodes[currentNode].visibility == 'true') {
-                                        save.nodes[currentNode].visibility = 'false';
-                                    } else {
+                                //Handle action visibility
+                                switch(visibility) {
+                                    case 'none':
+                                        break;
+                                    case 'on':
                                         save.nodes[currentNode].visibility = 'true';
-                                    }
-                                    break;
-                                default:
-                                    break;
+                                        break;
+                                    case 'off':
+                                        save.nodes[currentNode].visibility = 'false';
+                                    case 'switch':
+                                        if (save.nodes[currentNode].visibility == 'true') {
+                                            save.nodes[currentNode].visibility = 'false';
+                                        } else {
+                                            save.nodes[currentNode].visibility = 'true';
+                                        }
+                                        break;
+                                    default:
+                                        break;
+                                }
+                                save.actions.push(mainAction);
+                                save.nodes[currentNode].actions.push(mainAction);
+                                displayMessage(actionObject.response, false);
+                                sentMessage = true;
+                            } else {
+                                displayMessage("Can't do that anymore.", false);
+                                sentMessage = true;
                             }
-                            save.actions.push(mainAction);
-                            save.nodes[currentNode].actions.push(mainAction);
-                            displayMessage(actionObject.response, false);
-                            sentMessage = true;
                         } else {
-                            displayMessage("Can't do that anymore.", false);
+                            displayMessage(actionObject.fail, false);
                             sentMessage = true;
                         }
-                    } else {
-                        displayMessage(actionObject.fail, false);
-                        sentMessage = true;
                     }
                 }
             }
