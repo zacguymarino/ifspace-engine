@@ -888,15 +888,17 @@ function parseAction(input) {
     }
 
     for (let i = 0; i < cNodeDirections.length; i++) {
-        if (cNodeDirections[i].alternatives.includes(action)) {
-            if (checkRequirements(cNodeDirections[i].requirements)) {
-                parseNode(cNodeDirections[i].location);
-                return;
-            } else {
-                displayMessage("Something is preventing you from going this way.", false);
-                sentMessage = true;
+        for (let j = 0; j < cNodeDirections[i].alternatives.length; j++) {
+            if (cNodeDirections[i].alternatives[j] == action) {
+                if (checkRequirements(cNodeDirections[i].requirements)) {
+                    parseNode(cNodeDirections[i].location);
+                    return;
+                } else {
+                    displayMessage("Something is preventing you from going this way.", false);
+                    sentMessage = true;
+                }
+                break;
             }
-            break;
         }
     }
 

@@ -22,6 +22,18 @@ button {
   padding: 1% 1% 1% 1%;
 }
 
+#zIndexBlock {
+  margin-left: 10px;
+}
+
+#zIndex {
+  width: 50%;
+  height: 35px;
+}
+#zIndex::-webkit-inner-spin-button {
+  height: 35px;
+}
+
 button:hover {
   transition: 0.1s ease-in-out;
   background-color: #4d4d4d;
@@ -164,10 +176,8 @@ input[type="number"]:hover {
   border: 1px solid white;
   border-top: none;
   overflow: auto;
-  /* Added these for improving readability, might not actually be necessary feel free to delete/modify. */
   padding-left: 10px;
-  padding-right: 20%;
-  color: #d3d3d3;
+  padding-right: 10px;
 }
 
 #inputSim {
