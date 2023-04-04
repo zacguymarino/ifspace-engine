@@ -742,7 +742,12 @@ function parseAction(input) {
     }
 
     if (action === "LOOK") {
-        displayMessage(cNodeDescription, false);
+        let lookDes = JSON.parse(JSON.stringify(game[currentNode].description.basicDes));
+        if (lookDes.length > 0) {
+            displayMessage(lookDes, false);
+        } else {
+            displayMessage(cNodeDescription, false);
+        }
         displayItems();
         sentMessage = true;
     }
