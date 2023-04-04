@@ -1,6 +1,7 @@
 import {game} from './if_generate.js';
 
 var currentNode;
+var previousNode;
 var cNodeDescription;
 var cNodeDirections;
 var cNodeItems;
@@ -22,6 +23,7 @@ var ignorables = ["A", "AN", "THE", "TO", "FOR", "AT"];
 
 function gameInit() {
     let title = $('#gameTitle').val();
+    previousNode = "0,0,0";
     currentNode = "0,0,0";
     badAction = 0;
     save = {
@@ -158,6 +160,7 @@ function getDiscoveredItemsActions(location) {
             "reqLocal": (originNode) ? items[i].reqLocal: '',
             "reqGlobal": items[i].reqGlobal,
             "locVisits": items[i].locVisits,
+            "previous": (originNode) ? items[i].previous: '',
             "itemEvos": items[i].itemEvos
         }
         if (checkRequirements(reqs)) {
@@ -217,6 +220,7 @@ function getDirectionsActions (location) {
             "reqLocal": game[location].directions[i].reqLocal,
             "reqGlobal": game[location].directions[i].reqGlobal,
             "locVisits": game[location].directions[i].locVisits,
+            "previous": game[location].directions[i].previous,
             "itemEvos": game[location].directions[i].itemEvos
         };
         let directionObject = {
@@ -327,6 +331,7 @@ function getDescription (location) {
             "reqLocal": thisEvo.reqLocal,
             "reqGlobal": thisEvo.reqGlobal,
             "locVisits": thisEvo.locVisits,
+            "previous": thisEvo.previous,
             "itemEvos": thisEvo.itemEvos
         }
         if (checkRequirements(requirements)) {
@@ -351,6 +356,7 @@ function checkRequirements(reqs) {
     let reqLocal = !reqs['reqLocal'] ? [] : reqs['reqLocal'].split(/\s*,\s*/);
     let reqGlobal = !reqs['reqGlobal'] ? [] : reqs['reqGlobal'].split(/\s*,\s*/);
     let locVisits = !reqs['locVisits'] ? [] : reqs['locVisits'].split(/\]\s*,\s*/);
+    let previous = !reqs['previous'] ? '' : reqs['previous'];
     let itemEvos = !reqs['itemEvos'] ? [] : reqs['itemEvos'].split(/\]\s*,\s*/);
 
     for (let i = 0; i < reqContainers.length; i++) {
@@ -425,8 +431,11 @@ function checkRequirements(reqs) {
         }
     }
 
-    //create saved items list
+    if (previous != '' & previous != previousNode) {
+        return false;
+    }
 
+    //create saved items list
     let itemArray = []
     for (let i = 0; i < save.items.length; i++) {
         itemArray.push(save.items[i].name);
@@ -478,6 +487,7 @@ function checkWin() {
         "reqLocal": win.reqLocal,
         "reqGlobal": win.reqGlobal,
         "locVisits": win.locVisits,
+        "previous": win.previous,
         "itemEvos": win.itemEvos
     }
     if (checkRequirements(reqs) && win.description.length > 0) {
@@ -498,6 +508,7 @@ function checkLose() {
         "reqLocal": lose.reqLocal,
         "reqGlobal": lose.reqGlobal,
         "locVisits": lose.locVisits,
+        "previous": lose.previous,
         "itemEvos": lose.itemEvos
     }
     if (checkRequirements(reqs) && lose.description.length > 0) {
@@ -527,6 +538,7 @@ function displayItems() {
                 "reqLocal": (originNode) ? save.nodes[currentNode].items[i].reqLocal : '',
                 "reqGlobal": save.nodes[currentNode].items[i].reqGlobal,
                 "locVisits": save.nodes[currentNode].items[i].locVisits,
+                "previous": save.nodes[currentNode].items[i].previous,
                 "itemEvos": save.nodes[currentNode].items[i].itemEvos
             }
             if (checkRequirements(reqs)) {
@@ -607,6 +619,7 @@ function nodeReload() {
 }
 
 function parseNode(location) {
+    previousNode = `${currentNode}`;
     currentNode = location;
     addNodeToSave(currentNode);
     addVisit(currentNode);
@@ -646,6 +659,7 @@ function parseAction(input) {
                             "reqLocal": actionObject.reqLocal,
                             "reqGlobal": actionObject.reqGlobal,
                             "locVisits": actionObject.locVisits,
+                            "previous": actionObject.previous,
                             "itemEvos": actionObject.itemEvos
                         }
                         if (checkRequirements(reqs)) {
@@ -793,6 +807,7 @@ function parseAction(input) {
                                                 "reqLocal": game[currentNode].containers[q].reqLocal,
                                                 "reqGlobal": game[currentNode].containers[q].reqGlobal,
                                                 "locVisits": game[currentNode].containers[q].locVisits,
+                                                "previous": game[currentNode].containers[q].previous,
                                                 "itemEvos": game[currentNode].containers[q].itemEvos
                                             }
                                             break;
@@ -849,6 +864,7 @@ function parseAction(input) {
                                                 "reqLocal": thisContainer.reqLocal,
                                                 "reqGlobal": thisContainer.reqGlobal,
                                                 "locVisits": thisContainer.locVisits,
+                                                "previous": thisContainer.previous,
                                                 "itemEvos": thisContainer.itemEvos
                                             }
                                             break;

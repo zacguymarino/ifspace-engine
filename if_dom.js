@@ -57,6 +57,7 @@ function loadDomFromNode(node) {
     $(`#${checkbox}_Local`).val(nodeDirections[i].reqLocal);
     $(`#${checkbox}_Global`).val(nodeDirections[i].reqGlobal);
     $(`#${checkbox}_Visits`).val(nodeDirections[i].locVisits);
+    $(`#${checkbox}_Previous`).val(nodeDirections[i].previous);
     $(`#${checkbox}_Evos`).val(nodeDirections[i].itemEvos);
   }
 
@@ -71,6 +72,7 @@ function loadDomFromNode(node) {
       $(`#${baseId}_Local`).val(descriptions.evos[i].reqLocal);
       $(`#${baseId}_Global`).val(descriptions.evos[i].reqGlobal);
       $(`#${baseId}_Visits`).val(descriptions.evos[i].locVisits);
+      $(`#${baseId}_Previous`).val(descriptions.evos[i].previous);
       $(`#${baseId}_Evos`).val(descriptions.evos[i].itemEvos);
       $(`#${baseId}_Des`).val(descriptions.evos[i].evoDes);
     }
@@ -87,6 +89,7 @@ function loadDomFromNode(node) {
     $(`#${baseId}_Local`).val(items[i].reqLocal);
     $(`#${baseId}_Global`).val(items[i].reqGlobal);
     $(`#${baseId}_Visits`).val(items[i].locVisits);
+    $(`#${baseId}_Previous`).val(items[i].previous);
     $(`#${baseId}_EvoList`).val(items[i].itemEvos);
     for (let j = 0; j < items[i].evos.length; j++) {
       addEvo(`${baseId}_EvoList`);
@@ -96,6 +99,7 @@ function loadDomFromNode(node) {
       $(`#${baseEvoId}_Local`).val(items[i].evos[j].reqLocal);
       $(`#${baseEvoId}_Global`).val(items[i].evos[j].reqGlobal);
       $(`#${baseEvoId}_Visits`).val(items[i].evos[j].locVisits);
+      $(`#${baseEvoId}_Previous`).val(items[i].evos[j].previous);
       $(`#${baseEvoId}_Evos`).val(items[i].evos[j].itemEvos);
       $(`#${baseEvoId}_Des`).val(items[i].evos[j].evoDes);
     }
@@ -113,6 +117,7 @@ function loadDomFromNode(node) {
     $(`#${baseId}_Local`).val(containers[i].reqLocal);
     $(`#${baseId}_Global`).val(containers[i].reqGlobal);
     $(`#${baseId}_Visits`).val(containers[i].locVisits);
+    $(`#${baseId}_Previous`).val(containers[i].previous);
     $(`#${baseId}_Evos`).val(containers[i].itemEvos);
   }
 
@@ -134,6 +139,7 @@ function loadDomFromNode(node) {
       $(`#${baseId}_Local`).val(actions.actions[i].reqLocal);
       $(`#${baseId}_Global`).val(actions.actions[i].reqGlobal);
       $(`#${baseId}_Visits`).val(actions.actions[i].locVisits);
+      $(`#${baseId}_Previous`).val(actions.actions[i].previous);
       $(`#${baseId}_Evos`).val(actions.actions[i].itemEvos);
     }
   }
@@ -144,6 +150,7 @@ function loadDomFromNode(node) {
   $("#win_Local").val(win.reqLocal);
   $("#win_Global").val(win.reqGlobal);
   $("#win_Visits").val(win.locVisits);
+  $("#win_Previous").val(win.previous);
   $("#win_Evos").val(win.itemEvos);
 
   $("#loseDes").val(lose.description);
@@ -152,6 +159,7 @@ function loadDomFromNode(node) {
   $("#lose_Local").val(lose.reqLocal);
   $("#lose_Global").val(lose.reqGlobal);
   $("#lose_Visits").val(lose.locVisits);
+  $("#lose_Previous").val(lose.previous);
   $("#lose_Evos").val(lose.itemEvos);
 
   $("#hint").val(hint);
@@ -557,6 +565,11 @@ function getRequirements(baseId) {
                     <span class='tooltiptext'>Comma separated list of locations and required number of visits to each (in form of [location, visits]) (e.g. [0,0,0,1], [0,2,0,1], [2,3,0,1])</span>
                     </label>
                     <input id='${baseId}_Visits' type='text'>`;
+  let previous = `<label class='tooltip'>
+                    Previous Node
+                    <span class='tooltiptext'>Comma separated coordinates of the node required to be the last visited node (prior to the current node)(e.g. 1,2,3 )</span>
+                    </label>
+                    <input id='${baseId}_Previous' type='text'>`;
   let reqEvos = `<label class='tooltip'>
                     Item Evos
                     <span class='tooltiptext'>Comma separated list of items and the required evolution stage for each (e.g. [key, 1], [knife, 2])</span>
@@ -572,6 +585,7 @@ function getRequirements(baseId) {
     reqLocal +
     reqGlobal +
     reqVisits +
+    previous +
     reqEvos +
     divEnd;
   return html;
