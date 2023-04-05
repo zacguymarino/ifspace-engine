@@ -2,6 +2,7 @@ import { loadDomFromNode } from "./if_dom.js";
 import { createMapFromGame } from "./if_nodemap.js";
 
 var game = {};
+var gameTitle;
 
 var node = {
   name: "",
@@ -40,7 +41,7 @@ async function saveGame() {
 async function loadGame() {
   await window.IFS_API.loadGame().then((rawData) => {
     let loadData = JSON.parse(rawData.toString());
-    let gameTitle = Object.keys(loadData)[0];
+    gameTitle = Object.keys(loadData)[0];
     game = loadData[gameTitle];
     cNode = loadData[gameTitle]["0,0,0"];
     loadDomFromNode(cNode);
@@ -118,8 +119,9 @@ function generateNode() {
       let reqContainers = $(`#${direction}_Containers`).val();
       let reqLocal = $(`#${direction}_Local`).val();
       let reqGlobal = $(`#${direction}_Global`).val();
+      let preAction = $(`#${direction}_preAction`).val();
       let locVisits = $(`#${direction}_Visits`).val();
-      let previous = $(`#${direction}_Previous`).val();
+      let preNode = $(`#${direction}_preNode`).val();
       let itemEvos = $(`#${direction}_Evos`).val();
 
       if (exclude) {
@@ -137,8 +139,9 @@ function generateNode() {
         reqContainers: reqContainers,
         reqLocal: reqLocal,
         reqGlobal: reqGlobal,
+        preAction: preAction,
         locVisits: locVisits,
-        previous: previous,
+        preNode: preNode,
         itemEvos: itemEvos,
       };
       directions.push(object);
@@ -162,8 +165,9 @@ function generateNode() {
       let reqContainers = $(`#${baseId}_Containers`).val();
       let reqLocal = $(`#${baseId}_Local`).val();
       let reqGlobal = $(`#${baseId}_Global`).val();
+      let preAction = $(`#${baseId}_preAction`).val();
       let locVisits = $(`#${baseId}_Visits`).val();
-      let previous = $(`#${baseId}_Previous`).val();
+      let preNode = $(`#${baseId}_preNode`).val();
       let itemEvos = $(`#${baseId}_Evos`).val();
       let evoDes = $(`#${baseId}_Des`).val();
 
@@ -172,8 +176,9 @@ function generateNode() {
         reqContainers: reqContainers,
         reqLocal: reqLocal,
         reqGlobal: reqGlobal,
+        preAction: preAction,
         locVisits: locVisits,
-        previous: previous,
+        preNode: preNode,
         itemEvos: itemEvos,
         evoDes: evoDes,
       };
@@ -193,9 +198,10 @@ function generateNode() {
     let reqItems = $(`#${itemId}_Items`).val();
     let reqContainers = $(`#${itemId}_Containers`).val();
     let reqLocal = $(`#${itemId}_Local`).val();
+    let preAction = $(`#${itemId}_preAction`).val();
     let reqGlobal = $(`#${itemId}_Global`).val();
     let locVisits = $(`#${itemId}_Visits`).val();
-    let previous = $(`#${itemId}_Previous`).val();
+    let preNode = $(`#${itemId}_preNode`).val();
     let itemEvos = $(`#${itemId}_Evos`).val();
     let item = {
       name: name,
@@ -205,8 +211,9 @@ function generateNode() {
       reqContainers: reqContainers,
       reqLocal: reqLocal,
       reqGlobal: reqGlobal,
+      preAction: preAction,
       locVisits: locVisits,
-      previous: previous,
+      preNode: preNode,
       itemEvos: itemEvos,
       evos: [],
     };
@@ -218,8 +225,9 @@ function generateNode() {
       let reqContainers = $(`#${baseId}_Containers`).val();
       let reqLocal = $(`#${baseId}_Local`).val();
       let reqGlobal = $(`#${baseId}_Global`).val();
+      let preAction = $(`#${baseId}_preAction`).val();
       let locVisits = $(`#${baseId}_Visits`).val();
-      let previous = $(`#${baseId}_Previous`).val();
+      let preNode = $(`#${baseId}_preNode`).val();
       let itemEvos = $(`#${baseId}_Evos`).val();
       let evoDes = $(`#${baseId}_Des`).val();
       let evo = {
@@ -227,8 +235,9 @@ function generateNode() {
         reqContainers: reqContainers,
         reqLocal: reqLocal,
         reqGlobal: reqGlobal,
+        preAction: preAction,
         locVisits: locVisits,
-        previous: previous,
+        preNode: preNode,
         itemEvos: itemEvos,
         evoDes: evoDes,
       };
@@ -252,8 +261,9 @@ function generateNode() {
     let reqContainers = $(`#${containerId}_Containers`).val();
     let reqLocal = $(`#${containerId}_Local`).val();
     let reqGlobal = $(`#${containerId}_Global`).val();
+    let preAction = $(`#${containerId}_preAction`).val();
     let locVisits = $(`#${containerId}_Visits`).val();
-    let previous = $(`#${container_Id}_Previous`).val();
+    let preNode = $(`#${container_Id}_preNode`).val();
     let itemEvos = $(`#${containerId}_Evos`).val();
     let container = {
       name: name,
@@ -265,8 +275,9 @@ function generateNode() {
       reqContainers: reqContainers,
       reqLocal: reqLocal,
       reqGlobal: reqGlobal,
+      preAction: preAction,
       locVisits: locVisits,
-      previous: previous,
+      preNode: preNode,
       itemEvos: itemEvos,
     };
     containersArray.push(container);
@@ -295,8 +306,9 @@ function generateNode() {
     let reqContainers = $(`#${baseId}_Containers`).val();
     let reqLocal = $(`#${baseId}_Local`).val();
     let reqGlobal = $(`#${baseId}_Global`).val();
+    let preAction = $(`#${baseId}_preAction`).val();
     let locVisits = $(`#${baseId}_Visits`).val();
-    let previous = $(`#${baseId}_Previous`).val();
+    let preNode = $(`#${baseId}_preNode`).val();
     let itemEvos = $(`#${baseId}_Evos`).val();
 
     let action = {
@@ -312,8 +324,9 @@ function generateNode() {
       reqContainers: reqContainers,
       reqLocal: reqLocal,
       reqGlobal: reqGlobal,
+      preAction: preAction,
       locVisits: locVisits,
-      previous: previous,
+      preNode: preNode,
       itemEvos: itemEvos,
     };
     actionArray.push(action);
@@ -328,8 +341,9 @@ function generateNode() {
   let winReqContainers = $("#win_Containers").val();
   let winReqLocal = $("#win_Local").val();
   let winReqGlobal = $("#win_Global").val();
+  let winPreAction = $("#win_preAction").val();
   let winLocVisits = $("#win_Visits").val();
-  let winPrevious = $("#win_Previous").val();
+  let winPreNode = $("#win_preNode").val();
   let winItemEvos = $("#win_Evos").val();
   let win = {
     description: winDes,
@@ -337,8 +351,9 @@ function generateNode() {
     reqContainers: winReqContainers,
     reqLocal: winReqLocal,
     reqGlobal: winReqGlobal,
+    preAction: winPreAction,
     locVisits: winLocVisits,
-    previous: winPrevious,
+    preNode: winPreNode,
     itemEvos: winItemEvos,
   };
   cNode.win = win;
@@ -349,8 +364,9 @@ function generateNode() {
   let loseReqContainers = $("#lose_Containers").val();
   let loseReqLocal = $("#lose_Local").val();
   let loseReqGlobal = $("#lose_Global").val();
+  let losePreAction = $("#lose_preAction").val();
   let loseLocVisits = $("#lose_Visits").val();
-  let losePrevious = $("#lose_Previous").val();
+  let losePreNode = $("#lose_preNode").val();
   let loseItemEvos = $("#lose_Evos").val();
   let lose = {
     description: loseDes,
@@ -358,8 +374,9 @@ function generateNode() {
     reqContainers: loseReqContainers,
     reqLocal: loseReqLocal,
     reqGlobal: loseReqGlobal,
+    preAction: losePreAction,
     locVisits: loseLocVisits,
-    previous: losePrevious,
+    preNode: losePreNode,
     itemEvos: loseItemEvos,
   };
   cNode.lose = lose;
@@ -373,6 +390,7 @@ function generateNode() {
 
 export {
   generateNode,
+  gameTitle,
   game,
   node,
   switchNode,

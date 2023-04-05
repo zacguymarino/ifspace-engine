@@ -1,4 +1,4 @@
-import {game} from './if_generate.js';
+import {game, gameTitle} from './if_generate.js';
 
 var currentNode;
 var previousNode;
@@ -22,7 +22,6 @@ var itemInspectCommands = ["INSPECT", "LOOK", "EXAMINE"];
 var ignorables = ["A", "AN", "THE", "TO", "FOR", "AT"];
 
 function gameInit() {
-    let title = $('#gameTitle').val();
     previousNode = "0,0,0";
     currentNode = "0,0,0";
     badAction = 0;
@@ -32,7 +31,7 @@ function gameInit() {
         "nodes": {}
     };
     $('#outputSim').empty();
-    $('#outputSim').append(`<h3>${title}</h3>`);
+    $('#outputSim').append(`<h1>${gameTitle}</h1>`);
     parseNode(currentNode);
 }
 
@@ -159,8 +158,9 @@ function getDiscoveredItemsActions(location) {
             "reqContainers": items[i].reqContainers,
             "reqLocal": (originNode) ? items[i].reqLocal: '',
             "reqGlobal": items[i].reqGlobal,
+            "preAction": (originNode) ? items[i].preAction: '',
             "locVisits": items[i].locVisits,
-            "previous": (originNode) ? items[i].previous: '',
+            "preNode": (originNode) ? items[i].preNode: '',
             "itemEvos": items[i].itemEvos
         }
         if (checkRequirements(reqs)) {
@@ -219,8 +219,9 @@ function getDirectionsActions (location) {
             "reqContainers": game[location].directions[i].reqContainers,
             "reqLocal": game[location].directions[i].reqLocal,
             "reqGlobal": game[location].directions[i].reqGlobal,
+            "preAction": game[location].directions[i].preAction,
             "locVisits": game[location].directions[i].locVisits,
-            "previous": game[location].directions[i].previous,
+            "preNode": game[location].directions[i].preNode,
             "itemEvos": game[location].directions[i].itemEvos
         };
         let directionObject = {
@@ -330,8 +331,9 @@ function getDescription (location) {
             "reqContainers": thisEvo.reqContainers,
             "reqLocal": thisEvo.reqLocal,
             "reqGlobal": thisEvo.reqGlobal,
+            "preAction": thisEvo.preAction,
             "locVisits": thisEvo.locVisits,
-            "previous": thisEvo.previous,
+            "preNode": thisEvo.preNode,
             "itemEvos": thisEvo.itemEvos
         }
         if (checkRequirements(requirements)) {
@@ -340,10 +342,17 @@ function getDescription (location) {
     }
 
     if (!output) {
-        if (getVisits(location) > 1 && description["basicDes"].length > 0) {
-            output = description["basicDes"];
+        let saveActions = save.nodes[currentNode].actions;
+        if (saveActions[saveActions.length - 1] == "LOOK") {
+            if (description["basicDes"].length > 0) {
+                output = description["basicDes"];
+            }
         } else {
-            output = description["defaultDes"];
+            if (getVisits(location) > 1 && description["basicDes"].length > 0) {
+                output = description["basicDes"];
+            } else {
+                output = description["defaultDes"];
+            }
         }
     }
 
@@ -355,10 +364,12 @@ function checkRequirements(reqs) {
     let reqContainers = !reqs['reqContainers'] ? [] : reqs['reqContainers'].split(/\s*,\s*/);
     let reqLocal = !reqs['reqLocal'] ? [] : reqs['reqLocal'].split(/\s*,\s*/);
     let reqGlobal = !reqs['reqGlobal'] ? [] : reqs['reqGlobal'].split(/\s*,\s*/);
+    let preAction = !reqs['preAction'] ? '' : reqs['preAction'];
     let locVisits = !reqs['locVisits'] ? [] : reqs['locVisits'].split(/\]\s*,\s*/);
-    let previous = !reqs['previous'] ? '' : reqs['previous'];
+    let preNode = !reqs['preNode'] ? '' : reqs['preNode'];
     let itemEvos = !reqs['itemEvos'] ? [] : reqs['itemEvos'].split(/\]\s*,\s*/);
 
+    //Check for container fulfillment requirements
     for (let i = 0; i < reqContainers.length; i++) {
         for (let j = 0; j < save.nodes[currentNode].containers.length; j++) {
             let variants = save.nodes[currentNode].containers[j].name.split(/\s*,\s*/);
@@ -393,18 +404,26 @@ function checkRequirements(reqs) {
         }
     }
 
+    //Check local node action requirements
     for (let i = 0; i < reqLocal.length; i++) {
         if (!save.nodes[currentNode].actions.includes(reqLocal[i].toUpperCase())) {
             console.log("Local actions req failed");
             return false;
         }
     }
+    //Check global action requirements
     for (let i = 0; i < reqGlobal.length; i++) {
         if (!save.actions.includes(reqGlobal[i].toUpperCase())) {
             console.log("Global actions req failed");
             return false;
         }
     }
+    //Check previous action requirement
+    if (preAction != '' && preAction.toUpperCase() != save.actions[save.actions.length - 1]) {
+        return false;
+    }
+
+    //Check location visit requirements
     for (let i = 0; i < locVisits.length; i++) {
         let locArray = JSON.parse(locVisits[i]);
         let loc = `${locArray[0]},${locArray[1]},${locArray[2]}`;
@@ -431,7 +450,8 @@ function checkRequirements(reqs) {
         }
     }
 
-    if (previous != '' & previous != previousNode) {
+    //Check previous node requirement
+    if (preNode != '' & preNode != previousNode) {
         return false;
     }
 
@@ -486,8 +506,9 @@ function checkWin() {
         "reqContainers": win.reqContainers,
         "reqLocal": win.reqLocal,
         "reqGlobal": win.reqGlobal,
+        "preAction": win.preAction,
         "locVisits": win.locVisits,
-        "previous": win.previous,
+        "preNode": win.preNode,
         "itemEvos": win.itemEvos
     }
     if (checkRequirements(reqs) && win.description.length > 0) {
@@ -507,8 +528,9 @@ function checkLose() {
         "reqContainers": lose.reqContainers,
         "reqLocal": lose.reqLocal,
         "reqGlobal": lose.reqGlobal,
+        "preAction": lose.preAction,
         "locVisits": lose.locVisits,
-        "previous": lose.previous,
+        "preNode": lose.preNode,
         "itemEvos": lose.itemEvos
     }
     if (checkRequirements(reqs) && lose.description.length > 0) {
@@ -537,8 +559,9 @@ function displayItems() {
                 "reqContainers": save.nodes[currentNode].items[i].reqContainers,
                 "reqLocal": (originNode) ? save.nodes[currentNode].items[i].reqLocal : '',
                 "reqGlobal": save.nodes[currentNode].items[i].reqGlobal,
+                "preAction": save.nodes[currentNode].items[i].preAction,
                 "locVisits": save.nodes[currentNode].items[i].locVisits,
-                "previous": save.nodes[currentNode].items[i].previous,
+                "preNode": save.nodes[currentNode].items[i].preNode,
                 "itemEvos": save.nodes[currentNode].items[i].itemEvos
             }
             if (checkRequirements(reqs)) {
@@ -605,6 +628,11 @@ function tallyPoints() {
     return points;
 }
 
+function pushAction(action) {
+    save.actions.push(action);
+    save.nodes[currentNode].actions.push(action);
+}
+
 function nodeReload() {
     cNodeDescription = getDescription(currentNode);
     cNodeDirections = getDirectionsActions(currentNode);
@@ -624,7 +652,7 @@ function parseNode(location) {
     addNodeToSave(currentNode);
     addVisit(currentNode);
     nodeReload();
-
+    $('#outputSim').append(`<h3>${game[currentNode].name}</h3>`);
     displayMessage(cNodeDescription, false);
     displayItems();
 }
@@ -658,8 +686,9 @@ function parseAction(input) {
                             "reqContainers": actionObject.reqContainers,
                             "reqLocal": actionObject.reqLocal,
                             "reqGlobal": actionObject.reqGlobal,
+                            "preAction": actionObject.preAction,
                             "locVisits": actionObject.locVisits,
-                            "previous": actionObject.previous,
+                            "preNode": actionObject.preNode,
                             "itemEvos": actionObject.itemEvos
                         }
                         if (checkRequirements(reqs)) {
@@ -723,8 +752,7 @@ function parseAction(input) {
                                     default:
                                         break;
                                 }
-                                save.actions.push(mainAction);
-                                save.nodes[currentNode].actions.push(mainAction);
+                                pushAction(mainAction);
                                 displayMessage(actionObject.response, false);
                                 sentMessage = true;
                             } else {
@@ -742,17 +770,14 @@ function parseAction(input) {
     }
 
     if (action === "LOOK") {
-        let lookDes = JSON.parse(JSON.stringify(game[currentNode].description.basicDes));
-        if (lookDes.length > 0) {
-            displayMessage(lookDes, false);
-        } else {
-            displayMessage(cNodeDescription, false);
-        }
+        pushAction("LOOK");
+        displayMessage(getDescription(currentNode), false);
         displayItems();
         sentMessage = true;
     }
 
     if (action === "SCORE") {
+        pushAction("SCORE");
         let max = getMaxPoints();
         if (max == 0) {
             displayMessage("This game keeps no score.", false);
@@ -765,6 +790,7 @@ function parseAction(input) {
     }
 
     if (hintCommands.includes(action)) {
+        pushAction("HINT");
         if (game[currentNode].hint != '') {
             displayMessage(game[currentNode].hint, false);
         } else {
@@ -774,6 +800,7 @@ function parseAction(input) {
     }
 
     if (inventoryCommands.includes(action)) {
+        pushAction("INENTORY");
         if (save.items.length > 0) {
             displayMessage("Inventory:", false);
             for (let i = 0; i < save.items.length; i++) {
@@ -811,8 +838,9 @@ function parseAction(input) {
                                                 "reqContainers": game[currentNode].containers[q].reqContainers,
                                                 "reqLocal": game[currentNode].containers[q].reqLocal,
                                                 "reqGlobal": game[currentNode].containers[q].reqGlobal,
+                                                "preAction": game[currentNode].containers[q].preAction,
                                                 "locVisits": game[currentNode].containers[q].locVisits,
-                                                "previous": game[currentNode].containers[q].previous,
+                                                "preNode": game[currentNode].containers[q].preNode,
                                                 "itemEvos": game[currentNode].containers[q].itemEvos
                                             }
                                             break;
@@ -868,8 +896,9 @@ function parseAction(input) {
                                                 "reqContainers": thisContainer.reqContainers,
                                                 "reqLocal": thisContainer.reqLocal,
                                                 "reqGlobal": thisContainer.reqGlobal,
+                                                "preAction": thisContainer.preAction,
                                                 "locVisits": thisContainer.locVisits,
-                                                "previous": thisContainer.previous,
+                                                "preNode": thisContainer.preNode,
                                                 "itemEvos": thisContainer.itemEvos
                                             }
                                             break;
