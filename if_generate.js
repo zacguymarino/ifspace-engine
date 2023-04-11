@@ -31,17 +31,21 @@ function startGameSim() {
 }
 
 async function saveGame() {
-  let gameTitle = $("#gameTitle").val();
-  let gameFile = {};
-  saveCNode();
-  gameFile[gameTitle] = JSON.parse(JSON.stringify(game));
-  window.IFS_API.saveGame(JSON.stringify(gameFile));
+  await window.IFS_API.getStyle().then((gameStyle) => {
+    let gameTitle = $("#gameTitle").val();
+    let gameFile = {};
+    saveCNode();
+    gameFile['gameStyle'] = gameStyle;
+    gameFile['gameTitle'] = gameTitle;
+    gameFile[gameTitle] = JSON.parse(JSON.stringify(game));
+    window.IFS_API.saveGame(JSON.stringify(gameFile));
+  })
 }
 
 async function loadGame() {
   await window.IFS_API.loadGame().then((rawData) => {
     let loadData = JSON.parse(rawData.toString());
-    gameTitle = Object.keys(loadData)[0];
+    gameTitle = loadData['gameTitle'];
     game = loadData[gameTitle];
     cNode = loadData[gameTitle]["0,0,0"];
     loadDomFromNode(cNode);
