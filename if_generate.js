@@ -3,6 +3,7 @@ import { createMapFromGame } from "./if_nodemap.js";
 
 var game = {};
 var gameTitle;
+var gameStyle;
 
 var node = {
   name: "",
@@ -37,7 +38,7 @@ async function saveGame() {
     saveCNode();
     gameFile['gameStyle'] = gameStyle;
     gameFile['gameTitle'] = gameTitle;
-    gameFile[gameTitle] = JSON.parse(JSON.stringify(game));
+    gameFile['gameContent'] = JSON.parse(JSON.stringify(game));
     window.IFS_API.saveGame(JSON.stringify(gameFile));
   })
 }
@@ -46,8 +47,9 @@ async function loadGame() {
   await window.IFS_API.loadGame().then((rawData) => {
     let loadData = JSON.parse(rawData.toString());
     gameTitle = loadData['gameTitle'];
-    game = loadData[gameTitle];
-    cNode = loadData[gameTitle]["0,0,0"];
+    gameStyle = loadData['gameStyle'];
+    game = loadData['gameContent'];
+    cNode = loadData['gameContent']['0,0,0'];
     loadDomFromNode(cNode);
     createMapFromGame(Object.keys(game));
     $("#gameTitle").val(gameTitle);
@@ -261,13 +263,14 @@ function generateNode() {
     let cap = $(`#${containerId}_Capacity`).val();
     let illegal = $(`#${containerId}_Illegal`).val();
     let complete = $(`#${containerId}_Complete`).val();
+    let points = $(`#${containerId}_Points`).val();
     let reqItems = $(`#${containerId}_Items`).val();
     let reqContainers = $(`#${containerId}_Containers`).val();
     let reqLocal = $(`#${containerId}_Local`).val();
     let reqGlobal = $(`#${containerId}_Global`).val();
     let preAction = $(`#${containerId}_preAction`).val();
     let locVisits = $(`#${containerId}_Visits`).val();
-    let preNode = $(`#${container_Id}_preNode`).val();
+    let preNode = $(`#${containerId}_preNode`).val();
     let itemEvos = $(`#${containerId}_Evos`).val();
     let container = {
       name: name,
@@ -275,6 +278,7 @@ function generateNode() {
       items: [],
       complete: complete,
       illegal: illegal,
+      points: points,
       reqItems: reqItems,
       reqContainers: reqContainers,
       reqLocal: reqLocal,
@@ -395,11 +399,12 @@ function generateNode() {
 export {
   generateNode,
   gameTitle,
+  gameStyle,
   game,
   node,
   switchNode,
   saveGame,
   loadGame,
   deleteNode,
-  startGameSim,
+  startGameSim
 };

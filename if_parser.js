@@ -1,4 +1,4 @@
-import {game, gameTitle} from './if_generate.js';
+import {game, gameTitle, gameStyle} from './if_generate.js';
 
 var currentNode;
 var previousNode;
@@ -346,6 +346,8 @@ function getDescription (location) {
         if (saveActions[saveActions.length - 1] == "LOOK") {
             if (description["basicDes"].length > 0) {
                 output = description["basicDes"];
+            } else {
+                output = description["defaultDes"];
             }
         } else {
             if (getVisits(location) > 1 && description["basicDes"].length > 0) {
@@ -355,8 +357,30 @@ function getDescription (location) {
             }
         }
     }
-
     return output;
+}
+
+function checkContainerComplete(container) {
+    let completeReqs = container.complete;
+    let currentItems = container.items;
+    if (!isNaN(parseInt(completeReqs))) {
+        let capacity = parseInt(completeReqs);
+        if (!currentItems.length >= capacity) {
+            return false;
+        }
+    } else {
+        completeReqs = completeReqs.split(/\s*,\s*/);
+        let currentItemNames = [];
+        for (let i = 0; i < currentItems.length; i++) {
+            currentItemNames.push(currentItems[i].name.split(/\s*,\s*/)[0].toUpperCase());
+        }
+        for (let i = 0; i < completeReqs.length; i++) {
+            if (!currentItemNames.includes(completeReqs[i].toUpperCase())) {
+                return false;
+            }
+        }
+    }
+    return true;
 }
 
 function checkRequirements(reqs) {
@@ -371,34 +395,23 @@ function checkRequirements(reqs) {
 
     //Check for container fulfillment requirements
     for (let i = 0; i < reqContainers.length; i++) {
-        for (let j = 0; j < save.nodes[currentNode].containers.length; j++) {
-            let variants = save.nodes[currentNode].containers[j].name.split(/\s*,\s*/);
-            if (!variants.includes(reqContainers[i])) {
-                return false;
-            } else {
-                let checked = false;
-                for (let k = 0; k < game[currentNode].containers.length; k++) {
-                    let containerName = game[currentNode].containers[k].name.split(/\s*,\s*/)[0];
-                    if (reqContainers[i] === containerName) {
-                        let completeReqs = game[currentNode].containers[j].complete;
-                        if (!isNaN(parseInt(completeReqs))) {
-                            if (save.containers[reqContainers[i]].length < parseInt(completeReqs)) {
-                                return false;
-                            }
-                        } else {
-                            completeReqs = completeReqs.split(/\s*,\s*/);
-                            for (let k = 0; k < completeReqs.length; k++) {
-                                if (!save.containers[reqContainer[i]].includes(completeReqs[k])) {
-                                    return false;
-                                }
-                            }
-                        }
-                        checked = true;
-                        break;
-                    }
+        let checked = false;
+        let containerName = reqContainers[i].toUpperCase();
+        for (const key in save.nodes) {
+        //for (let j = 0; j < save.nodes.length; j++) {
+            if (checked == true) {
+                break;
+            }
+            for (let k = 0; k < save.nodes[key].containers.length; k++) {
+                if (checked == true) {
+                    break;
                 }
-                if (!checked) {
-                    return false;
+                //If true, found the container that is required to be complete
+                if (save.nodes[key].containers[k].name.split(/\s*,\s*/)[0].toUpperCase() == containerName) {
+                    checked = true;
+                    if (!checkContainerComplete(save.nodes[key].containers[k])) {
+                        return false;
+                    }
                 }
             }
         }
@@ -596,6 +609,11 @@ function getMaxPoints() {
                 quantity += +actions[j][1].points;
             }
         }
+        for (let j = 0; j < game[nodes[i]].containers.length; j++) {
+            if (game[nodes[i]].containers[j].points > 0) {
+                quantity += +game[nodes[i]].containers[j].points;
+            }
+        }
     }
     return quantity;
 }
@@ -625,7 +643,40 @@ function tallyPoints() {
             }
         }
     }
+    for (const key in save.nodes) {
+        for (let i = 0; i < save.nodes[key].containers.length; i++) {
+            if (save.nodes[key].containers[i].points > 0) {
+                if (checkContainerComplete(save.nodes[key].containers[i])) {
+                    points += +save.nodes[key].containers[i].points;
+                }
+            }
+        }
+    }
     return points;
+}
+
+function updateModernActions(actionList) {
+    $("#modernStyleActions").empty();
+    for (let i = 0; i < actionList.length; i++) {
+        let html = `<button class="modernActionButton inputButton" value="${actionList[i]}">${actionList[i]}</button>`;
+        $("#modernStyleActions").append(html);
+    }
+}
+
+function updateModernDirections(directionList) {
+    $("#modernStyleDirections").empty();
+    for (let i = 0; i < directionList.length; i++) {
+        let html = `<button class="modernDirectionButton inputButton" value="${directionList[i].alternatives[0]}">${directionList[i].alternatives[0]}</button>`;
+        $("#modernStyleDirections").append(html);
+    }
+}
+
+function updateGamebookDirections(directionList) {
+    $("#gamebookStyleDirections").empty();
+    for (let i = 0; i < directionList.length; i++) {
+        let html = `<button class="gamebookDirectionButton inputButton" value="${directionList[i].alternatives[0]}">${directionList[i].alternatives[0]}</button>`;
+        $("#gamebookStyleDirections").append(html);
+    }
 }
 
 function pushAction(action) {
@@ -642,6 +693,13 @@ function nodeReload() {
     cItemInspections = getItemInspectionActions();
     cContainerWithdrawals = getContainerWithdrawalActions(currentNode);
     cNodeActions = getActions(currentNode);
+    if (gameStyle == "modern") {
+        updateModernDirections(cNodeDirections);
+        updateModernActions(cNodeActions);
+    }
+    if (gameStyle == "gamebook") {
+        updateGamebookDirections(cNodeDirections);
+    }
     checkWin();
     checkLose();
 }

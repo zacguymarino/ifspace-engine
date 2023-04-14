@@ -1,4 +1,5 @@
 import { currentNode } from "./if_nodemap.js";
+import { gameStyle } from "./if_generate.js";
 
 function loadDomFromNode(node) {
   let name = node.name;
@@ -116,6 +117,7 @@ function loadDomFromNode(node) {
     $(`#${baseId}_Capacity`).val(containers[i].capacity);
     $(`#${baseId}_Illegal`).val(containers[i].illegal);
     $(`#${baseId}_Complete`).val(containers[i].complete);
+    $(`#${baseId}_Points`).val(containers[i].points);
     $(`#${baseId}_Items`).val(containers[i].reqItems);
     $(`#${baseId}_Containers`).val(containers[i].reqContainers);
     $(`#${baseId}_Local`).val(containers[i].reqLocal);
@@ -339,6 +341,11 @@ function addContainer() {
                     <span class='tooltiptext'>Comma separated list of items which may not be deposited into container</span>
                     </label>`;
   let illegal = `<input type='text' id='${containerId}_Illegal'>`;
+  let pointsLabel = `<label class='tooltip'>
+                    Points
+                    <span class='tooltiptext'>Points awarded for this container being 'complete' [default of 0]</span>
+                    </label>`;
+  let points = `<input type='text' id='${containerId}_Points'>`;
   let requirements = getRequirements(containerId);
   let html =
     newDivStart +
@@ -351,6 +358,8 @@ function addContainer() {
     complete +
     illegalLabel +
     illegal +
+    pointsLabel +
+    points +
     requirements +
     newDivEnd;
 
@@ -439,6 +448,38 @@ function addAction() {
     newDivEnd;
 
   $("#actionList").append(html);
+}
+
+function addSimInput() {
+  let html;
+  switch(gameStyle) {
+    case "classic":
+      html = `<div id="inputSim">
+                <input id="classicStyleInput" type="text">
+              </div>`
+      break;
+    case "modern":
+      html = `<div id="inputSim">
+                <div id="modernStyleDirections" class="modernInput">
+                </div>
+                <div id="modernStyleActions" class="modernInput">
+                </div>
+              </div>`;
+      break;
+    case "gamebook":
+      html = `<div id="inputSim">
+                <div id="gamebookStyleDirections" class="gamebookInput">
+                </div>
+              </div>`;
+      break;
+    default:
+      html = `<div id="inputSim">
+                <p>You must first load a saved game.</p>
+              </div>`;
+      break;
+  }
+  $("#inputSim").remove();
+  $("#gameContainer").append(html);
 }
 
 function showHide(ID) {
@@ -624,4 +665,5 @@ export {
   removeEvo,
   removeObject,
   loadDomFromNode,
+  addSimInput
 };

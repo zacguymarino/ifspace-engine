@@ -87,7 +87,7 @@ input[type="number"]:hover {
 .bottomBar {
   width: 100%;
   display: flex;
-  justify-content: space-between;
+  justify-content: space-around;
 }
 
 .bottomBarSection {
@@ -153,9 +153,10 @@ input[type="number"]:hover {
   display: none;
   margin: auto;
   margin-top: 16px;
+  margin-bottom: 25px;
   width: 65%;
-  height: 95vh;
-  border: 2px solid black;
+  height: 92vh;
+  border: 1px solid white;
 }
 
 .gameSimTools {
@@ -166,13 +167,12 @@ input[type="number"]:hover {
 #gameContainer {
   margin: auto;
   height: 92%;
-  border: 1px solid black;
 }
 
 #outputSim {
   margin: auto;
   width: 90%;
-  height: 92%;
+  height: 80%;
   border: 1px solid white;
   border-top: none;
   overflow: auto;
@@ -183,7 +183,42 @@ input[type="number"]:hover {
 #inputSim {
   margin: auto;
   width: 90%;
+  height: 20%;
+  overflow: auto;
   font-style: bold;
+  display: flex;
+  justify-content: space-around;
+}
+
+.modernInput {
+  width: 50%;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.gamebookInput {
+  width: 75%;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.inputButton {
+  height: 25px;
+  display: inline-flex;
+  align-items: center;
+}
+
+#gamebookStyleDirections {
+  width: 100%;
+}
+
+#classicStyleInput {
+  width: 80%;
+  height: 35px;
+  margin: auto;
+  padding: 1% 1% 1% 1%;
 }
 
 /*TOOLTIPS*/
@@ -220,6 +255,7 @@ input[type="number"]:hover {
   justify-content: space-between;
   flex-wrap: nowrap;
 }
+
 #directions input {
   margin-right: 30px;
 }
@@ -271,30 +307,6 @@ textarea:active {
   margin-top: 10px;
   margin-left: 5px;
   border: 1px solid #ffffff;
-}
-
-.bottomBar {
-  display: flex;
-  justify-content: space-around;
-}
-
-#gameSim {
-  border: 1px solid white;
-}
-
-#gameContainer {
-  border:  none;
-}
-
-#inputActionSim {
-  width: 100%;
-  padding: 1% 1% 1% 1%;
-}
-#inputActionSim:focus{
-  outline: 0.5px solid white;
-}
-#inputActionSim:active{
-  outline: 0.5px solid white;
 }
 
 select {
