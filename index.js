@@ -1,6 +1,121 @@
-const { app, BrowserWindow, dialog, ipcMain } = require("electron");
+const { app, BrowserWindow, dialog, ipcMain, Menu, ipcRenderer } = require("electron");
 const path = require("path");
 const fs = require("fs");
+
+const isMac = process.platform === 'darwin'
+
+const template = [
+  // { role: 'appMenu' }
+  ...(isMac ? [{
+    label: app.name,
+    submenu: [
+      { role: 'about' },
+      { type: 'separator' },
+      { role: 'services' },
+      { type: 'separator' },
+      { role: 'hide' },
+      { role: 'hideOthers' },
+      { role: 'unhide' },
+      { type: 'separator' },
+      { role: 'quit' }
+    ]
+  }] : []),
+  // { role: 'fileMenu' }
+  {
+    label: 'File',
+    submenu: [
+      isMac ? { role: 'close' } : { role: 'quit' }
+    ]
+  },
+  // { role: 'viewMenu' }
+  {
+    label: 'View',
+    submenu: [
+      { role: 'reload' },
+      { role: 'forceReload' },
+      { role: 'toggleDevTools' },
+      { type: 'separator' },
+      { role: 'resetZoom' },
+      { role: 'zoomIn' },
+      { role: 'zoomOut' },
+      { type: 'separator' },
+      { role: 'togglefullscreen' }
+    ]
+  },
+  // { role: 'windowMenu' }
+  {
+    label: 'Window',
+    submenu: [
+      { role: 'minimize' },
+      { role: 'zoom' },
+      ...(isMac ? [
+        { type: 'separator' },
+        { role: 'front' },
+        { type: 'separator' },
+        { role: 'window' }
+      ] : [
+        { role: 'close' }
+      ])
+    ]
+  },
+  //Game Style
+  {
+    label: 'Game Style',
+    id: 'styleMenu',
+    submenu: [
+      {
+        label: 'Classic',
+        id: 'classic',
+        type: 'checkbox',
+        checked: 'true',
+        click: e => {
+          updateGameStyle(e.id);
+        }
+      },
+      {
+        label: 'Modern',
+        id: 'modern',
+        type: 'checkbox',
+        click: e => {
+          updateGameStyle(e.id);
+        }
+      },
+      {
+        label: 'Gamebook',
+        id: 'gamebook',
+        type: 'checkbox',
+        click: e => {
+          updateGameStyle(e.id);
+        }
+      }
+    ]
+  }
+]
+
+const menu = Menu.buildFromTemplate(template)
+Menu.setApplicationMenu(menu)
+
+function updateGameStyle (style) {
+  switch(style) {
+    case 'classic':
+      menu.getMenuItemById('classic').checked = true;
+      menu.getMenuItemById('modern').checked = false;
+      menu.getMenuItemById('gamebook').checked = false;
+      break;
+    case 'modern':
+      menu.getMenuItemById('classic').checked = false;
+      menu.getMenuItemById('modern').checked = true;
+      menu.getMenuItemById('gamebook').checked = false;
+      break;
+    case 'gamebook':
+      menu.getMenuItemById('classic').checked = false;
+      menu.getMenuItemById('modern').checked = false;
+      menu.getMenuItemById('gamebook').checked = true;
+      break;
+    default:
+      break;
+  }
+}
 
 const createWindow = () => {
   const win = new BrowserWindow({
@@ -10,14 +125,25 @@ const createWindow = () => {
     width: 1920,
     height: 1080,
   });
-  //win.removeMenu();
   win.loadFile("if_create.html");
 };
 
 function handleFileOpen() {
   const filePaths = dialog.showOpenDialogSync();
   if (filePaths) {
-    return fs.readFileSync(filePaths[0], "utf-8");
+    let gameData = fs.readFileSync(filePaths[0], "utf-8");
+    let style = (JSON.parse(gameData.toString()))['gameStyle'];
+    updateGameStyle(style);
+    return gameData;
+  }
+}
+
+function getStyle() {
+  let subItems = menu.getMenuItemById('styleMenu').submenu.items;
+  for (let i = 0; i < subItems.length; i++) {
+    if (subItems[i].checked) {
+      return subItems[i].id;
+    }
   }
 }
 
@@ -51,11 +177,7 @@ async function deleteDenied() {
   return await dialog.showMessageBoxSync(null,options);
 }
 
-app.whenReady().then(() => {
-  createWindow();
-});
-
-ipcMain.on("saveGame", async (event, gameContent) => {
+async function saveGame(event, gameContent) {
   const { filePath, canceled } = await dialog.showSaveDialog({
     buttonLabel: "Save",
     filters: [
@@ -71,6 +193,10 @@ ipcMain.on("saveGame", async (event, gameContent) => {
       if (err) throw err;
     });
   }
+}
+
+app.whenReady().then(() => {
+  createWindow();
 });
 
 ipcMain.handle("loadGame", handleFileOpen);
@@ -79,4 +205,8 @@ ipcMain.handle("createNode", createNode);
 
 ipcMain.handle("deleteNode", deleteNode);
 
+ipcMain.handle("getStyle", getStyle);
+
 ipcMain.on("deleteDenied", deleteDenied);
+
+ipcMain.on("saveGame", saveGame);

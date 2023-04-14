@@ -8,22 +8,37 @@ $(function () {
   //Game Testing
   ///////////////
   $("#restartGameSim").click(function () {
+    dom.addSimInput();
     gameInit();
   });
 
-  $("#inputActionSim").keypress(function (e) {
-    if (e.which == 13) {
-      // I've added a try catch to the below because without it the game is running the action but not clearing the input field value. :TODO cleared.
+  $(document).on("keypress", "#classicStyleInput", function (event) {
+    if (event.which == 13) {
       try {
-        parseAction($("#inputActionSim").val());
+        parseAction($("#classicStyleInput").val());
       } catch (error) {
         console.log(error);
       }
-      $("#inputActionSim").val("");
-      e.preventDefault();
+      $("#classicStyleInput").val("");
+      event.preventDefault();
     }
-  });
+  })
 
+  $(document).on("click", ".modernActionButton", function (event) {
+    parseAction($(event.currentTarget).attr("value"));
+    event.preventDefault;
+  })
+
+  $(document).on("click", ".modernDirectionButton", function (event) {
+    parseAction($(event.currentTarget).attr("value"));
+    event.preventDefault;
+  })
+
+  $(document).on("click", ".gamebookDirectionButton", function (event) {
+    parseAction($(event.currentTarget).attr("value"));
+    event.preventDefault;
+  })
+  
   //////////////////////////////
   //Game loading/saving/deleting
   //////////////////////////////
