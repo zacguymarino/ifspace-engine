@@ -14,7 +14,7 @@ var badAction;
 
 var save;
 
-var takeCommands = ["GET","TAKE", "PICK UP"];
+var takeCommands = ["GET","TAKE", "PICK UP", "OBTAIN", "GRAB"];
 var dropCommands = ["DROP", "PUT DOWN"];
 var inventoryCommands = ["INVENTORY", "INV", "I", "INVEN"];
 var hintCommands = ["HINT", "HELP"];

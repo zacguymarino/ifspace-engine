@@ -124,6 +124,7 @@ const createWindow = () => {
     },
     width: 1920,
     height: 1080,
+    icon: "images/ifs.jpg"
   });
   win.loadFile("if_create.html");
 };

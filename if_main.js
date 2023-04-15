@@ -10,6 +10,7 @@ $(function () {
   $("#restartGameSim").click(function () {
     dom.addSimInput();
     gameInit();
+    $("#classicStyleInput").focus();
   });
 
   $(document).on("keypress", "#classicStyleInput", function (event) {
