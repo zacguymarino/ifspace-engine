@@ -420,14 +420,12 @@ function checkRequirements(reqs) {
     //Check local node action requirements
     for (let i = 0; i < reqLocal.length; i++) {
         if (!save.nodes[currentNode].actions.includes(reqLocal[i].toUpperCase())) {
-            console.log("Local actions req failed");
             return false;
         }
     }
     //Check global action requirements
     for (let i = 0; i < reqGlobal.length; i++) {
         if (!save.actions.includes(reqGlobal[i].toUpperCase())) {
-            console.log("Global actions req failed");
             return false;
         }
     }
@@ -443,11 +441,9 @@ function checkRequirements(reqs) {
         let quant = locArray[3];
         if (quant > 0){
             if (!save.nodes.hasOwnProperty(loc)) {
-                console.log("Never saved this location. LocVisits req failed.");
                 return false;
             } else {
                 if (Number(save.nodes[loc].visits) < quant) {
-                    console.log("Have not been to location enough times. LocVisits req failed.");
                     return false;
                 }
             }
@@ -456,7 +452,6 @@ function checkRequirements(reqs) {
                 continue;
             } else {
                 if (Number(save.nodes[loc].visits) != 0) {
-                    console.log("You visited this node too many times.");
                     return false;
                 }
             }
@@ -484,21 +479,18 @@ function checkRequirements(reqs) {
             }
         }
         if (!itemIncluded) {
-            console.log("You don't have the item. Item req failed.");
             return false;
         }
     }
     //check if evoItems exist and then if they are evolved
     for (let i = 0; i < itemEvos.length; i++) {
         if (!itemArray.includes(itemEvos[i][0])) {
-            console.log("Evo item not obtained. ItemEvo reqs failed.");
             return false;
         } else {
             let checked = false;
             for (j = 0; j < save.items.length; j++) {
                 if (save.items[j][0] === itemEvos[i][0]) {
                     if (save["items"][j][1] !== itemEvos[i][1]) {
-                        console.log("Not correct item Evo. EvoItem req failed.");
                         return false;
                     }
                     checked = true;
@@ -1053,8 +1045,35 @@ function parseAction(input) {
             let variants = save.items[i].name.split(/\s*,\s*/);
             for (let j = 0; j < variants.length; j++) {
                 if (variants[j].toUpperCase() === actionItem) {
-                    displayMessage(save.items[i].description, false);
-                    sentMessage = true;
+                    if (save.items[i].evos.length > 0) {
+                        let messageToDisplay;
+                        for (let k = 0; k < save.items[i].evos.length; k++) {
+                            let evo = save.items[i].evos[k];
+                            let reqs = {
+                                "reqItems": evo.reqItems,
+                                "reqContainers": evo.reqContainers,
+                                "reqLocal": evo.reqLocal,
+                                "reqGlobal": evo.reqGlobal,
+                                "preAction": evo.preAction,
+                                "locVisits": evo.locVisits,
+                                "preNode": evo.preNode,
+                                "itemEvos": evo.itemEvos
+                            }
+                            if (checkRequirements(reqs)) {
+                                messageToDisplay = save.items[i].evos[k].evoDes;
+                            }
+                        }
+                        if (messageToDisplay != undefined) {
+                            displayMessage(messageToDisplay, false);
+                            sentMessage = true;
+                        } else {
+                            displayMessage(save.items[i].description, false);
+                            sentMessage = true;
+                        }
+                    } else {
+                        displayMessage(save.items[i].description, false);
+                        sentMessage = true;
+                    }
                     checked = true;
                 }
             }
