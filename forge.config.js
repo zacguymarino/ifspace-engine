@@ -1,10 +1,15 @@
 module.exports = {
-  packagerConfig: {},
+  packagerConfig: {
+    icon: 'ifs'
+  },
   rebuildConfig: {},
   makers: [
     {
       name: '@electron-forge/maker-squirrel',
-      config: {},
+      config: {
+        iconUrl: 'https://ifs.ico',
+        setupIcon: 'ifs.ico'
+      },
     },
     {
       name: '@electron-forge/maker-zip',
@@ -12,7 +17,11 @@ module.exports = {
     },
     {
       name: '@electron-forge/maker-deb',
-      config: {},
+      config: {
+        options: {
+          icon: 'ifs.ico'
+        }
+      },
     },
     {
       name: '@electron-forge/maker-rpm',
