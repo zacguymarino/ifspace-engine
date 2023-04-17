@@ -11,6 +11,7 @@ var cContainerWithdrawals;
 var cItemInspections;
 var cNodeActions;
 var badAction;
+var playing;
 
 var save;
 
@@ -22,6 +23,7 @@ var itemInspectCommands = ["INSPECT", "LOOK", "EXAMINE"];
 var ignorables = ["A", "AN", "THE", "TO", "FOR", "AT"];
 
 function gameInit() {
+    playing = true;
     previousNode = "0,0,0";
     currentNode = "0,0,0";
     badAction = 0;
@@ -523,6 +525,7 @@ function checkWin() {
             let points = tallyPoints();
             displayMessage("Score: " + points.toString() + "/" + max.toString(), false);
         }
+        playing = false;
     }
 }
 
@@ -545,6 +548,7 @@ function checkLose() {
             let points = tallyPoints();
             displayMessage("Score: " + points.toString() + "/" + max.toString(), false);
         }
+        playing = false;
     }
 }
 
@@ -708,204 +712,272 @@ function parseNode(location) {
 }
 
 function parseAction(input) {
-    let action = input.toUpperCase();
-    let sentMessage = false;
+    if (playing) {
+        let action = input.toUpperCase();
+        let sentMessage = false;
 
-    displayMessage(input, true);
+        displayMessage(input, true);
 
-    //Filter out ignorables
-    let actionParts = action.split(" ");
-    for (let i = 0; i < ignorables.length; i++) {
-        if (actionParts.includes(ignorables[i])) {
-            let index = actionParts.indexOf(ignorables[i]);
-            actionParts.splice(index, 1);
+        //Filter out ignorables
+        let actionParts = action.split(" ");
+        for (let i = 0; i < ignorables.length; i++) {
+            if (actionParts.includes(ignorables[i])) {
+                let index = actionParts.indexOf(ignorables[i]);
+                actionParts.splice(index, 1);
+            }
         }
-    }
-    action = actionParts.join(" ");
+        action = actionParts.join(" ");
 
-    //Handle actions
-    for (let h = 0; h < cNodeActions.length; h++) {
-        if (cNodeActions[h].toUpperCase() == action) {
-            for (let i = 0; i < game[currentNode].actions.actions.length; i++) {
-                let variants = game[currentNode].actions.actions[i].actions.toUpperCase().split(/\s*,\s*/);
-                for (let m = 0; m < variants.length; m++) {
-                    if (variants[m] == action) {
-                        let actionObject = JSON.parse(JSON.stringify(game[currentNode].actions.actions[i]));
-                        let reqs = {
-                            "reqItems": actionObject.reqItems,
-                            "reqContainers": actionObject.reqContainers,
-                            "reqLocal": actionObject.reqLocal,
-                            "reqGlobal": actionObject.reqGlobal,
-                            "preAction": actionObject.preAction,
-                            "locVisits": actionObject.locVisits,
-                            "preNode": actionObject.preNode,
-                            "itemEvos": actionObject.itemEvos
-                        }
-                        if (checkRequirements(reqs)) {
-                            let mainAction = actionObject.actions.split(/\s*,\s*/)[0].toUpperCase();
-                            let maxTimes;
-                            if (actionObject.max !== '' && actionObject.max !== null) {
-                                maxTimes = +actionObject.max;
-                            } else {
-                                maxTimes = 9999;
+        //Handle actions
+        for (let h = 0; h < cNodeActions.length; h++) {
+            if (cNodeActions[h].toUpperCase() == action) {
+                for (let i = 0; i < game[currentNode].actions.actions.length; i++) {
+                    let variants = game[currentNode].actions.actions[i].actions.toUpperCase().split(/\s*,\s*/);
+                    for (let m = 0; m < variants.length; m++) {
+                        if (variants[m] == action) {
+                            let actionObject = JSON.parse(JSON.stringify(game[currentNode].actions.actions[i]));
+                            let reqs = {
+                                "reqItems": actionObject.reqItems,
+                                "reqContainers": actionObject.reqContainers,
+                                "reqLocal": actionObject.reqLocal,
+                                "reqGlobal": actionObject.reqGlobal,
+                                "preAction": actionObject.preAction,
+                                "locVisits": actionObject.locVisits,
+                                "preNode": actionObject.preNode,
+                                "itemEvos": actionObject.itemEvos
                             }
-                            let usedTimes = 0;
-                            for (let j = 0; j < save.actions.length; j++) {
-                                if (save.actions[j] == mainAction) {
-                                    usedTimes++;
+                            if (checkRequirements(reqs)) {
+                                let mainAction = actionObject.actions.split(/\s*,\s*/)[0].toUpperCase();
+                                let maxTimes;
+                                if (actionObject.max !== '' && actionObject.max !== null) {
+                                    maxTimes = +actionObject.max;
+                                } else {
+                                    maxTimes = 9999;
                                 }
-                            }
-                            if (!(usedTimes >= maxTimes)) {
-                            //Action is valid - perform action operations
-                                let costs = actionObject.costs.split(/\s*,\s*/);
-                                let drops = actionObject.drops.split(/\s*,\s*/);
-                                let visibility = actionObject.visibility;
+                                let usedTimes = 0;
+                                for (let j = 0; j < save.actions.length; j++) {
+                                    if (save.actions[j] == mainAction) {
+                                        usedTimes++;
+                                    }
+                                }
+                                if (!(usedTimes >= maxTimes)) {
+                                //Action is valid - perform action operations
+                                    let costs = actionObject.costs.split(/\s*,\s*/);
+                                    let drops = actionObject.drops.split(/\s*,\s*/);
+                                    let visibility = actionObject.visibility;
 
-                                //Handle action costs
-                                if (costs != "" && costs != null) {
-                                    for (let k = 0; k < costs.length; k++) {
-                                        for (let l = 0; l < save.items.length; l++) {
-                                            if (save.items[l].name.includes(costs[k])) {
-                                                save.items.splice(l, 1);
-                                                break;
+                                    //Handle action costs
+                                    if (costs != "" && costs != null) {
+                                        for (let k = 0; k < costs.length; k++) {
+                                            for (let l = 0; l < save.items.length; l++) {
+                                                if (save.items[l].name.includes(costs[k])) {
+                                                    save.items.splice(l, 1);
+                                                    break;
+                                                }
                                             }
                                         }
                                     }
-                                }
-                                //Handle action drops
-                                if (drops != "" && drops != null) {
-                                    for (let k = 0; k < drops.length; k++) {
-                                        for (let l = 0; l < save.items.length; l++) {
-                                            if (save.items[l].name.includes(drops[k])) {
-                                                save.nodes[currentNode].items.push(save.items[l]);
-                                                save.items.splice(l, 1);
+                                    //Handle action drops
+                                    if (drops != "" && drops != null) {
+                                        for (let k = 0; k < drops.length; k++) {
+                                            for (let l = 0; l < save.items.length; l++) {
+                                                if (save.items[l].name.includes(drops[k])) {
+                                                    save.nodes[currentNode].items.push(save.items[l]);
+                                                    save.items.splice(l, 1);
+                                                }
                                             }
                                         }
                                     }
-                                }
-                                //Handle action visibility
-                                switch(visibility) {
-                                    case 'none':
-                                        break;
-                                    case 'on':
-                                        save.nodes[currentNode].visibility = 'true';
-                                        break;
-                                    case 'off':
-                                        save.nodes[currentNode].visibility = 'false';
-                                    case 'switch':
-                                        if (save.nodes[currentNode].visibility == 'true') {
-                                            save.nodes[currentNode].visibility = 'false';
-                                        } else {
+                                    //Handle action visibility
+                                    switch(visibility) {
+                                        case 'none':
+                                            break;
+                                        case 'on':
                                             save.nodes[currentNode].visibility = 'true';
-                                        }
-                                        break;
-                                    default:
-                                        break;
+                                            break;
+                                        case 'off':
+                                            save.nodes[currentNode].visibility = 'false';
+                                        case 'switch':
+                                            if (save.nodes[currentNode].visibility == 'true') {
+                                                save.nodes[currentNode].visibility = 'false';
+                                            } else {
+                                                save.nodes[currentNode].visibility = 'true';
+                                            }
+                                            break;
+                                        default:
+                                            break;
+                                    }
+                                    pushAction(mainAction);
+                                    displayMessage(actionObject.response, false);
+                                    sentMessage = true;
+                                } else {
+                                    displayMessage("Can't do that anymore.", false);
+                                    sentMessage = true;
                                 }
-                                pushAction(mainAction);
-                                displayMessage(actionObject.response, false);
-                                sentMessage = true;
                             } else {
-                                displayMessage("Can't do that anymore.", false);
+                                displayMessage(actionObject.fail, false);
                                 sentMessage = true;
                             }
-                        } else {
-                            displayMessage(actionObject.fail, false);
-                            sentMessage = true;
                         }
                     }
                 }
             }
         }
-    }
 
-    if (action === "LOOK") {
-        pushAction("LOOK");
-        displayMessage(getDescription(currentNode), false);
-        displayItems();
-        sentMessage = true;
-    }
-
-    if (action === "SCORE") {
-        pushAction("SCORE");
-        let max = getMaxPoints();
-        if (max == 0) {
-            displayMessage("This game keeps no score.", false);
-            sentMessage = true;
-        } else {
-            let points = tallyPoints();
-            displayMessage(points.toString() + "/" + max.toString(), false);
+        if (action === "LOOK") {
+            pushAction("LOOK");
+            displayMessage(getDescription(currentNode), false);
+            displayItems();
             sentMessage = true;
         }
-    }
 
-    if (hintCommands.includes(action)) {
-        pushAction("HINT");
-        if (game[currentNode].hint != '') {
-            displayMessage(game[currentNode].hint, false);
-        } else {
-            displayMessage("There is no help here.", false);
-        }
-        sentMessage = true;
-    }
-
-    if (inventoryCommands.includes(action)) {
-        pushAction("INENTORY");
-        if (save.items.length > 0) {
-            displayMessage("Inventory:", false);
-            for (let i = 0; i < save.items.length; i++) {
-                let name = save.items[i].name.split(/\s*,\s*/)[0];
-                displayMessage(name, false);
+        if (action === "SCORE") {
+            pushAction("SCORE");
+            let max = getMaxPoints();
+            if (max == 0) {
+                displayMessage("This game keeps no score.", false);
+                sentMessage = true;
+            } else {
+                let points = tallyPoints();
+                displayMessage(points.toString() + "/" + max.toString(), false);
                 sentMessage = true;
             }
-        } else {
-            displayMessage("Your inventory is empty.", false);
+        }
+
+        if (hintCommands.includes(action)) {
+            pushAction("HINT");
+            if (game[currentNode].hint != '') {
+                displayMessage(game[currentNode].hint, false);
+            } else {
+                displayMessage("There is no help here.", false);
+            }
             sentMessage = true;
         }
-    }
 
-    for (let i = 0; i < cContainerWithdrawals.verbs.length; i++) {
-        //Check if withdrawal verb is present in action
-        let regexp1 = new RegExp(`\s*${cContainerWithdrawals.verbs[i]}\s*`);
-        if (action.match(regexp1)) {
-            //check if withdrawalable item is present in action
-            for (let j = 0; j < cContainerWithdrawals.items.length; j++) {
-                for (let k = 0; k < cContainerWithdrawals.items[j].length; k++) {
-                    for (let l = 0; l < cContainerWithdrawals.items[j][k].length; l++) {
-                        let regexp2 = new RegExp(`\s*${cContainerWithdrawals.items[j][k][l].toUpperCase()}\s*`);
-                        if (action.match(regexp2)) {
-                            //Check if corresponding container is present in action
-                            let containerVariants = cContainerWithdrawals.containers[j];
-                            for (let m = 0; m < containerVariants.length; m++) {
-                                let regexp3 = new RegExp(`\s*${containerVariants[m].toUpperCase()}\s*`);
-                                if (action.match(regexp3)) {
-                                    //Action is a container withdrawal, check if requirements are satisfied
-                                    let reqs;
-                                    for (let q = 0; q < game[currentNode].containers.length; q++) {
-                                        if (game[currentNode].containers[q].name.toUpperCase().match(regexp3)) {
-                                            reqs = {
-                                                "reqItems": game[currentNode].containers[q].reqItems,
-                                                "reqContainers": game[currentNode].containers[q].reqContainers,
-                                                "reqLocal": game[currentNode].containers[q].reqLocal,
-                                                "reqGlobal": game[currentNode].containers[q].reqGlobal,
-                                                "preAction": game[currentNode].containers[q].preAction,
-                                                "locVisits": game[currentNode].containers[q].locVisits,
-                                                "preNode": game[currentNode].containers[q].preNode,
-                                                "itemEvos": game[currentNode].containers[q].itemEvos
+        if (inventoryCommands.includes(action)) {
+            pushAction("INENTORY");
+            if (save.items.length > 0) {
+                displayMessage("Inventory:", false);
+                for (let i = 0; i < save.items.length; i++) {
+                    let name = save.items[i].name.split(/\s*,\s*/)[0];
+                    displayMessage(name, false);
+                    sentMessage = true;
+                }
+            } else {
+                displayMessage("Your inventory is empty.", false);
+                sentMessage = true;
+            }
+        }
+
+        for (let i = 0; i < cContainerWithdrawals.verbs.length; i++) {
+            //Check if withdrawal verb is present in action
+            let regexp1 = new RegExp(`\s*${cContainerWithdrawals.verbs[i]}\s*`);
+            if (action.match(regexp1)) {
+                //check if withdrawalable item is present in action
+                for (let j = 0; j < cContainerWithdrawals.items.length; j++) {
+                    for (let k = 0; k < cContainerWithdrawals.items[j].length; k++) {
+                        for (let l = 0; l < cContainerWithdrawals.items[j][k].length; l++) {
+                            let regexp2 = new RegExp(`\s*${cContainerWithdrawals.items[j][k][l].toUpperCase()}\s*`);
+                            if (action.match(regexp2)) {
+                                //Check if corresponding container is present in action
+                                let containerVariants = cContainerWithdrawals.containers[j];
+                                for (let m = 0; m < containerVariants.length; m++) {
+                                    let regexp3 = new RegExp(`\s*${containerVariants[m].toUpperCase()}\s*`);
+                                    if (action.match(regexp3)) {
+                                        //Action is a container withdrawal, check if requirements are satisfied
+                                        let reqs;
+                                        for (let q = 0; q < game[currentNode].containers.length; q++) {
+                                            if (game[currentNode].containers[q].name.toUpperCase().match(regexp3)) {
+                                                reqs = {
+                                                    "reqItems": game[currentNode].containers[q].reqItems,
+                                                    "reqContainers": game[currentNode].containers[q].reqContainers,
+                                                    "reqLocal": game[currentNode].containers[q].reqLocal,
+                                                    "reqGlobal": game[currentNode].containers[q].reqGlobal,
+                                                    "preAction": game[currentNode].containers[q].preAction,
+                                                    "locVisits": game[currentNode].containers[q].locVisits,
+                                                    "preNode": game[currentNode].containers[q].preNode,
+                                                    "itemEvos": game[currentNode].containers[q].itemEvos
+                                                }
+                                                break;
                                             }
-                                            break;
+                                        }
+                                        if (checkRequirements(reqs)) {
+                                        //Remove item from container and store in inventory
+                                            for (let n = 0; n < save.nodes[currentNode].containers.length; n++) {
+                                                if (save.nodes[currentNode].containers[n].name.includes(containerVariants[m])) {
+                                                    for (let p = 0; p < save.nodes[currentNode].containers[n].items.length; p++) {
+                                                        if (save.nodes[currentNode].containers[n].items[p].name.includes(cContainerWithdrawals.items[j][k][l])) {
+                                                            let item = JSON.parse(JSON.stringify(save.nodes[currentNode].containers[n].items[p]));
+                                                            save.nodes[currentNode].containers[n].items.splice(p,1);
+                                                            save.items.push(item);
+                                                            displayMessage("Done.", false);
+                                                            sentMessage = true;
+                                                        }
+                                                    }
+                                                }
+                                            }
                                         }
                                     }
-                                    if (checkRequirements(reqs)) {
-                                    //Remove item from container and store in inventory
-                                        for (let n = 0; n < save.nodes[currentNode].containers.length; n++) {
-                                            if (save.nodes[currentNode].containers[n].name.includes(containerVariants[m])) {
-                                                for (let p = 0; p < save.nodes[currentNode].containers[n].items.length; p++) {
-                                                    if (save.nodes[currentNode].containers[n].items[p].name.includes(cContainerWithdrawals.items[j][k][l])) {
-                                                        let item = JSON.parse(JSON.stringify(save.nodes[currentNode].containers[n].items[p]));
-                                                        save.nodes[currentNode].containers[n].items.splice(p,1);
-                                                        save.items.push(item);
-                                                        displayMessage("Done.", false);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        for (let i = 0; i < cContainerDeposits.verbs.length; i++) {
+            //Check if deposit verb is present in action
+            let regexp1 = new RegExp(`\s*${cContainerDeposits.verbs[i]}\s*`);
+            if (action.match(regexp1)) {
+                //Check if depositable item is present in action
+                for (let j = 0; j < cContainerDeposits.items.length; j++) {
+                    for (let k = 0; k < cContainerDeposits.items[j].length; k++) {
+                        let regexp2 = new RegExp(`\s*${cContainerDeposits.items[j][k].toUpperCase()}\s*`);
+                        if (action.match(regexp2)) {
+                            //Check if container is present in action
+                            for (let l = 0; l < cContainerDeposits.containers.length; l++) {
+                                for (let m = 0; m < cContainerDeposits.containers[l].length; m++) {
+                                    let regexp3 = new RegExp(`\s*${cContainerDeposits.containers[l][m].toUpperCase()}\s*`);
+                                    if (action.match(regexp3)) {
+                                        //Action is a container deposit, check if requirements are satisfied
+                                        let reqs;
+                                        let thisContainer;
+                                        for (let q = 0; q < game[currentNode].containers.length; q++) {
+                                            if (game[currentNode].containers[q].name.toUpperCase().match(regexp3)) {
+                                                thisContainer = game[currentNode].containers[q];
+                                                reqs = {
+                                                    "reqItems": thisContainer.reqItems,
+                                                    "reqContainers": thisContainer.reqContainers,
+                                                    "reqLocal": thisContainer.reqLocal,
+                                                    "reqGlobal": thisContainer.reqGlobal,
+                                                    "preAction": thisContainer.preAction,
+                                                    "locVisits": thisContainer.locVisits,
+                                                    "preNode": thisContainer.preNode,
+                                                    "itemEvos": thisContainer.itemEvos
+                                                }
+                                                break;
+                                            }
+                                        }
+                                        if (checkRequirements(reqs)) {
+                                        //Check if item is an illegal item, and if not, then
+                                        //remove item from inventory and store in container
+                                            for (let n = 0; n < save.items.length; n++) {
+                                                let variants = save.items[n].name.toUpperCase().split(/\s*,\s*/);
+                                                if (variants.includes(cContainerDeposits.items[j][k].toUpperCase())) {
+                                                    if (!thisContainer.illegal.toUpperCase().includes(variants[0])) {
+                                                        let item = JSON.parse(JSON.stringify(save.items[n]));
+                                                        save.items.splice(n,1);
+                                                        for (let p = 0; p < save.nodes[currentNode].containers.length; p++) {
+                                                            let saveVariants = save.nodes[currentNode].containers[p].name.split(/\s*,\s*/);
+                                                            if (saveVariants.includes(cContainerDeposits.containers[l][m])) {
+                                                                save.nodes[currentNode].containers[p].items.push(item);
+                                                                displayMessage("Done.", false);
+                                                                sentMessage = true;
+                                                            }
+                                                        }
+                                                    } else {
+                                                        displayMessage("That does not go there.", false);
                                                         sentMessage = true;
                                                     }
                                                 }
@@ -919,207 +991,141 @@ function parseAction(input) {
                 }
             }
         }
-    }
 
-    for (let i = 0; i < cContainerDeposits.verbs.length; i++) {
-        //Check if deposit verb is present in action
-        let regexp1 = new RegExp(`\s*${cContainerDeposits.verbs[i]}\s*`);
-        if (action.match(regexp1)) {
-            //Check if depositable item is present in action
-            for (let j = 0; j < cContainerDeposits.items.length; j++) {
-                for (let k = 0; k < cContainerDeposits.items[j].length; k++) {
-                    let regexp2 = new RegExp(`\s*${cContainerDeposits.items[j][k].toUpperCase()}\s*`);
-                    if (action.match(regexp2)) {
-                        //Check if container is present in action
-                        for (let l = 0; l < cContainerDeposits.containers.length; l++) {
-                            for (let m = 0; m < cContainerDeposits.containers[l].length; m++) {
-                                let regexp3 = new RegExp(`\s*${cContainerDeposits.containers[l][m].toUpperCase()}\s*`);
-                                if (action.match(regexp3)) {
-                                    //Action is a container deposit, check if requirements are satisfied
-                                    let reqs;
-                                    let thisContainer;
-                                    for (let q = 0; q < game[currentNode].containers.length; q++) {
-                                        if (game[currentNode].containers[q].name.toUpperCase().match(regexp3)) {
-                                            thisContainer = game[currentNode].containers[q];
-                                            reqs = {
-                                                "reqItems": thisContainer.reqItems,
-                                                "reqContainers": thisContainer.reqContainers,
-                                                "reqLocal": thisContainer.reqLocal,
-                                                "reqGlobal": thisContainer.reqGlobal,
-                                                "preAction": thisContainer.preAction,
-                                                "locVisits": thisContainer.locVisits,
-                                                "preNode": thisContainer.preNode,
-                                                "itemEvos": thisContainer.itemEvos
-                                            }
-                                            break;
-                                        }
-                                    }
-                                    if (checkRequirements(reqs)) {
-                                    //Check if item is an illegal item, and if not, then
-                                    //remove item from inventory and store in container
-                                        for (let n = 0; n < save.items.length; n++) {
-                                            let variants = save.items[n].name.toUpperCase().split(/\s*,\s*/);
-                                            if (variants.includes(cContainerDeposits.items[j][k].toUpperCase())) {
-                                                if (!thisContainer.illegal.toUpperCase().includes(variants[0])) {
-                                                    let item = JSON.parse(JSON.stringify(save.items[n]));
-                                                    save.items.splice(n,1);
-                                                    for (let p = 0; p < save.nodes[currentNode].containers.length; p++) {
-                                                        let saveVariants = save.nodes[currentNode].containers[p].name.split(/\s*,\s*/);
-                                                        if (saveVariants.includes(cContainerDeposits.containers[l][m])) {
-                                                            save.nodes[currentNode].containers[p].items.push(item);
-                                                            displayMessage("Done.", false);
-                                                            sentMessage = true;
-                                                        }
-                                                    }
-                                                } else {
-                                                    displayMessage("That does not go there.", false);
-                                                    sentMessage = true;
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
+        for (let i = 0; i < cNodeDirections.length; i++) {
+            for (let j = 0; j < cNodeDirections[i].alternatives.length; j++) {
+                if (cNodeDirections[i].alternatives[j] == action) {
+                    if (checkRequirements(cNodeDirections[i].requirements)) {
+                        parseNode(cNodeDirections[i].location);
+                        return;
+                    } else {
+                        displayMessage("Something is preventing you from going this way.", false);
+                        sentMessage = true;
                     }
-                }
-            }
-        }
-    }
-
-    for (let i = 0; i < cNodeDirections.length; i++) {
-        for (let j = 0; j < cNodeDirections[i].alternatives.length; j++) {
-            if (cNodeDirections[i].alternatives[j] == action) {
-                if (checkRequirements(cNodeDirections[i].requirements)) {
-                    parseNode(cNodeDirections[i].location);
-                    return;
-                } else {
-                    displayMessage("Something is preventing you from going this way.", false);
-                    sentMessage = true;
-                }
-                break;
-            }
-        }
-    }
-
-    if (cNodeItems.includes(action)) {
-        let actionItem;
-        for (let i = 0; i < takeCommands.length; i++) {
-            let regexp = new RegExp(`\s*${takeCommands[i]}\s*`);
-            if (action.match(regexp)) {
-                actionItem = action.slice(action.match(regexp)[0].length + 1);
-                break;
-            }
-        }
-        for (let i = 0; i < save.nodes[currentNode].items.length; i++) {
-            let checked = false;
-            let variants = save.nodes[currentNode].items[i].name.split(/\s*,\s*/);
-            for (let j = 0; j < variants.length; j++) {
-                if (variants[j].toUpperCase() === actionItem) {
-                    let discoveredItem = JSON.parse(JSON.stringify(save.nodes[currentNode].items[i]));
-                    save.items.push(discoveredItem);
-                    save.nodes[currentNode].items.splice(i,1);
-                    displayMessage("Taken.", false);
-                    checked = true;
-                    sentMessage = true;
                     break;
                 }
             }
-            if (checked) {
-                break;
-            }
         }
-    }
 
-    if (cItemInspections.includes(action)) {
-        let actionItem;
-        let checked = false;
-        for (let i = 0; i < itemInspectCommands.length; i++) {
-            let regexp = new RegExp(`\s*${itemInspectCommands[i]}\s*`);
-            if (action.match(regexp)) {
-                actionItem = action.slice(action.match(regexp)[0].length + 1);
-                break;
+        if (cNodeItems.includes(action)) {
+            let actionItem;
+            for (let i = 0; i < takeCommands.length; i++) {
+                let regexp = new RegExp(`\s*${takeCommands[i]}\s*`);
+                if (action.match(regexp)) {
+                    actionItem = action.slice(action.match(regexp)[0].length + 1);
+                    break;
+                }
+            }
+            for (let i = 0; i < save.nodes[currentNode].items.length; i++) {
+                let checked = false;
+                let variants = save.nodes[currentNode].items[i].name.split(/\s*,\s*/);
+                for (let j = 0; j < variants.length; j++) {
+                    if (variants[j].toUpperCase() === actionItem) {
+                        let discoveredItem = JSON.parse(JSON.stringify(save.nodes[currentNode].items[i]));
+                        save.items.push(discoveredItem);
+                        save.nodes[currentNode].items.splice(i,1);
+                        displayMessage("Taken.", false);
+                        checked = true;
+                        sentMessage = true;
+                        break;
+                    }
+                }
+                if (checked) {
+                    break;
+                }
             }
         }
-        for (let i = 0; i < save.items.length; i++) {
-            let variants = save.items[i].name.split(/\s*,\s*/);
-            for (let j = 0; j < variants.length; j++) {
-                if (variants[j].toUpperCase() === actionItem) {
-                    if (save.items[i].evos.length > 0) {
-                        let messageToDisplay;
-                        for (let k = 0; k < save.items[i].evos.length; k++) {
-                            let evo = save.items[i].evos[k];
-                            let reqs = {
-                                "reqItems": evo.reqItems,
-                                "reqContainers": evo.reqContainers,
-                                "reqLocal": evo.reqLocal,
-                                "reqGlobal": evo.reqGlobal,
-                                "preAction": evo.preAction,
-                                "locVisits": evo.locVisits,
-                                "preNode": evo.preNode,
-                                "itemEvos": evo.itemEvos
+
+        if (cItemInspections.includes(action)) {
+            let actionItem;
+            let checked = false;
+            for (let i = 0; i < itemInspectCommands.length; i++) {
+                let regexp = new RegExp(`\s*${itemInspectCommands[i]}\s*`);
+                if (action.match(regexp)) {
+                    actionItem = action.slice(action.match(regexp)[0].length + 1);
+                    break;
+                }
+            }
+            for (let i = 0; i < save.items.length; i++) {
+                let variants = save.items[i].name.split(/\s*,\s*/);
+                for (let j = 0; j < variants.length; j++) {
+                    if (variants[j].toUpperCase() === actionItem) {
+                        if (save.items[i].evos.length > 0) {
+                            let messageToDisplay;
+                            for (let k = 0; k < save.items[i].evos.length; k++) {
+                                let evo = save.items[i].evos[k];
+                                let reqs = {
+                                    "reqItems": evo.reqItems,
+                                    "reqContainers": evo.reqContainers,
+                                    "reqLocal": evo.reqLocal,
+                                    "reqGlobal": evo.reqGlobal,
+                                    "preAction": evo.preAction,
+                                    "locVisits": evo.locVisits,
+                                    "preNode": evo.preNode,
+                                    "itemEvos": evo.itemEvos
+                                }
+                                if (checkRequirements(reqs)) {
+                                    messageToDisplay = save.items[i].evos[k].evoDes;
+                                }
                             }
-                            if (checkRequirements(reqs)) {
-                                messageToDisplay = save.items[i].evos[k].evoDes;
+                            if (messageToDisplay != undefined) {
+                                displayMessage(messageToDisplay, false);
+                                sentMessage = true;
+                            } else {
+                                displayMessage(save.items[i].description, false);
+                                sentMessage = true;
                             }
-                        }
-                        if (messageToDisplay != undefined) {
-                            displayMessage(messageToDisplay, false);
-                            sentMessage = true;
                         } else {
                             displayMessage(save.items[i].description, false);
                             sentMessage = true;
                         }
-                    } else {
-                        displayMessage(save.items[i].description, false);
-                        sentMessage = true;
+                        checked = true;
                     }
-                    checked = true;
                 }
-            }
-            if (checked) {
-                break;
-            }
-        }
-    }
-
-    if (cPlayerItems.includes(action)) {
-        let actionItem;
-        let checked = false;
-        for (let i = 0; i < dropCommands.length; i++) {
-            let regexp = new RegExp(`\s*${dropCommands[i]}\s*`);
-            if (action.match(regexp)) {
-                actionItem = action.slice(action.match(regexp)[0].length + 1);
-                break;
-            }
-        }
-        for (let i = 0; i < save.items.length; i++) {
-            let variants = save.items[i].name.split(/\s*,\s*/);
-            for (let j = 0; j < variants.length; j++) {
-                if (variants[j].toUpperCase() === actionItem) {
-                    let existingItem = JSON.parse(JSON.stringify(save.items[i]));
-                    save.nodes[currentNode].items.push(existingItem);
-                    save.items.splice(i,1);
-                    displayMessage("Dropped.", false);
-                    checked = true;
-                    sentMessage = true;
+                if (checked) {
                     break;
                 }
             }
-            if (checked) {
-                break;
+        }
+
+        if (cPlayerItems.includes(action)) {
+            let actionItem;
+            let checked = false;
+            for (let i = 0; i < dropCommands.length; i++) {
+                let regexp = new RegExp(`\s*${dropCommands[i]}\s*`);
+                if (action.match(regexp)) {
+                    actionItem = action.slice(action.match(regexp)[0].length + 1);
+                    break;
+                }
+            }
+            for (let i = 0; i < save.items.length; i++) {
+                let variants = save.items[i].name.split(/\s*,\s*/);
+                for (let j = 0; j < variants.length; j++) {
+                    if (variants[j].toUpperCase() === actionItem) {
+                        let existingItem = JSON.parse(JSON.stringify(save.items[i]));
+                        save.nodes[currentNode].items.push(existingItem);
+                        save.items.splice(i,1);
+                        displayMessage("Dropped.", false);
+                        checked = true;
+                        sentMessage = true;
+                        break;
+                    }
+                }
+                if (checked) {
+                    break;
+                }
             }
         }
-    }
 
-    if (!sentMessage) {
-        badAction += 1;
-        displayMessage(game[currentNode].actions.invalid, false);
-    } else {
-        badAction = 0;
+        if (!sentMessage) {
+            badAction += 1;
+            displayMessage(game[currentNode].actions.invalid, false);
+        } else {
+            badAction = 0;
+        }
+        handleHint();
+        nodeReload();
     }
-    handleHint();
-    nodeReload();
 }
 
 export { gameInit, parseAction }

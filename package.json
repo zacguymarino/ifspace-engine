@@ -10,7 +10,7 @@
     "make": "electron-forge make"
   },
   "author": "Zac Marino",
-  "license": "ISC",
+  "license": "MIT",
   "devDependencies": {
     "@electron-forge/cli": "^6.0.5",
     "@electron-forge/maker-deb": "^6.0.5",
