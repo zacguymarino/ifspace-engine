@@ -468,14 +468,14 @@ function checkRequirements(reqs) {
     //create saved items list
     let itemArray = []
     for (let i = 0; i < save.items.length; i++) {
-        itemArray.push(save.items[i].name);
+        itemArray.push(save.items[i].name.toUpperCase());
     }
 
     //check if required items exist in array
     for (let i = 0; i < reqItems.length; i++) {
         let itemIncluded = false;
         for (let j = 0; j < itemArray.length; j++) {
-            if (itemArray[j].includes(reqItems[i])) {
+            if (itemArray[j].includes(reqItems[i].toUpperCase())) {
                 itemIncluded = true;
                 break;
             }
@@ -484,25 +484,48 @@ function checkRequirements(reqs) {
             return false;
         }
     }
+    
     //check if evoItems exist and then if they are evolved
     for (let i = 0; i < itemEvos.length; i++) {
-        if (!itemArray.includes(itemEvos[i][0])) {
-            return false;
-        } else {
-            let checked = false;
-            for (j = 0; j < save.items.length; j++) {
-                if (save.items[j][0] === itemEvos[i][0]) {
-                    if (save["items"][j][1] !== itemEvos[i][1]) {
-                        return false;
+        let itemEvo = itemEvos[i].replace(/^\[|\]$/g, '').split(/\s*,\s*/);
+        let checked = false;
+        for (let j = 0; j < itemArray.length; j++) {
+            let item = itemArray[j].split(/\s*,\s*/)[0];
+            if (item == itemEvo[0].toUpperCase()) {
+                checked = true;
+                for (let k = 0; k < save.items.length; k++) {
+                    if (save["items"][k].name.split(/\s*,\s*/)[0].toUpperCase() === itemEvo[0].toUpperCase()) {
+                        console.log("Made it here homes");
+                        let checkIndex = 0;
+                        let evoIndex = 0;
+                        for (let l = 0; l < save["items"][k].evos.length; l++) {
+                            checkIndex++;
+                            let reqs = {
+                                "reqItems": save["items"][k].evos[l].reqItems,
+                                "reqContainers": save["items"][k].evos[l].reqContainers,
+                                "reqLocal": save["items"][k].evos[l].reqLocal,
+                                "reqGlobal": save["items"][k].evos[l].reqGlobal,
+                                "preAction": save["items"][k].evos[l].preAction,
+                                "locVisits": save["items"][k].evos[l].locVisits,
+                                "preNode": save["items"][k].evos[l].preNode,
+                                "itemEvos": save["items"][k].evos[l].itemEvos
+                            }
+                            if (checkRequirements(reqs)) {
+                                evoIndex = checkIndex;
+                            }
+                        }
+                        if (evoIndex !== +itemEvo[1]) {
+                            return false;
+                        }
                     }
-                    checked = true;
                 }
-            }
-            if (!checked) {
-                return false;
-            }
+            } 
+        }
+        if (!checked) {
+            return false;
         }
     }
+
     return true;
 }
 
