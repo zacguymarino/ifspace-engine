@@ -57,65 +57,11 @@ const template = [
         { role: 'close' }
       ])
     ]
-  },
-  //Game Style
-  {
-    label: 'Game Style',
-    id: 'styleMenu',
-    submenu: [
-      {
-        label: 'Classic',
-        id: 'classic',
-        type: 'checkbox',
-        checked: 'true',
-        click: e => {
-          updateGameStyle(e.id);
-        }
-      },
-      {
-        label: 'Modern',
-        id: 'modern',
-        type: 'checkbox',
-        click: e => {
-          updateGameStyle(e.id);
-        }
-      },
-      {
-        label: 'Gamebook',
-        id: 'gamebook',
-        type: 'checkbox',
-        click: e => {
-          updateGameStyle(e.id);
-        }
-      }
-    ]
   }
 ]
 
 const menu = Menu.buildFromTemplate(template)
 Menu.setApplicationMenu(menu)
-
-function updateGameStyle (style) {
-  switch(style) {
-    case 'classic':
-      menu.getMenuItemById('classic').checked = true;
-      menu.getMenuItemById('modern').checked = false;
-      menu.getMenuItemById('gamebook').checked = false;
-      break;
-    case 'modern':
-      menu.getMenuItemById('classic').checked = false;
-      menu.getMenuItemById('modern').checked = true;
-      menu.getMenuItemById('gamebook').checked = false;
-      break;
-    case 'gamebook':
-      menu.getMenuItemById('classic').checked = false;
-      menu.getMenuItemById('modern').checked = false;
-      menu.getMenuItemById('gamebook').checked = true;
-      break;
-    default:
-      break;
-  }
-}
 
 const createWindow = () => {
   const win = new BrowserWindow({
@@ -133,18 +79,7 @@ function handleFileOpen() {
   const filePaths = dialog.showOpenDialogSync();
   if (filePaths) {
     let gameData = fs.readFileSync(filePaths[0], "utf-8");
-    let style = (JSON.parse(gameData.toString()))['gameStyle'];
-    updateGameStyle(style);
     return gameData;
-  }
-}
-
-function getStyle() {
-  let subItems = menu.getMenuItemById('styleMenu').submenu.items;
-  for (let i = 0; i < subItems.length; i++) {
-    if (subItems[i].checked) {
-      return subItems[i].id;
-    }
   }
 }
 
@@ -205,8 +140,6 @@ ipcMain.handle("loadGame", handleFileOpen);
 ipcMain.handle("createNode", createNode);
 
 ipcMain.handle("deleteNode", deleteNode);
-
-ipcMain.handle("getStyle", getStyle);
 
 ipcMain.on("deleteDenied", deleteDenied);
 

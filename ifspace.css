@@ -26,6 +26,10 @@ button {
   margin-left: 10px;
 }
 
+.spaceLeft {
+  margin-left: 10px;
+}
+
 #zIndex {
   width: 50%;
   height: 35px;
@@ -97,6 +101,21 @@ input[type="number"]:hover {
 
 .bottomBarSection > * {
   display: inline;
+}
+
+#helpDisplay {
+  position: fixed;
+  text-align: center;
+  width: 75%;
+  border: 3px solid black;
+  background-color: #f0f8ff;
+  top: 5%;
+  left: 12.5%;
+  z-index: 1;
+}
+
+#helpClose {
+  margin: auto;
 }
 
 .centerText {

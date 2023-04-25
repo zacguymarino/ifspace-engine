@@ -79,10 +79,35 @@ function displayMessage(message, input) {
 
 function getActions(location) {
     let actions = [];
-    for (let i = 0; i < game[currentNode].actions.actions.length; i++) {
-        let variants = game[currentNode].actions.actions[i].actions.split(/\s*,\s*/);
-        for (let j = 0; j < variants.length; j++) {
-            actions.push(variants[j]);
+    if (gameStyle == "modern") {
+        for (let i = 0; i < game[currentNode].actions.actions.length; i++) {
+            let reqs = {
+                "reqItems": game[currentNode].actions.actions[i].reqItems,
+                "reqContainers": game[currentNode].actions.actions[i].reqContainers,
+                "reqLocal": game[currentNode].actions.actions[i].reqLocal,
+                "reqGlobal": game[currentNode].actions.actions[i].reqGlobal,
+                "preAction": game[currentNode].actions.actions[i].preAction,
+                "locVisits": game[currentNode].actions.actions[i].locVisits,
+                "preNode": game[currentNode].actions.actions[i].preNode,
+                "itemEvos": game[currentNode].actions.actions[i].itemEvos
+            }
+            let reqCheck = checkRequirements(reqs);
+            if (!reqCheck && game[currentNode].actions.actions[i].fail.length == 0) {
+                continue;
+            } else {
+                let variants = game[currentNode].actions.actions[i].actions.split(/\s*,\s*/);
+                for (let j = 0; j < variants.length; j++) {
+                    actions.push(variants[j]);
+                }
+            }
+        }
+        return actions;
+    } else {
+        for (let i = 0; i < game[currentNode].actions.actions.length; i++) {
+            let variants = game[currentNode].actions.actions[i].actions.split(/\s*,\s*/);
+            for (let j = 0; j < variants.length; j++) {
+                actions.push(variants[j]);
+            }
         }
     }
     return actions;

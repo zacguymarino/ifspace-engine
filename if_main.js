@@ -56,6 +56,19 @@ $(function () {
   });
 
   /////////////////////
+  //Help/Documentation
+  /////////////////////
+  $(document).on("click", "#helpOpen", function () {
+    $("#helpDisplay").css("visibility","visible");
+  })
+
+  $(document).on('click', '#helpClose', function(event) {
+    if ($('#helpDisplay').is(':visible')){
+        $("#helpDisplay").css("visibility", "hidden");
+    }
+});
+
+  /////////////////////
   //Node Map Controls
   /////////////////////
   $(document).on("click", ".zoom", function (event) {

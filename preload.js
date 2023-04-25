@@ -13,9 +13,6 @@ contextBridge.exposeInMainWorld("IFS_API", {
   deleteNode: async () => {
     return await ipcRenderer.invoke("deleteNode");
   },
-  getStyle: async () => {
-    return await ipcRenderer.invoke("getStyle");
-  },
   deleteDenied: () => {
     ipcRenderer.send("deleteDenied");
   }

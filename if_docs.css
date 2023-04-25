@@ -1,0 +1,15 @@
+* {
+    color: black;
+    text-align: left;
+}
+
+.docContent {
+    height: 83vh;
+    overflow-y: scroll;
+    margin-left: 20px;
+    margin-right: 20px;
+}
+
+h1 {
+    text-align: center;
+}

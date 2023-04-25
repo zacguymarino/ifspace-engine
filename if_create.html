@@ -16,8 +16,9 @@
 
         <!-- Favicon -->
         <link rel="icon" type="image/x-icon" href="images/ifspace/favicon.ico">
-        <!-- Custom JS File -->
+        <!-- Custom JS Files -->
         <script type="module" src="if_main.js"></script>
+        <script src="if_docs.js"></script>
 
     </head>
     <body>
@@ -222,6 +223,9 @@
             </div>
             <div class="bottomBar">
                 <div class="bottomBarSection">
+                    <button id="helpOpen">Help</button>
+                </div>
+                <div class="bottomBarSection">
                     <button class="zoom" id="zoomIn">Zoom In</button>
                     <button class="zoom" id="zoomOut">Zoom Out</button>
                     <div id="zIndexBlock">
@@ -234,6 +238,17 @@
                 </div>
                 <div class="bottomBarSection">
                     <div>
+                        <label class="tooltip">
+                            Game Style:
+                            <span class="tooltiptext">The style of this game</span>
+                        </label>
+                        <select id="gameStyle">
+                            <option selected="selected" value="classic">Classic</option>
+                            <option value="modern">Modern</option>
+                            <option value="gamebook">Gamebook</option>
+                        </select>
+                    </div>
+                    <div class="spaceLeft">
                         <label class="tooltip">
                             Game title:
                             <span class="tooltiptext">The title of this game</span>
@@ -253,6 +268,10 @@
             <div class="gameSimTools">
                 <button id="restartGameSim">Restart Game</button>
             </div>
+        </div>
+        <div id="helpDisplay" style="visibility: hidden">
+            <if-docs></if-docs>
+            <button id="helpClose">Close</button>
         </div>
     </body>
 </html>

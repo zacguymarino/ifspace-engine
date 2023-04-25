@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet"  type="text/css" href="if_docs.css">
+    </head>
+    <div class="docContent">
+        <h1>IF-Space Engine Documentation</h1>
+        <h2><u>Description</u></h2>
+        <p>The IF-Space Engine Software is designed to make creating works of interactive fiction easy, fun, and code free.  Three styles
+        of interactive fiction are available for creation with this software:</p>
+        <ol>
+            <li>Classic</li>
+            <ul>
+                <li>Games which require the user to input strings of text to further the gameplay (like Colossal Cave Adventure and Zork)</li>
+                <li>Utilizes: Entire range of node tools</li>
+            </ul>
+            <li>Modern</li>
+            <ul>
+                <li>Games which generate buttons for the possible in-game actions as well as the possible directions in which to move</li>
+                <li>Utilizes: Node Tools Header, Directions, Descriptions, Actions, Win, Lose</li>
+            </ul>
+            <li>Gamebook</li>
+            <ul>
+                <li>Games which only generate buttons for the possible directions in which to move (Like a choose your path gamebook)</li>
+                <li>Utilizes: Node Tools Header, Directions, Descriptions, Win, Lose</li>
+            </ul>
+        </ol>
+        <h2><u>Layout</u></h2>
+        <h3>Node Map</h3>
+        <p>- Left hand side of the page, consisting of the grid space</p>
+        <h3>Node Tools</h3>
+        <p>- Right hand side of the page, consisting of the various tabs and options</p>
+        <h3>Game Sim</h3>
+        <p>- Expandable lower section of the page (upon clicking 'Test Game'), consisting of the mock game play area</p>
+        <h2><u>Functions</u></h2>
+        <h3>Node Map</h3>
+        <p>The grid space on the left side of the software is known as the 'Node Map'.  It is here where the "map" of your game is realized.</p>
+        <p>The red colored square in the Node Map indicates the Node which you currently have selected and which would be edited if changes
+        are made in the Node Tools.</p>
+        <p>Blue colored squares indicate nodes which exist but that are not currently active in the Node Tools.
+        To switch from the currently active node (the red one) to an inactive node, simply click whichever inactive node you would like to
+        edit.</p>
+        <p>Black colored squares (empty squares) are locations which are available to create a node.  To do this, simply click inside of
+        an empty square which you would like to be a node, and then click "Ok" when you are asked if you are sure.</p>
+        <p>To delete any given node and all of its contents, first select and make active the node that is to be deleted, and then click
+        the "Delete Node" button in the top left.  You will then be prompted to click "Ok" or "Cancel" to make sure this was not a mistake.</p>
+        <p>The zoom in and out functions can be found in the bottom bar of the software.  Clicking these will either enlarge or shrink the grid
+        space, respective to the button you click.</p>
+        <p>The z-index input is responsible for changing the z coordinate of the Node Map.  Although the Node Map is represented in a standard
+        X,Y coordinate plane, the Z axis still exists and can be changed with the z-index input.  This is useful for games where the map is
+        meant to maintaine the true form of the available directions and which contain Up or Down directions (which default to increasing or
+        decreasing the z coordinate, respectively).  This particular feature can be ignored, but to ignore this feature while
+        also including Up or Down directions in the game will require changing the destination location of those directions in the Directions
+        tab (see Directions tab below for more information).</p>
+        <h3>Node Tools</h3>
+        <h4>Node Tools Header</h4>
+        <p>The Node Tools Header can be thought of as the basic setup for each node.  It consists of the Location of the node, the given Name of
+        the node, the default Visibility of the node, and the number of Points available for visiting this node.</p>
+        <ul>
+            <li>Location</li>
+            <ul>
+                <li>The constant X,Y,Z coordinate of the currently selected node.  This cannot be changed.</li>
+            </ul>
+            <li>Name</li>
+            <ul>
+                <li>This field is for the Name of the current node.  This will be printed to the screen during gameplay each time the user
+                visits this node.</li>
+            </ul>
+            <li>Visibility</li>
+            <ul>
+                <li>Default value of this node's visibility</li>
+                <li>Determines whether or not the potential items in this node will be available for pickup and printed onscreen when
+                visiting the node and/or using the "Look" command.</li>
+                <li>Checked means the items will be available, and unchecked means they will not be available or printed to screen</li>
+            </ul>
+            <li>Points</li>
+            <ul>
+                <li>The number of points the user will receive upon visiting this node for the first time.</li>
+            </ul>
+        </ul>
+        <h4>Directions Tab</h4>
+        <p>The Directions Tab is used to define the various directions in which a player can move from this node during gameplay.</p>
+        <ul>
+            <li>Checkbox Directions</li>
+            <ul>
+                <li>By checking one of these boxes, you are adding the potential for a player to go in this direction during gameplay.</li>
+                <li>After checking a box, the directions's additional options are displayed below the checkboxes.</li>
+                <li>Unchecking a box will remove the potential for that direction during gameplay and will also erase any of the options for
+                that direction that were changed while the box was checked.</li>
+                <li>NOTE: The node in which this direction leads to is not automatically created (since the destination location can be
+                edited).  You must create the node that this direction leads to manually in the Node Map.</li>
+            </ul>
+            <li>Location Setting</li>
+            <ul>
+                <li>The Location Setting is the node location in which the player will be sent when successfully navigating in this direction
+                during gameplay.</li>
+                <li>The default Location Setting is the location on the Node Map which would naturally occur when moving from the currently
+                selected node (the node being edited) one position in the checked direction being edited.</li>
+                <li>This Location Setting can be changed to any node (in the form of x,y,z).</li>
+            </ul>
+            <li>Alternatives Setting</li>
+            <ul>
+                <li>Alternative names given to the checked directions which would also result in the player moving in the checked direction.  For
+                example: On top of saying 'Go North', the user may naturally want to say 'Follow path' or 'Take path'.  The comma
+                separated list in the 'Alternatives' field makes up all of the other potential means of going in the checked direction.</li>
+            </ul>
+            <li>Exclude Defaults Setting</li>
+            <ul>
+                <li>Checkbox for removing the possibility of using the default "Go {direction}" command.  For example, if the "North" direction
+                is checked, and the 'Exclude Defaults' checkbox is checked, then the user cannot type "Go North" to go this direction; they must
+                use one of the listed 'Alternatives' instead.</li>
+                <li>By default, this checkbox is unchecked - therefore including the "Go {direction}" command in the available commands for moving
+                in this direction.</li>
+                <li>This setting is especially useful for Modern and Gamebook styles, since a singular Alternative to 'Go {direction}' is likely
+                desired.</li>
+            </ul>
+            <li>Requirements</li>
+            <ul>
+                <li>The requirements for this direction to be available for use by the player during gameplay</li>
+                <li>See the 'Requirements' section below for more details on 'Requirements'.</li>
+            </ul>
+        </ul>
+        <h4>Descriptions Tab</h4>
+        <p>The Descriptions Tab is where a node's initial text (upon visiting the node in gameplay) is defined.</p>
+        <ul>
+            <li>Default Setting</li>
+            <ul>
+                This is the text which will be printed during gameplay the first time the user visits this node.  Typically it would include any
+                continued plot which is being told as well as any setting features which should be described to the player.
+            </ul>
+            <li>Basic Setting</li>
+            <ul>
+                <li>This is the text which will be printed during gameplay upon subsequent visits to this node as well as after the "Look" command.
+                Typically this includes any setting features which should be described to the player.</li>
+            </ul>
+            <li>Evolutions</li>
+            <ul>
+                <li>Evolution descriptions are printed during gameplay (in place of default and basic descriptions) when their requirements are
+                met.</li>
+                <li>A node may have any number of evolution descriptions, including zero.</li>
+                <li>If many evolutions exist, the right most evolution description which meets its requirements will be the description that is
+                printed to the screen when a player visits this node.</li>
+                <li>See the 'Requirements' section below for more details on 'Requirements'.</li>
+            </ul>
+        </ul>
+        <h4>Items Tab</h4>
+        <p>The items tab is used to create and define the items which will start in this node.  Items are things in the game that the player
+        can pick up, look at, and drop anywhere in the game.  Players can check which items are on their person by using the "Inventory" command.</p>
+        <ul>
+            <li>Add Item Button</li>
+            <ul>
+                <li>Adds an item to the list of items which would begin in this node.</li>
+            </ul>
+            <li>Remove Item Button</li>
+            <ul>
+                <li>Removes the item related to this particular button from the item list associated with this node.</li>
+            </ul>
+            <li>Name Setting</li>
+            <ul>
+                <li>This input is for a list of all the different possible names referring to this item.  For example: Flashlight, torch, light</li>
+                <li>The first name in the list will be used for the onscreen referral to this item.</li>
+                <li>Should be in the form of a comma separated list</li>
+            </ul>
+            <li>Description Setting</li>
+            <ul>
+                <li>This description will be the output for when the player uses the "Look {item}" command.</li>
+            </ul>
+            <li>Points</li>
+            <ul>
+                <li>The number of points the user will receive for having this item in their inventory.</li>
+            </ul>
+            <li>Requirements</li>
+            <ul>
+                <li>The requirements for this item to be available for pickup by the player during gameplay</li>
+                <li>See the 'Requirements' section below for more details on 'Requirements'.</li>
+            </ul>
+            <li>Add Evolution Button</li>
+            <ul>
+                <li>Adds an evolution to this item</li>
+                <li>Item evolutions can be used to change the description of an item given its set of requirements are satisified.</li>
+                <li>Any number of evolutions can be added to an item.</li>
+                <li>If multiple item evolutions exist, the bottom most evolution that has its requirements satisfied will have its description
+                used for the "Look {item}" command.</li>
+            </ul>
+            <li>Remove Evolution Button</li>
+            <ul>
+                <li>Removes the corresponding item evolution from the list of evolutions for this item</li>
+            </ul>
+        </ul>
+        <h4>Containers Tab</h4>
+        <p>The containers tab is used to define containers which can be found in this node.  A container is something that can hold and store items.
+        Containers in IF-Space can be configured so that having certain items or a certain number of items in a particular container can trigger
+        requirements for other settings in the game (similar to filling the trophy case in Zork).</p>
+        <ul>
+            <li>Add Container Button</li>
+            <ul>
+                <li>Adds a container to the list of containers for this node</li>
+            </ul>
+            <li>Remove Container Button</li>
+            <ul>
+                <li>Removes the corresponding container from the list of containers for this node</li>
+            </ul>
+            <li>Name Setting</li>
+            <ul>
+                <li>This input is for a list of all the different possible names referring to this container.  For example: Bookshelf, Bookcase, Shelf</li>
+                <li>The first name in the list will be used for the onscreen referral to this container.</li>
+                <li>Should be in the form of a comma separated list</li>
+            </ul>
+            <li>Capacity Setting</li>
+            <ul>
+                <li>This setting defines the number of items that can be held by the container at one time.</li>
+                <li>Defaults to infinity</li>
+            </ul>
+            <li>Completed Contents Setting</li>
+            <ul>
+                <li>This field describes what must be stored in the container in order for this container's requirement check to be satisfied.</li>
+                <li>This field accepts 1 of 2 types of input:</li>
+                <ol>
+                    <li>A comma separated list of items (E.g. key, cash, note)</li>
+                    <li>A number (E.g. 5)</li>
+                </ol>
+                <li>If a list of items is provided, each of those items must be stored in the container for its requirement check to be satisfied.</li>
+                <li>If a number is provided, a minimum of this many items must be stored in the container for its requirement check to be satisfied.</li>
+            </ul>
+            <li>Illegal Items Setting</li>
+            <ul>
+                <li>A comma separated list of items (which exist in the game) that cannot be stored in this container</li>
+                <li>The first name in an item's list of potential names must be the name entered in the illegal items list.</li>
+            </ul>
+            <li>Points Setting</li>
+            <ul>
+                <li>The number of points the user will receive for having this container's "Completed Contents" requirement satisfied</li>
+            </ul>
+            <li>Requirements</li>
+            <ul>
+                <li>The requirements for this container to be available for use by the player during gameplay</li>
+                <li>See the 'Requirements' section below for more details on 'Requirements'.</li>
+            </ul>
+        </ul>
+        <h4>Actions Tab</h4>
+        <p>The Actions Tab is used to create and define the various possible actions that the player can potentially perform in this node.  For
+        example: "Break window" or "Open locker"</p>
+        <ul>
+            <li>Add Action Button</li>
+            <ul>
+                <li>Adds an action to the list of actions for this node</li>
+            </ul>
+            <li>Remove Action Button</li>
+            <ul>
+                <li>Removes the corresponding action from the list of actions for this node.</li>
+            </ul>
+            <li>Action(s) Setting</li>
+            <ul>
+                <li>This input is for a list of all the different possible action calls referring to this action.  For example: Break window, Smash window, Destroy window</li>
+                <li>Should be in the form of a comma separated list</li>
+            </ul>
+            <li>Max Uses Setting</li>
+            <ul>
+                <li>The maximum number of times that this action can be used</li>
+                <li>Defaults to infinity</li>
+            </ul>
+            <li>Costs Setting</li>
+            <ul>
+                <li>A comma separated list of items which are removed from the player's inventory and effectively vanish after performing this action</li>
+                <li>The first name in an item's list of potential names must be the name entered in the "Costs Setting" list.</li>
+            </ul>
+            <li>Drops Setting</li>
+            <ul>
+                <li>A comma separated list of items which are dropped from the player's inventory after performing this action (E.g. Throwing a rock should probably drop a rock)</li>
+                <li>The first name in an item's list of potential names must be the name entered in the "Drops Setting" list.</li>
+            </ul>
+            <li>Visibility Setting</li>
+            <ul>
+                <li>This selection determines how the visibility setting of this node will change after performing this action.</li>
+                <li>No Change keeps the visibility setting how it already is</li>
+                <li>On and Off sets the visibility to On and Off, respectively</li>
+                <li>Switch changes the visibility to the opposite of the current setting (i.e. On goes to Off and Off goes to On)</li>
+            </ul>
+            <li>Action Response Setting</li>
+            <ul>
+                <li>The Action Response is the text that will be printed to the screen during gameplay after successfully using an action.</li>
+                <li>For example: If the action is "Throw Rock" then the Action Response could be "The rock breaks the window and falls to the
+                ground."</li>
+            </ul>
+            <li>Fail Response Setting</li>
+            <ul>
+                <li>The Fail Response is the text that will be printed to the screen during gameplay after trying to call an action which has
+                failing requirements.</li>
+            </ul>
+            <li>Points Setting</li>
+            <ul>
+                <li>The number of points the user will receive for successfully calling this action</li>
+            </ul>
+            <li>Requirements</li>
+            <ul>
+                <li>The requirements for this action to be available for use by the player during gameplay</li>
+                <li>See the 'Requirements' section below for more details on 'Requirements'.</li>
+            </ul>
+        </ul>
+        <h4>Win Tab</h4>
+        <p>The Win Tab is for defining a node as having the potential for winning the game in this node.  If the Win Description is not empty, then it is assumed
+        that the node has a win condition.  If there is a win condition and the requirements in the Win Tab are satisified, then the player wins
+        the game.</p>
+        <ul>
+            <li>Win Description</li>
+            <ul>
+                <li>This is the text that will be printed to the screen during gameplay when the player wins the game.</li>
+            </ul>
+            <li>Requirements</li>
+            <ul>
+                <li>The requirements for winning the game in this node</li>
+                <li>See the 'Requirements' section below for more details on 'Requirements'.</li>
+            </ul>
+        </ul>
+        <h4>Lose Tab</h4>
+        <p>The Lose Tab is for defining a node as having the potential for losing the game in this node.  If the Lose Description is not empty, then it is assumed
+        that the node has a lose condition.  If there is a lose condition and the requirements in the Lose Tab are satisified, then the player loses
+        the game.</p>
+        <ul>
+            <li>Lose Description</li>
+            <ul>
+                <li>This is the text that will be printed to the screen during gameplay when the player loses the game.</li>
+            </ul>
+            <li>Requirements</li>
+            <ul>
+                <li>The requirements for losing the game in this node</li>
+                <li>See the 'Requirements' section below for more details on 'Requirements'.</li>
+            </ul>
+        </ul>
+        <h4>Hint Tab</h4>
+        <p>The hint tab is used to offer the player a hint in the event that they use the "Help" command or if their input is unrecognized
+        5 consecutive times.</p>
+        <ul>
+            <li>Leave the hint field empty if this node should have no hints.</li>
+        </ul>
+        <h4>Requirements</h4>
+        <p>The requirements section exists for many of the features in the IF-Space Engine.  They are a powerful tool for making logical changes
+        across these features.  In general, a particular setting or feature that has requirements attached to it will only become available for
+        use during gameplay if those reuirements are satisified, otherwise this feature will be absent from the game until those requirements are
+        met.</p>
+        <ul>
+            <li>Items Requirement</li>
+            <ul>
+                <li>A comma separated list of items needed in the player's inventory</li>
+                <li>The first name in an item's list of potential names must be the name entered in the "Items Requirement" list.</li>
+            </ul>
+            <li>Containers Requirement</li>
+            <ul>
+                <li>A comma separated list of containers required to have their "Completed Contents" setting satisfied</li>
+                <li>The first name in the container's list of potential names must be the name entered in the "Containers Requirement" list.</li>
+            </ul>
+            <li>Local Actions Requirement</li>
+            <ul>
+                <li>A comma separated list of actions required to have been successfully called within this node</li>
+                <li>The first name in the action's list of potential names must be the name entered in the "Local Actions Requirement" list.</li>
+            </ul>
+            <li>Global Actions Requirement</li>
+            <ul>
+                <li>A comma separated list of actions required to have been successfully called within any existing node</li>
+                <li>The first name in the action's list of potential names must be the name entered in the "Global Actions Requirement" list.</li>
+            </ul>
+            <li>Previous Action Requirement</li>
+            <ul>
+                <li>A singular action which is required to have been the most recent successfully called action</li>
+                <li>The first name in the action's list of potential names must be the name entered in the "Previous Action Requirement".</li>
+            </ul>
+            <li>Item Evos Requirement</li>
+            <ul>
+                <li>A comma separate list of brackets which contain a singular required item and a number representing that item's required
+                evolution stage</li>
+                <li>For example:  [key, 1], [gemstone, 2]</li>
+                <ul>
+                    <li>This example would require that the player has in their inventory a key with a first stage evolution as well as a
+                    gemstone with its second stage evolution</li>
+                </ul>
+            </ul>
+        </ul>
+        <h4>Node Tools Footer</h4>
+        <ul>
+            <li>Game Style Setting</li>
+            <ul>
+                <li>This defines the game's game style (as described in the IF-Space Engine description above)</li>
+            </ul>
+            <li>Game Title Setting</li>
+            <ul>
+                <li>This defines the name of the game and will print to screen in large text at the start of gameplay</li>
+            </ul>
+            <li>Load Game</li>
+            <ul>
+                <li>For loading a previously saved game</li>
+            </ul>
+            <li>Save Game</li>
+            <ul>
+                <li>For saving the current game</li>
+            </ul>
+        </ul>
+        <h2><u>Game Sim</u></h2>
+        <h4>Test Game Button</h4>
+        <ul>
+            <li>This button displays/hides the "Game Sim" area</li>
+        </ul>
+        <h4>Restart Game Button</h4>
+        <ul>
+            <li>This button starts/restarts the currently loaded game</li>
+        </ul>
+    </div>
+</html>
