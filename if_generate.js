@@ -4,6 +4,8 @@ import { createMapFromGame } from "./if_nodemap.js";
 var game = {};
 var gameTitle;
 var gameStyle;
+var gameRating;
+var gameAuthor;
 
 var node = {
   name: "",
@@ -36,6 +38,8 @@ async function saveGame() {
   let gameFile = {};
   saveCNode();
   gameFile['gameStyle'] = $("#gameStyle").val();
+  gameFile['gameRating'] = $("#gameRating").val();
+  gameFile['gameAuthor'] = $("#gameAuthor").val();
   gameFile['gameTitle'] = gameTitle;
   gameFile['gameContent'] = JSON.parse(JSON.stringify(game));
   window.IFS_API.saveGame(JSON.stringify(gameFile));
@@ -46,12 +50,16 @@ async function loadGame() {
     let loadData = JSON.parse(rawData.toString());
     gameTitle = loadData['gameTitle'];
     gameStyle = loadData['gameStyle'];
+    gameRating = loadData['gameRating'];
+    gameAuthor = loadData['gameAuthor'];
     game = loadData['gameContent'];
     cNode = loadData['gameContent']['0,0,0'];
     loadDomFromNode(cNode);
     createMapFromGame(Object.keys(game));
     $("#gameTitle").val(gameTitle);
     $('#gameStyle').val(gameStyle);
+    $('#gameRating').val(gameRating);
+    $('#gameAuthor').val(gameAuthor);
   });
 }
 
@@ -399,6 +407,7 @@ export {
   generateNode,
   gameTitle,
   gameStyle,
+  gameAuthor,
   game,
   node,
   switchNode,

@@ -1,8 +1,8 @@
 fetch("if_docs.html")
     .then(stream => stream.text())
-    .then(text => define(text));
+    .then(text => loadDocs(text));
 
-function define(html) {
+function loadDocs(html) {
     class Docs extends HTMLElement {
         constructor() {
             super();

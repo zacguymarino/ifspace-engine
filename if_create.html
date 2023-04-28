@@ -237,17 +237,7 @@
                     <button id="testGame">Test Game</button>
                 </div>
                 <div class="bottomBarSection">
-                    <div>
-                        <label class="tooltip">
-                            Game Style:
-                            <span class="tooltiptext">The style of this game</span>
-                        </label>
-                        <select id="gameStyle">
-                            <option selected="selected" value="classic">Classic</option>
-                            <option value="modern">Modern</option>
-                            <option value="gamebook">Gamebook</option>
-                        </select>
-                    </div>
+                    <button id="settingsOpen">Game Settings</button>
                     <div class="spaceLeft">
                         <label class="tooltip">
                             Game title:
@@ -269,9 +259,37 @@
                 <button id="restartGameSim">Restart Game</button>
             </div>
         </div>
-        <div id="helpDisplay" style="visibility: hidden">
+        <div class="popupScreen" id="helpDisplay" style="visibility: hidden">
             <if-docs></if-docs>
-            <button id="helpClose">Close</button>
+            <button class="popupClose">Close</button>
+        </div>
+        <div class="popupScreen" id="settingsDisplay" style="visibility: hidden">
+            <h1 class="settingsTitle">Game Settings</h1>
+            <div class="settings">
+                <div>
+                    <label for="gameStyle">Game Style:</label>
+                    <select id="gameStyle" name="gameStyle">
+                        <option selected="selected" value="classic">Classic</option>
+                        <option value="modern">Modern</option>
+                        <option value="gamebook">Gamebook</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="gameRating">Game Rating:</label>
+                    <select id="gameRating" name="gameRating">
+                        <option selected="selected" value="unrated">U (unrated)</option>
+                        <option value="everyone">E (everyone)</option>
+                        <option value="discretion">D (discretion)</option>
+                        <option value="mature">M (mature)</option>
+                        <option value="adult">A (adult)</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="gameAuthor">Game Author:</label>
+                    <input type="text" id="gameAuthor" name="gameAuthor">
+                </div>
+            </div>
+            <button class="popupClose">Close</button>
         </div>
     </body>
 </html>

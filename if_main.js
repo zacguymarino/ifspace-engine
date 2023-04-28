@@ -23,22 +23,22 @@ $(function () {
       $("#classicStyleInput").val("");
       event.preventDefault();
     }
-  })
+  });
 
   $(document).on("click", ".modernActionButton", function (event) {
     parseAction($(event.currentTarget).attr("value"));
     event.preventDefault;
-  })
+  });
 
   $(document).on("click", ".modernDirectionButton", function (event) {
     parseAction($(event.currentTarget).attr("value"));
     event.preventDefault;
-  })
+  });
 
   $(document).on("click", ".gamebookDirectionButton", function (event) {
     parseAction($(event.currentTarget).attr("value"));
     event.preventDefault;
-  })
+  });
   
   //////////////////////////////
   //Game loading/saving/deleting
@@ -55,18 +55,22 @@ $(function () {
     deleteNode();
   });
 
-  /////////////////////
-  //Help/Documentation
-  /////////////////////
+  ///////////////////////////////////
+  //Help/Documentation/Game Settings
+  ///////////////////////////////////
   $(document).on("click", "#helpOpen", function () {
     $("#helpDisplay").css("visibility","visible");
-  })
+  });
 
-  $(document).on('click', '#helpClose', function(event) {
-    if ($('#helpDisplay').is(':visible')){
-        $("#helpDisplay").css("visibility", "hidden");
+  $(document).on("click", "#settingsOpen", function () {
+    $("#settingsDisplay").css("visibility","visible");
+  });
+
+  $(document).on('click', '.popupClose', function(event) {
+    if ($(event.currentTarget.parentElement).is(':visible')){
+        $(event.currentTarget.parentElement).css("visibility", "hidden");
     }
-});
+  });
 
   /////////////////////
   //Node Map Controls

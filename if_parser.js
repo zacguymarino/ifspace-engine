@@ -1,4 +1,4 @@
-import {game, gameTitle, gameStyle} from './if_generate.js';
+import {game, gameTitle, gameStyle, gameAuthor} from './if_generate.js';
 
 var currentNode;
 var previousNode;
@@ -34,6 +34,9 @@ function gameInit() {
     };
     $('#outputSim').empty();
     $('#outputSim').append(`<h1>${gameTitle}</h1>`);
+    if (gameAuthor.length > 0) {
+        $('#outputSim').append(`<h6>Created by: ${gameAuthor}</h6>`);
+    }
     parseNode(currentNode);
 }
 
