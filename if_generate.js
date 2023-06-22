@@ -4,6 +4,7 @@ import { createMapFromGame } from "./if_nodemap.js";
 var game = {};
 var gameTitle;
 var gameStyle;
+var gameStatus;
 var gameRating;
 var gameAuthor;
 
@@ -38,6 +39,7 @@ async function saveGame() {
   let gameFile = {};
   saveCNode();
   gameFile['gameStyle'] = $("#gameStyle").val();
+  gameFile['gameStatus'] = $("#gameStatus").val();
   gameFile['gameRating'] = $("#gameRating").val();
   gameFile['gameAuthor'] = $("#gameAuthor").val();
   gameFile['gameTitle'] = gameTitle;
@@ -50,6 +52,7 @@ async function loadGame() {
     let loadData = JSON.parse(rawData.toString());
     gameTitle = loadData['gameTitle'];
     gameStyle = loadData['gameStyle'];
+    gameStatus = loadData['gameStatus'];
     gameRating = loadData['gameRating'];
     gameAuthor = loadData['gameAuthor'];
     game = loadData['gameContent'];
@@ -58,6 +61,7 @@ async function loadGame() {
     createMapFromGame(Object.keys(game));
     $("#gameTitle").val(gameTitle);
     $('#gameStyle').val(gameStyle);
+    $('#gameStatus').val(gameStatus);
     $('#gameRating').val(gameRating);
     $('#gameAuthor').val(gameAuthor);
   });

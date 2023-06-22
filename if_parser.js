@@ -523,7 +523,6 @@ function checkRequirements(reqs) {
                 checked = true;
                 for (let k = 0; k < save.items.length; k++) {
                     if (save["items"][k].name.split(/\s*,\s*/)[0].toUpperCase() === itemEvo[0].toUpperCase()) {
-                        console.log("Made it here homes");
                         let checkIndex = 0;
                         let evoIndex = 0;
                         for (let l = 0; l < save["items"][k].evos.length; l++) {
@@ -713,7 +712,8 @@ function updateModernActions(actionList) {
 function updateModernDirections(directionList) {
     $("#modernStyleDirections").empty();
     for (let i = 0; i < directionList.length; i++) {
-        let html = `<button class="modernDirectionButton inputButton" value="${directionList[i].alternatives[0]}">${directionList[i].alternatives[0]}</button>`;
+        let buttonValue = `${directionList[i].alternatives[0]}`;
+        let html = `<button class="modernDirectionButton inputButton" value="${buttonValue}">${directionList[i].alternatives[0]}</button>`;
         $("#modernStyleDirections").append(html);
     }
 }
@@ -721,9 +721,22 @@ function updateModernDirections(directionList) {
 function updateGamebookDirections(directionList) {
     $("#gamebookStyleDirections").empty();
     for (let i = 0; i < directionList.length; i++) {
-        let html = `<button class="gamebookDirectionButton inputButton" value="${directionList[i].alternatives[0]}">${directionList[i].alternatives[0]}</button>`;
+        let buttonValue = `${directionList[i].alternatives[0]}`;
+        let html = `<button class="gamebookDirectionButton inputButton" value="${buttonValue}">${directionList[i].alternatives[0]}</button>`;
         $("#gamebookStyleDirections").append(html);
     }
+}
+
+function filterIgnorables(action) {
+    let actionParts = action.split(" ");
+    for (let i = 0; i < ignorables.length; i++) {
+        if (actionParts.includes(ignorables[i])) {
+            let index = actionParts.indexOf(ignorables[i]);
+            actionParts.splice(index, 1);
+        }
+    }
+    action = actionParts.join(" ");
+    return action
 }
 
 function pushAction(action) {
@@ -770,22 +783,15 @@ function parseAction(input) {
         displayMessage(input, true);
 
         //Filter out ignorables
-        let actionParts = action.split(" ");
-        for (let i = 0; i < ignorables.length; i++) {
-            if (actionParts.includes(ignorables[i])) {
-                let index = actionParts.indexOf(ignorables[i]);
-                actionParts.splice(index, 1);
-            }
-        }
-        action = actionParts.join(" ");
+        action = filterIgnorables(action);
 
         //Handle actions
         for (let h = 0; h < cNodeActions.length; h++) {
-            if (cNodeActions[h].toUpperCase() == action) {
+            if (filterIgnorables(cNodeActions[h].toUpperCase()) == action) {
                 for (let i = 0; i < game[currentNode].actions.actions.length; i++) {
                     let variants = game[currentNode].actions.actions[i].actions.toUpperCase().split(/\s*,\s*/);
                     for (let m = 0; m < variants.length; m++) {
-                        if (variants[m] == action) {
+                        if (filterIgnorables(variants[m]) == action) {
                             let actionObject = JSON.parse(JSON.stringify(game[currentNode].actions.actions[i]));
                             let reqs = {
                                 "reqItems": actionObject.reqItems,
@@ -1045,7 +1051,7 @@ function parseAction(input) {
 
         for (let i = 0; i < cNodeDirections.length; i++) {
             for (let j = 0; j < cNodeDirections[i].alternatives.length; j++) {
-                if (cNodeDirections[i].alternatives[j] == action) {
+                if (filterIgnorables(cNodeDirections[i].alternatives[j]) == action) {
                     if (checkRequirements(cNodeDirections[i].requirements)) {
                         parseNode(cNodeDirections[i].location);
                         return;

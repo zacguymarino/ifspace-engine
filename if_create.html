@@ -125,13 +125,13 @@
                                 first entering this node or after entering the
                                 'look' command</span>
                         </label>
-                        <textarea id="defaultDes" rows="4" style="width: 90%;"></textarea>
+                        <textarea class="desSettings" id="defaultDes" rows="4" style="width: 90%;"></textarea>
                         <label class='tooltip'>
                             Basic
                             <span class='tooltiptext'>Text displayed upon
                                 revisiting this node</span>
                         </label>
-                        <textarea id="basicDes" rows="2" style="width: 90%;"></textarea>
+                        <textarea class="desSettings" id="basicDes" rows="2" style="width: 90%;"></textarea>
                         <label class='tooltip'>
                             Evolution
                             <span class='tooltiptext'>Description evolution
@@ -272,6 +272,14 @@
                         <option selected="selected" value="classic">Classic</option>
                         <option value="modern">Modern</option>
                         <option value="gamebook">Gamebook</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="gameStatus">Game Status:</label>
+                    <select id="gameStatus" name="gameStatus">
+                        <option selected="selected" value="wip">Work In Progress</option>
+                        <option value="beta">Beta Test</option>
+                        <option value="complete">Complete</option>
                     </select>
                 </div>
                 <div>

@@ -117,6 +117,10 @@ input[type="number"]:hover {
   margin: auto;
 }
 
+.desSettings {
+  white-space: pre-wrap;
+}
+
 .settings {
   margin-top: 25px;
   display: flex;
