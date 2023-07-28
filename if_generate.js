@@ -1,4 +1,4 @@
-import { loadDomFromNode } from "./if_dom.js";
+import { loadDomFromNode, loadDomGlobalActions } from "./if_dom.js";
 import { createMapFromGame } from "./if_nodemap.js";
 
 var game = {};
@@ -7,6 +7,7 @@ var gameStyle;
 var gameStatus;
 var gameRating;
 var gameAuthor;
+var globalActions;
 
 var node = {
   name: "",
@@ -38,11 +39,13 @@ async function saveGame() {
   let gameTitle = $("#gameTitle").val();
   let gameFile = {};
   saveCNode();
+  saveGlobalActions();
   gameFile['gameStyle'] = $("#gameStyle").val();
   gameFile['gameStatus'] = $("#gameStatus").val();
   gameFile['gameRating'] = $("#gameRating").val();
   gameFile['gameAuthor'] = $("#gameAuthor").val();
   gameFile['gameTitle'] = gameTitle;
+  gameFile['globalActions'] = globalActions;
   gameFile['gameContent'] = JSON.parse(JSON.stringify(game));
   window.IFS_API.saveGame(JSON.stringify(gameFile));
 }
@@ -55,8 +58,10 @@ async function loadGame() {
     gameStatus = loadData['gameStatus'];
     gameRating = loadData['gameRating'];
     gameAuthor = loadData['gameAuthor'];
+    globalActions = loadData['globalActions'];
     game = loadData['gameContent'];
     cNode = loadData['gameContent']['0,0,0'];
+    loadDomGlobalActions(globalActions);
     loadDomFromNode(cNode);
     createMapFromGame(Object.keys(game));
     $("#gameTitle").val(gameTitle);
@@ -92,6 +97,51 @@ function switchNode(title) {
   }
   loadDomFromNode(cNode);
   saveCNode();
+}
+
+function saveGlobalActions() {
+  let actionArray = [];
+  let actionList = $("#globalActionList").children();
+  for (let i = 0; i < actionList.length; i++) {
+    let baseId = $(actionList[i]).attr("id");
+    let actions = $(`#${baseId}_Actions`).val();
+    let max = $(`#${baseId}_Max`).val();
+    let costs = $(`#${baseId}_Costs`).val();
+    let drops = $(`#${baseId}_Drops`).val();
+    let visibility = $(`#${baseId}_Visibility`).val();
+    let response = $(`#${baseId}_Response`).val();
+    let fail = $(`#${baseId}_Fail`).val();
+    let points = $(`#${baseId}_Points`).val();
+    let reqItems = $(`#${baseId}_Items`).val();
+    let reqContainers = $(`#${baseId}_Containers`).val();
+    let reqLocal = $(`#${baseId}_Local`).val();
+    let reqGlobal = $(`#${baseId}_Global`).val();
+    let preAction = $(`#${baseId}_preAction`).val();
+    let locVisits = $(`#${baseId}_Visits`).val();
+    let preNode = $(`#${baseId}_preNode`).val();
+    let itemEvos = $(`#${baseId}_Evos`).val();
+
+    let action = {
+      actions: actions,
+      max: max,
+      costs: costs,
+      drops: drops,
+      visibility: visibility,
+      response: response,
+      fail: fail,
+      points: points,
+      reqItems: reqItems,
+      reqContainers: reqContainers,
+      reqLocal: reqLocal,
+      reqGlobal: reqGlobal,
+      preAction: preAction,
+      locVisits: locVisits,
+      preNode: preNode,
+      itemEvos: itemEvos,
+    };
+    actionArray.push(action);
+  }
+  globalActions = actionArray;
 }
 
 function saveCNode() {
@@ -412,6 +462,7 @@ export {
   gameTitle,
   gameStyle,
   gameAuthor,
+  globalActions,
   game,
   node,
   switchNode,

@@ -111,6 +111,7 @@ input[type="number"]:hover {
   top: 5%;
   left: 12.5%;
   z-index: 1;
+  color: black;
 }
 
 .popupClose {
@@ -131,7 +132,7 @@ input[type="number"]:hover {
   color: black;
 }
 
-.settingsTitle {
+.popupTitle {
   text-align: center;
   color: black;
 }
@@ -344,6 +345,27 @@ textarea:active {
   margin-top: 10px;
   margin-left: 5px;
   border: 1px solid #ffffff;
+}
+
+.globalStuff {
+  border: 1px solid #ffffff;
+  height: 23%;
+  margin-left: 5px;
+  width: 40vw;
+}
+
+.popupBlockElements *{
+  display: block;
+  padding: 0.5em;
+}
+
+.popupBlockElements > textarea {
+  color: #ffffff;
+}
+
+.globalActions {
+  overflow-y: scroll;
+  max-height: 80vh;
 }
 
 select {

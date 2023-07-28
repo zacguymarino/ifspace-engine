@@ -1,4 +1,4 @@
-import {game, gameTitle, gameStyle, gameAuthor} from './if_generate.js';
+import {game, gameTitle, gameStyle, gameAuthor, globalActions} from './if_generate.js';
 
 var currentNode;
 var previousNode;
@@ -16,10 +16,11 @@ var playing;
 var save;
 
 var takeCommands = ["GET","TAKE", "PICK UP", "OBTAIN", "GRAB"];
-var dropCommands = ["DROP", "PUT DOWN"];
+var dropCommands = ["DROP", "PUT DOWN", "DISCARD"];
 var inventoryCommands = ["INVENTORY", "INV", "I", "INVEN"];
 var hintCommands = ["HINT", "HELP"];
-var itemInspectCommands = ["INSPECT", "LOOK", "EXAMINE"];
+var lookCommands = ["LOOK", "L"];
+var itemInspectCommands = ["INSPECT", "LOOK", "EXAMINE", "X"];
 var ignorables = ["A", "AN", "THE", "TO", "FOR", "AT"];
 
 function gameInit() {
@@ -104,10 +105,37 @@ function getActions(location) {
                 }
             }
         }
+        for (let i = 0; i < globalActions.length; i++) {
+            let reqs = {
+                "reqItems": globalActions[i].reqItems,
+                "reqContainers": globalActions[i].reqContainers,
+                "reqLocal": globalActions[i].reqLocal,
+                "reqGlobal": globalActions[i].reqGlobal,
+                "preAction": globalActions[i].preAction,
+                "locVisits": globalActions[i].locVisits,
+                "preNode": globalActions[i].preNode,
+                "itemEvos": globalActions[i].itemEvos
+            }
+            let reqCheck = checkRequirements(reqs);
+            if (!reqCheck) {
+                continue;
+            } else {
+                let variants = globalActions[i].actions.split(/\s*,\s*/);
+                for (let j = 0; j < variants.length; j++) {
+                    actions.push(variants[j]);
+                }
+            }
+        }
         return actions;
     } else {
         for (let i = 0; i < game[currentNode].actions.actions.length; i++) {
             let variants = game[currentNode].actions.actions[i].actions.split(/\s*,\s*/);
+            for (let j = 0; j < variants.length; j++) {
+                actions.push(variants[j]);
+            }
+        }
+        for (let i = 0; i < globalActions.length; i++) {
+            let variants = globalActions[i].actions.split(/\s*,\s*/);
             for (let j = 0; j < variants.length; j++) {
                 actions.push(variants[j]);
             }
@@ -225,7 +253,9 @@ function getExistingItemsActions() {
 }
 
 function getItemInspectionActions() {
-    let items = JSON.parse(JSON.stringify(save.items));
+    let existingItems = JSON.parse(JSON.stringify(save.items));
+    let discoveredItems = JSON.parse(JSON.stringify(save.nodes[currentNode].items));
+    let items = existingItems.concat(discoveredItems);
     let inspectActions = [];
     for (let i = 0; i < items.length; i++) {
         let variants = items[i].name.split(/\s*,\s*/);
@@ -267,6 +297,7 @@ function getDirectionsActions (location) {
             switch (thisDirection) {
                 case ("N"):
                     directionObject["alternatives"] = [
+                            "N",
                             "GO N",
                             "GO NORTH",
                             "TRAVEL N",
@@ -275,6 +306,7 @@ function getDirectionsActions (location) {
                     break;
                 case ("NE"):
                     directionObject["alternatives"] = [
+                            "NE",
                             "GO NE",
                             "GO NORTHEAST",
                             "TRAVEL NE",
@@ -283,6 +315,7 @@ function getDirectionsActions (location) {
                     break;
                 case ("E"):
                     directionObject["alternatives"] = [
+                            "E",
                             "GO E",
                             "GO EAST",
                             "TRAVEL E",
@@ -291,6 +324,7 @@ function getDirectionsActions (location) {
                     break;
                 case ("SE"):
                     directionObject["alternatives"] = [
+                            "SE",
                             "GO SE",
                             "GO SOUTHEAST",
                             "TRAVEL SE",
@@ -299,6 +333,7 @@ function getDirectionsActions (location) {
                     break;
                 case ("S"):
                     directionObject["alternatives"] = [
+                            "S",
                             "GO S",
                             "GO SOUTH",
                             "TRAVEL S",
@@ -307,6 +342,7 @@ function getDirectionsActions (location) {
                     break;
                 case ("SW"):
                     directionObject["alternatives"] = [
+                            "SW",
                             "GO SW",
                             "GO SOUTHWEST",
                             "TRAVEL SW",
@@ -315,6 +351,7 @@ function getDirectionsActions (location) {
                     break;
                 case ("W"):
                     directionObject["alternatives"] = [
+                            "W",
                             "GO W",
                             "GO WEST",
                             "TRAVEL W",
@@ -323,6 +360,7 @@ function getDirectionsActions (location) {
                     break;
                 case ("NW"):
                     directionObject["alternatives"] = [
+                            "NW",
                             "GO NW",
                             "GO NORTHWEST",
                             "TRAVEL NW",
@@ -331,12 +369,16 @@ function getDirectionsActions (location) {
                     break;
                 case ("Up"):
                     directionObject["alternatives"] = [
+                            "U",
+                            "UP",
                             "GO UP",
                             "TRAVEL UP"
                             ];
                     break;
                 case ("Down"):
                     directionObject["alternatives"] = [
+                            "D",
+                            "DOWN",
                             "GO DOWN",
                             "TRAVEL DOWN"
                             ];
@@ -770,9 +812,11 @@ function parseNode(location) {
     addNodeToSave(currentNode);
     addVisit(currentNode);
     nodeReload();
-    $('#outputSim').append(`<h3>${game[currentNode].name}</h3>`);
-    displayMessage(cNodeDescription, false);
-    displayItems();
+    if (playing) {
+        $('#outputSim').append(`<h3>${game[currentNode].name}</h3>`);
+        displayMessage(cNodeDescription, false);
+        displayItems();
+    }
 }
 
 function parseAction(input) {
@@ -786,12 +830,29 @@ function parseAction(input) {
         action = filterIgnorables(action);
 
         //Handle actions
+        let foundMatch = false;
+        let isGlobal = false;
         for (let h = 0; h < cNodeActions.length; h++) {
             if (filterIgnorables(cNodeActions[h].toUpperCase()) == action) {
+                for (let i = 0; i < globalActions.length; i++) {
+                    if (isGlobal == true) {
+                        break;
+                    }
+                    let variants = globalActions[i].actions.toUpperCase().split(/\s*,\s*/);
+                    for (let j = 0; j < variants.length; j++) {
+                        if (filterIgnorables(variants[j]) == action) {
+                            globalActions[i].fail = "This did nothing.";
+                            game[currentNode].actions.actions.push(globalActions[i]);
+                            isGlobal = true;
+                            break;
+                        }
+                    }
+                }
                 for (let i = 0; i < game[currentNode].actions.actions.length; i++) {
                     let variants = game[currentNode].actions.actions[i].actions.toUpperCase().split(/\s*,\s*/);
                     for (let m = 0; m < variants.length; m++) {
-                        if (filterIgnorables(variants[m]) == action) {
+                        if (filterIgnorables(variants[m]) == action && foundMatch == false) {
+                            foundMatch = true;
                             let actionObject = JSON.parse(JSON.stringify(game[currentNode].actions.actions[i]));
                             let reqs = {
                                 "reqItems": actionObject.reqItems,
@@ -875,13 +936,16 @@ function parseAction(input) {
                                 displayMessage(actionObject.fail, false);
                                 sentMessage = true;
                             }
+                            if (isGlobal == true) {
+                                game[currentNode].actions.actions.splice(i, 1);
+                            }
                         }
                     }
                 }
             }
         }
 
-        if (action === "LOOK") {
+        if (lookCommands.includes(action)) {
             pushAction("LOOK");
             displayMessage(getDescription(currentNode), false);
             displayItems();
@@ -1103,38 +1167,52 @@ function parseAction(input) {
                     break;
                 }
             }
-            for (let i = 0; i < save.items.length; i++) {
-                let variants = save.items[i].name.split(/\s*,\s*/);
+            let inspectableItems = JSON.parse(JSON.stringify(save.items.concat(save.nodes[currentNode].items)));
+
+            for (let i = 0; i < inspectableItems.length; i++) {
+                let variants = inspectableItems[i].name.split(/\s*,\s*/);
                 for (let j = 0; j < variants.length; j++) {
                     if (variants[j].toUpperCase() === actionItem) {
-                        if (save.items[i].evos.length > 0) {
-                            let messageToDisplay;
-                            for (let k = 0; k < save.items[i].evos.length; k++) {
-                                let evo = save.items[i].evos[k];
-                                let reqs = {
-                                    "reqItems": evo.reqItems,
-                                    "reqContainers": evo.reqContainers,
-                                    "reqLocal": evo.reqLocal,
-                                    "reqGlobal": evo.reqGlobal,
-                                    "preAction": evo.preAction,
-                                    "locVisits": evo.locVisits,
-                                    "preNode": evo.preNode,
-                                    "itemEvos": evo.itemEvos
+                        let reqs = {
+                            "reqItems": inspectableItems[i].reqItems,
+                            "reqContainers": inspectableItems[i].reqContainers,
+                            "reqLocal": inspectableItems[i].reqLocal,
+                            "reqGlobal": inspectableItems[i].reqGlobal,
+                            "preAction": inspectableItems[i].preAction,
+                            "locVisits": inspectableItems[i].locVisits,
+                            "preNode": inspectableItems[i].preNode,
+                            "itemEvos": inspectableItems[i].itemEvos
+                        }
+                        if (checkRequirements(reqs)) {
+                            if (inspectableItems[i].evos.length > 0) {
+                                let messageToDisplay;
+                                for (let k = 0; k < inspectableItems[i].evos.length; k++) {
+                                    let evo = inspectableItems[i].evos[k];
+                                    reqs = {
+                                        "reqItems": evo.reqItems,
+                                        "reqContainers": evo.reqContainers,
+                                        "reqLocal": evo.reqLocal,
+                                        "reqGlobal": evo.reqGlobal,
+                                        "preAction": evo.preAction,
+                                        "locVisits": evo.locVisits,
+                                        "preNode": evo.preNode,
+                                        "itemEvos": evo.itemEvos
+                                    }
+                                    if (checkRequirements(reqs)) {
+                                        messageToDisplay = inspectableItems[i].evos[k].evoDes;
+                                    }
                                 }
-                                if (checkRequirements(reqs)) {
-                                    messageToDisplay = save.items[i].evos[k].evoDes;
+                                if (messageToDisplay != undefined) {
+                                    displayMessage(messageToDisplay, false);
+                                    sentMessage = true;
+                                } else {
+                                    displayMessage(inspectableItems[i].description, false);
+                                    sentMessage = true;
                                 }
-                            }
-                            if (messageToDisplay != undefined) {
-                                displayMessage(messageToDisplay, false);
-                                sentMessage = true;
                             } else {
-                                displayMessage(save.items[i].description, false);
+                                displayMessage(inspectableItems[i].description, false);
                                 sentMessage = true;
                             }
-                        } else {
-                            displayMessage(save.items[i].description, false);
-                            sentMessage = true;
                         }
                         checked = true;
                     }

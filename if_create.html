@@ -26,6 +26,9 @@
             <div class="pure-u-5-12">
                 <button id="deleteNode">Delete Node</button>
                 <canvas id="nodeMap"></canvas>
+                <div class="globalStuff">
+                    <button id="globalActionsOpen">Global Actions</button>
+                </div>
             </div>
             <div class="pure-u-7-12">
                 <div class="pure-g nodeTools">
@@ -259,12 +262,25 @@
                 <button id="restartGameSim">Restart Game</button>
             </div>
         </div>
+        <div class="popupScreen" id="globalActionsDisplay" style="visibility: hidden">
+            <div class="globalActions">
+                <label class='tooltip'>
+                    <h1 class="popupTitle">Global Actions</h1>
+                    <span class='tooltiptext'>Custom actions available in every node
+                         (not item-acquiring or direction related)
+                        [e.g. break egg, open window]</span>
+                </label>
+                <button id="addGlobalAction">Add Global Action</button>
+                <div id="globalActionList" class="container"></div>
+            </div>
+            <button class="popupClose">Close</button>
+        </div>
         <div class="popupScreen" id="helpDisplay" style="visibility: hidden">
             <if-docs></if-docs>
             <button class="popupClose">Close</button>
         </div>
         <div class="popupScreen" id="settingsDisplay" style="visibility: hidden">
-            <h1 class="settingsTitle">Game Settings</h1>
+            <h1 class="popupTitle">Game Settings</h1>
             <div class="settings">
                 <div>
                     <label for="gameStyle">Game Style:</label>

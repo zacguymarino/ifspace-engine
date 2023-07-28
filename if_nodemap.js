@@ -3,7 +3,7 @@ import { switchNode } from "./if_generate.js";
 var universe = $("#nodeMap")[0];
 var ctx = universe.getContext("2d");
 var xTransform = (window.innerWidth * 0.4) / 2;
-var yTransform = (window.innerHeight * 0.85) / 2;
+var yTransform = (window.innerHeight * 0.65) / 2;
 var step = 25;
 
 var nodes = ["0,0,0"];
@@ -19,13 +19,13 @@ function createMapFromGame(loadNodes) {
 function resizeCanvas() {
   var universe = $("#nodeMap")[0];
   universe.width = window.innerWidth * 0.4;
-  universe.height = window.innerHeight * 0.85;
+  universe.height = window.innerHeight * 0.65;
   draw();
 }
 
 function nodeMap() {
   universe.width = window.innerWidth * 0.4;
-  universe.height = window.innerHeight * 0.85;
+  universe.height = window.innerHeight * 0.65;
   var mouseStart;
   var possibleClick = false;
   var dragTotalX = 0;

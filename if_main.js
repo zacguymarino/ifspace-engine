@@ -55,6 +55,17 @@ $(function () {
     deleteNode();
   });
 
+  /////////////////////////////////
+  //Global Settings/Start Settings
+  /////////////////////////////////
+  $(document).on("click", "#globalActionsOpen", function () {
+    $("#globalActionsDisplay").css("visibility", "visible");
+  })
+
+  $("#addGlobalAction").click(function () {
+    dom.addGlobalAction();
+  });
+
   ///////////////////////////////////
   //Help/Documentation/Game Settings
   ///////////////////////////////////
@@ -109,9 +120,10 @@ $(function () {
   });
 
   $(document).on("click", ".addEvoItems", function (event) {
+    let itemIndex = $(event.currentTarget.parentElement).index();
     let baseId = $(event.currentTarget.parentElement).attr("id");
     let listId = `${baseId}_EvoList`;
-    dom.addEvo(listId);
+    dom.addEvo(listId, itemIndex);
   });
 
   $(document).on("click", ".addEvoDes", function (event) {

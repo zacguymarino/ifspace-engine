@@ -1,5 +1,29 @@
 import { currentNode } from "./if_nodemap.js";
-import { gameStyle } from "./if_generate.js";
+import { gameStyle, globalActions } from "./if_generate.js";
+
+function loadDomGlobalActions() {
+  let actions = globalActions;
+  for (let i = 0; i < actions.length; i++) {
+    addGlobalAction();
+    let baseId = `global_action_${i + 1}`;
+    $(`#${baseId}_Actions`).val(actions[i].actions);
+    $(`#${baseId}_Max`).val(actions[i].max);
+    $(`#${baseId}_Costs`).val(actions[i].costs);
+    $(`#${baseId}_Drops`).val(actions[i].drops);
+    $(`#${baseId}_Visibility`).val(actions[i].visibility);
+    $(`#${baseId}_Response`).val(actions[i].response);
+    $(`#${baseId}_Fail`).val(actions[i].fail);
+    $(`#${baseId}_Points`).val(actions[i].points);
+    $(`#${baseId}_Items`).val(actions[i].reqItems);
+    $(`#${baseId}_Containers`).val(actions[i].reqContainers);
+    $(`#${baseId}_Local`).val(actions[i].reqLocal);
+    $(`#${baseId}_Global`).val(actions[i].reqGlobal);
+    $(`#${baseId}_preAction`).val(actions[i].preAction);
+    $(`#${baseId}_Visits`).val(actions[i].locVisits);
+    $(`#${baseId}_preNode`).val(actions[i].preNode);
+    $(`#${baseId}_Evos`).val(actions[i].itemEvos);
+  }
+}
 
 function loadDomFromNode(node) {
   let name = node.name;
@@ -25,6 +49,7 @@ function loadDomFromNode(node) {
   $("#itemList").empty();
   $("#containerList").empty();
   $("#actionList").empty();
+  $("#globalActionsList").empty();
 
   //add node elements
   $("#location").html(location.toString());
@@ -67,7 +92,7 @@ function loadDomFromNode(node) {
   $("#basicDes").val(descriptions.basicDes);
   if ("evos" in descriptions) {
     for (let i = 0; i < descriptions.evos.length; i++) {
-      addEvo("evoListDescriptions");
+      addEvo("evoListDescriptions", null);
       let baseId = `evoDes_${i + 1}`;
       $(`#${baseId}_Items`).val(descriptions.evos[i].reqItems);
       $(`#${baseId}_Containers`).val(descriptions.evos[i].reqContainers);
@@ -96,8 +121,8 @@ function loadDomFromNode(node) {
     $(`#${baseId}_preNode`).val(items[i].preNode);
     $(`#${baseId}_EvoList`).val(items[i].itemEvos);
     for (let j = 0; j < items[i].evos.length; j++) {
-      addEvo(`${baseId}_EvoList`);
-      let baseEvoId = `evoItems_${j + 1}`;
+      addEvo(`${baseId}_EvoList`, i+1);
+      let baseEvoId = `evoItems_${i + 1}_${j + 1}`;
       $(`#${baseEvoId}_Items`).val(items[i].evos[j].reqItems);
       $(`#${baseEvoId}_Containers`).val(items[i].evos[j].reqContainers);
       $(`#${baseEvoId}_Local`).val(items[i].evos[j].reqLocal);
@@ -366,6 +391,90 @@ function addContainer() {
   $("#containerList").append(html);
 }
 
+function addGlobalAction() {
+  let length = $("#globalActionList").children().length;
+  let actionId;
+  if (length >= 1) {
+    let lastId = +$("#globalActionList").children().last().attr("id").split("_")[1];
+    actionId = `global_action_${lastId + 1}`;
+  } else {
+    actionId = "global_action_1";
+  }
+  let newDivStart = `<div class='popupBlockElements' id='${actionId}'>`;
+  let newDivEnd = "</div>";
+  let rmvButton = `<button class='removeObject'>Remove Action</button>`;
+  let actionLabel = `<label class='tooltip'>
+                        Action(s)
+                        <span class='tooltiptext'>Comma separated list of accepted action(e.g. crush egg, smash egg) [Ignores: a, an, the, to, for, at]</span>
+                        </label>`;
+  let actions = `<input type='text' id='${actionId}_Actions'>`;
+  let maxLabel = `<label class='tooltip'>
+                    Max Uses
+                    <span class='tooltiptext'>A number for the maximum number of times this action can be called [leave blank for no maximum]</span>
+                    </label>`;
+  let max = `<input type='text' id='${actionId}_Max'>`;
+  let costsLabel = `<label class='tooltip'>
+                    Costs
+                    <span class='tooltiptext'>Comma separated list of items which are spent/destroyed to perform this action</span>
+                    </label>`;
+  let costs = `<input type='text' id='${actionId}_Costs'>`;
+  let dropsLabel = `<label class='tooltip'>
+                    Drops
+                    <span class='tooltiptext'>Comma separated list of items which are dropped to perform this action</span>
+                    </label>`;
+  let drops = `<input type='text' id='${actionId}_Drops'>`;
+  let visibilityLabel = `<label class='tooltip'>
+                        Visibility
+                        <span class='tooltiptext'>Selection for how this action affects this node's visibility</span>
+                        </label>`;
+  let visibility = `<select id='${actionId}_Visibility'>
+                        <option value='none' seleted='selected'>No change</option>
+                        <option value='on'>On</option>
+                        <option value='off'>Off</option>
+                        <option value='switch'>Switch</option>
+                        </select>`;
+  let responseLabel = `<label class='tooltip'>
+                        Action Response
+                        <span class='tooltiptext'>Text displayed after successfully calling this action (e.g. The egg is now broken.)</span>
+                        </label>`;
+  let response = `<textarea id='${actionId}_Response' rows='3' cols='23'></textarea>`;
+  let failLabel = `<label class='tooltip'>
+                        Fail Response
+                        <span class='tooltiptext'>Text displayed after not meeting the action requirements (e.g. This door requires a key.)</span>
+                        </label>`;
+  let fail = `<textarea id='${actionId}_Fail' rows='3' cols='23'></textarea>`;
+  let pointsLabel = `<label class='tooltip'>
+                    Points
+                    <span class='tooltiptext'>Points awarded for successfully calling this action [default of 0]</span>
+                    </label>`;
+  let points = `<input type='text' id='${actionId}_Points'>`;
+  let requirements = getRequirements(actionId);
+
+  let html =
+    newDivStart +
+    rmvButton +
+    actionLabel +
+    actions +
+    maxLabel +
+    max +
+    costsLabel +
+    costs +
+    dropsLabel +
+    drops +
+    visibilityLabel +
+    visibility +
+    responseLabel +
+    response +
+    failLabel +
+    fail +
+    pointsLabel +
+    points +
+    requirements +
+    newDivEnd;
+
+  $("#globalActionList").append(html);
+}
+
 function addAction() {
   let length = $("#actionList").children().length;
   let actionId;
@@ -540,9 +649,10 @@ function showHide(ID) {
   }
 }
 
-function addEvo(listId) {
+function addEvo(listId, itemNumber) {
   let length = $(`#${listId}`).children().length;
   let evoId;
+  //Handles desription evolutions
   if (listId.includes("evoListDescriptions")) {
     if (length >= 1) {
       let lastId = +$(`#${listId}`).children().last().attr("id").split("_")[1];
@@ -550,12 +660,13 @@ function addEvo(listId) {
     } else {
       evoId = "evoDes_1";
     }
+  //Handles item evolutions
   } else if (listId.includes("_EvoList")) {
     if (length >= 1) {
-      let lastId = +$(`#${listId}`).children().last().attr("id").split("_")[1];
-      evoId = `evoItems_${lastId + 1}`;
+      let lastId = +$(`#${listId}`).children().last().attr("id").split("_")[1] - (itemNumber-1);
+      evoId = `evoItems_${itemNumber}_${lastId + 1}`;
     } else {
-      evoId = "evoItems_1";
+      evoId = `evoItems_${itemNumber}_1`;
     }
   } else {
     evoId = "undefined";
@@ -584,7 +695,7 @@ function addEvo(listId) {
 }
 
 function getRequirements(baseId) {
-  let divStart = `<div>`;
+  let divStart = `<div class='requirements'>`;
   let reqLabel = `<label class='tooltip'>
                     <b>Requirements</b>
                     <span class='tooltiptext'>The current node setting will only exist/apply if the following conditions are met</span>
@@ -664,6 +775,8 @@ export {
   getRequirements,
   removeEvo,
   removeObject,
+  loadDomGlobalActions,
   loadDomFromNode,
-  addSimInput
+  addSimInput,
+  addGlobalAction
 };
