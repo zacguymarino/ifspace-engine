@@ -1,4 +1,4 @@
-import { loadDomFromNode, loadDomGlobalActions } from "./if_dom.js";
+import { loadDomFromNode, loadDomGlobalActions, loadDomInitItems } from "./if_dom.js";
 import { createMapFromGame } from "./if_nodemap.js";
 
 var game = {};
@@ -8,6 +8,7 @@ var gameStatus;
 var gameRating;
 var gameAuthor;
 var globalActions;
+var initItems;
 
 var node = {
   name: "",
@@ -40,12 +41,14 @@ async function saveGame() {
   let gameFile = {};
   saveCNode();
   saveGlobalActions();
+  saveInitItems();
   gameFile['gameStyle'] = $("#gameStyle").val();
   gameFile['gameStatus'] = $("#gameStatus").val();
   gameFile['gameRating'] = $("#gameRating").val();
   gameFile['gameAuthor'] = $("#gameAuthor").val();
   gameFile['gameTitle'] = gameTitle;
   gameFile['globalActions'] = globalActions;
+  gameFile['initItems'] = initItems;
   gameFile['gameContent'] = JSON.parse(JSON.stringify(game));
   window.IFS_API.saveGame(JSON.stringify(gameFile));
 }
@@ -59,9 +62,11 @@ async function loadGame() {
     gameRating = loadData['gameRating'];
     gameAuthor = loadData['gameAuthor'];
     globalActions = loadData['globalActions'];
+    initItems = loadData['initItems']
     game = loadData['gameContent'];
     cNode = loadData['gameContent']['0,0,0'];
-    loadDomGlobalActions(globalActions);
+    loadDomInitItems();
+    loadDomGlobalActions();
     loadDomFromNode(cNode);
     createMapFromGame(Object.keys(game));
     $("#gameTitle").val(gameTitle);
@@ -97,6 +102,54 @@ function switchNode(title) {
   }
   loadDomFromNode(cNode);
   saveCNode();
+}
+
+function saveInitItems() {
+  let itemArray = [];
+  let itemList = $("#initItemList").children();
+  for (let i = 0; i < itemList.length; i++) {
+    let itemId = $(itemList[i]).attr("id");
+    let name = $(`#${itemId}_Name`).val();
+    let description = $(`#${itemId}_Des`).val();
+    let points = $(`#${itemId}_Points`).val();
+    let itemEvos = $(`#${itemId}_Evos`).val();
+    let item = {
+      name: name,
+      description: description,
+      points: points,
+      itemEvos: itemEvos,
+      evos: [],
+    };
+    let evoDivs = $(`#${itemId}_EvoList`).children();
+    let evoListItems = [];
+    for (let j = 0; j < evoDivs.length; j++) {
+      let baseId = $(evoDivs[j]).attr("id");
+      let reqItems = $(`#${baseId}_Items`).val();
+      let reqContainers = $(`#${baseId}_Containers`).val();
+      let reqLocal = $(`#${baseId}_Local`).val();
+      let reqGlobal = $(`#${baseId}_Global`).val();
+      let preAction = $(`#${baseId}_preAction`).val();
+      let locVisits = $(`#${baseId}_Visits`).val();
+      let preNode = $(`#${baseId}_preNode`).val();
+      let itemEvos = $(`#${baseId}_Evos`).val();
+      let evoDes = $(`#${baseId}_Des`).val();
+      let evo = {
+        reqItems: reqItems,
+        reqContainers: reqContainers,
+        reqLocal: reqLocal,
+        reqGlobal: reqGlobal,
+        preAction: preAction,
+        locVisits: locVisits,
+        preNode: preNode,
+        itemEvos: itemEvos,
+        evoDes: evoDes,
+      };
+      evoListItems.push(evo);
+    }
+    item.evos = evoListItems;
+    itemArray.push(item);
+  }
+  initItems = itemArray;
 }
 
 function saveGlobalActions() {
@@ -463,6 +516,7 @@ export {
   gameStyle,
   gameAuthor,
   globalActions,
+  initItems,
   game,
   node,
   switchNode,

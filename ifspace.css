@@ -67,7 +67,7 @@ input[type="number"]:hover {
   transition: 0.1s ease-in;
 }
 
-.blockElements * {
+.blockElements {
   display: block;
   color: #f0f0f0;
   padding: 0.5em;
@@ -352,6 +352,13 @@ textarea:active {
   height: 23%;
   margin-left: 5px;
   width: 40vw;
+  display: flex;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+}
+
+.globalButton {
+  height: 40px;
 }
 
 .popupBlockElements *{
@@ -363,7 +370,7 @@ textarea:active {
   color: #ffffff;
 }
 
-.globalActions {
+.popupContent {
   overflow-y: scroll;
   max-height: 80vh;
 }

@@ -62,8 +62,23 @@ $(function () {
     $("#globalActionsDisplay").css("visibility", "visible");
   })
 
+  $(document).on("click", "#initItemsOpen", function () {
+    $("#initItemsDisplay").css("visibility", "visible");
+  })
+
   $("#addGlobalAction").click(function () {
     dom.addGlobalAction();
+  });
+
+  $("#addInitItem").click(function () {
+    dom.addInitItem();
+  });
+
+  $(document).on("click", ".addInitEvoItems", function (event) {
+    let itemIndex = $(event.currentTarget.parentElement).index();
+    let baseId = $(event.currentTarget.parentElement).attr("id");
+    let listId = `${baseId}_EvoList`;
+    dom.addInitEvo(listId, itemIndex);
   });
 
   ///////////////////////////////////

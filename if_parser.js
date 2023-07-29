@@ -1,4 +1,4 @@
-import {game, gameTitle, gameStyle, gameAuthor, globalActions} from './if_generate.js';
+import {game, gameTitle, gameStyle, gameAuthor, globalActions, initItems} from './if_generate.js';
 
 var currentNode;
 var previousNode;
@@ -33,6 +33,9 @@ function gameInit() {
         "actions": [],
         "nodes": {}
     };
+    for (let i = 0; i < initItems.length; i++) {
+        save.items.push(initItems[i]);
+    }
     $('#outputSim').empty();
     $('#outputSim').append(`<h1>${gameTitle}</h1>`);
     if (gameAuthor.length > 0) {

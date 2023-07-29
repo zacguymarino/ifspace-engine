@@ -1,7 +1,34 @@
 import { currentNode } from "./if_nodemap.js";
-import { gameStyle, globalActions } from "./if_generate.js";
+import { gameStyle, globalActions, initItems } from "./if_generate.js";
+
+function loadDomInitItems() {
+  $("#initItemList").empty();
+  let items = initItems
+  for (let i = 0; i < items.length; i++) {
+    addInitItem();
+    let baseId = `init_item_${i + 1}`;
+    $(`#${baseId}_Name`).val(items[i].name);
+    $(`#${baseId}_Des`).val(items[i].description);
+    $(`#${baseId}_Points`).val(items[i].points);
+    $(`#${baseId}_EvoList`).val(items[i].itemEvos);
+    for (let j = 0; j < items[i].evos.length; j++) {
+      addInitEvo(`${baseId}_EvoList`, i+1);
+      let baseEvoId = `initEvoItems_${i + 1}_${j + 1}`;
+      $(`#${baseEvoId}_Items`).val(items[i].evos[j].reqItems);
+      $(`#${baseEvoId}_Containers`).val(items[i].evos[j].reqContainers);
+      $(`#${baseEvoId}_Local`).val(items[i].evos[j].reqLocal);
+      $(`#${baseEvoId}_Global`).val(items[i].evos[j].reqGlobal);
+      $(`#${baseEvoId}_preAction`).val(items[i].evos[j].preAction);
+      $(`#${baseEvoId}_Visits`).val(items[i].evos[j].locVisits);
+      $(`#${baseEvoId}_preNode`).val(items[i].evos[j].preNode);
+      $(`#${baseEvoId}_Evos`).val(items[i].evos[j].itemEvos);
+      $(`#${baseEvoId}_Des`).val(items[i].evos[j].evoDes);
+    }
+  }
+}
 
 function loadDomGlobalActions() {
+  $("#globalActionList").empty();
   let actions = globalActions;
   for (let i = 0; i < actions.length; i++) {
     addGlobalAction();
@@ -49,7 +76,6 @@ function loadDomFromNode(node) {
   $("#itemList").empty();
   $("#containerList").empty();
   $("#actionList").empty();
-  $("#globalActionsList").empty();
 
   //add node elements
   $("#location").html(location.toString());
@@ -391,11 +417,56 @@ function addContainer() {
   $("#containerList").append(html);
 }
 
+function addInitItem() {
+  let length = $("#initItemList").children().length;
+  let itemId;
+  if (length >= 1) {
+    let lastId = +$("#initItemList").children().last().attr("id").split("_")[2];
+    itemId = `init_item_${lastId + 1}`;
+  } else {
+    itemId = "init_item_1";
+  }
+  let newDivStart = `<div class='popupBlockElements' id='${itemId}'>`;
+  let newDivEnd = "</div>";
+  let rmvButton = "<button class='removeObject'>Remove Item</button>";
+  let nameLabel = `<label class='tooltip'>
+                    Name
+                    <span class='tooltiptext'>Comma separated names of item [first option has requirement precedence] (e.g. lantern, light, torch)</span>
+                    </label>`;
+  let name = `<input type='text' id='${itemId}_Name'>`;
+  let desLabel = `<label class='tooltip'>
+                    Description
+                    <span class='tooltiptext'>Description of item (for "examine {item}" or "look {item}" command)</span>
+                    </label>`;
+  let des = `<textarea id='${itemId}_Des' rows='3' cols='23'></textarea>`;
+  let pointsLabel = `<label class='tooltip'>
+                        Points
+                        <span class='tooltiptext'>Number of points awarded for getting this item [default of 0]</span>
+                        </label>`;
+  let points = `<input type='text' id='${itemId}_Points'>`;
+  let evoButton = "<button class='addInitEvoItems'>Add Evolution</button>";
+  let evoListDiv = `<div id='${itemId}_EvoList'></div>`;
+  let html =
+    newDivStart +
+    rmvButton +
+    nameLabel +
+    name +
+    desLabel +
+    des +
+    pointsLabel +
+    points +
+    evoButton +
+    evoListDiv +
+    newDivEnd;
+
+  $("#initItemList").append(html);
+}
+
 function addGlobalAction() {
   let length = $("#globalActionList").children().length;
   let actionId;
   if (length >= 1) {
-    let lastId = +$("#globalActionList").children().last().attr("id").split("_")[1];
+    let lastId = +$("#globalActionList").children().last().attr("id").split("_")[2];
     actionId = `global_action_${lastId + 1}`;
   } else {
     actionId = "global_action_1";
@@ -649,6 +720,38 @@ function showHide(ID) {
   }
 }
 
+function addInitEvo(listId, itemNumber) {
+  let length = $(`#${listId}`).children().length;
+  let evoId;
+  if (length >= 1) {
+    let lastId = +$(`#${listId}`).children().last().attr("id").split("_")[1] - (itemNumber-1);
+    evoId = `initEvoItems_${itemNumber}_${lastId + 1}`;
+  } else {
+    evoId = `initEvoItems_${itemNumber}_1`;
+  }
+  let newDivStart = `<div class='popupBlockElements' id='${evoId}'>`;
+  let evoHeading = `<label><b>Evolution</b></label>`;
+  let newDivEnd = "</div>";
+  let requirements = getRequirements(evoId);
+  let evoDesLabel = `<label class='tooltip'>
+                    <b>Evo Description</b>
+                    <span class='tooltiptext'>The text displayed for this setting after meeting the above requirements</span>
+                    </label>`;
+  let evoDes = `<textarea id='${evoId}_Des' rows='4' cols='23'></textarea>`;
+  let rmvButton = `<button class='removeEvo'>Remove Evolution</button>`;
+
+  let html =
+    newDivStart +
+    evoHeading +
+    requirements +
+    evoDesLabel +
+    evoDes +
+    rmvButton +
+    newDivEnd;
+
+  $(`#${listId}`).append(html);
+}
+
 function addEvo(listId, itemNumber) {
   let length = $(`#${listId}`).children().length;
   let evoId;
@@ -772,11 +875,14 @@ export {
   addAction,
   showHide,
   addEvo,
+  addInitEvo,
   getRequirements,
   removeEvo,
   removeObject,
   loadDomGlobalActions,
+  loadDomInitItems,
   loadDomFromNode,
   addSimInput,
-  addGlobalAction
+  addGlobalAction,
+  addInitItem
 };
