@@ -89,6 +89,7 @@ function getActions(location) {
     if (gameStyle == "modern") {
         for (let i = 0; i < game[currentNode].actions.actions.length; i++) {
             let reqs = {
+                "reqAll": game[currentNode].actions.actions[i].reqAll,
                 "reqItems": game[currentNode].actions.actions[i].reqItems,
                 "reqContainers": game[currentNode].actions.actions[i].reqContainers,
                 "reqLocal": game[currentNode].actions.actions[i].reqLocal,
@@ -110,6 +111,7 @@ function getActions(location) {
         }
         for (let i = 0; i < globalActions.length; i++) {
             let reqs = {
+                "reqAll": globalActions[i].reqAll,
                 "reqItems": globalActions[i].reqItems,
                 "reqContainers": globalActions[i].reqContainers,
                 "reqLocal": globalActions[i].reqLocal,
@@ -215,6 +217,7 @@ function getDiscoveredItemsActions(location) {
     for (let i = 0; i < items.length; i++) {
         let originNode = checkItemOrigin(items[i]);
         let reqs = {
+            "reqAll": items[i].reqAll,
             "reqItems": items[i].reqItems,
             "reqContainers": items[i].reqContainers,
             "reqLocal": (originNode) ? items[i].reqLocal: '',
@@ -278,6 +281,7 @@ function getDirectionsActions (location) {
         let thisDirection = game[location].directions[i].direction;
         let thisLocation = game[location].directions[i].location;
         let reqs = {
+            "reqAll": game[location].directions[i].reqAll,
             "reqItems": game[location].directions[i].reqItems,
             "reqContainers": game[location].directions[i].reqContainers,
             "reqLocal": game[location].directions[i].reqLocal,
@@ -401,7 +405,8 @@ function getDescription (location) {
     let output;
     for (let i = 0; i < description.evos.length; i++) {
         let thisEvo = description.evos[i];
-        let requirements = {
+        let reqs = {
+            "reqAll": thisEvo.reqAll,
             "reqItems": thisEvo.reqItems,
             "reqContainers": thisEvo.reqContainers,
             "reqLocal": thisEvo.reqLocal,
@@ -411,7 +416,7 @@ function getDescription (location) {
             "preNode": thisEvo.preNode,
             "itemEvos": thisEvo.itemEvos
         }
-        if (checkRequirements(requirements)) {
+        if (checkRequirements(reqs)) {
             output = thisEvo.evoDes;
         }
     }
@@ -459,21 +464,22 @@ function checkContainerComplete(container) {
 }
 
 function checkRequirements(reqs) {
+    let reqAll = reqs.reqAll;
     let reqItems = !reqs['reqItems'] ? [] : reqs['reqItems'].split(/\s*,\s*/);
     let reqContainers = !reqs['reqContainers'] ? [] : reqs['reqContainers'].split(/\s*,\s*/);
     let reqLocal = !reqs['reqLocal'] ? [] : reqs['reqLocal'].split(/\s*,\s*/);
     let reqGlobal = !reqs['reqGlobal'] ? [] : reqs['reqGlobal'].split(/\s*,\s*/);
     let preAction = !reqs['preAction'] ? '' : reqs['preAction'];
-    let locVisits = !reqs['locVisits'] ? [] : reqs['locVisits'].split(/\]\s*,\s*/);
+    let locVisits = !reqs['locVisits'] ? [] : reqs['locVisits'].match(/\[(?:[^,]*,){3}[^,]*\]/g);
     let preNode = !reqs['preNode'] ? '' : reqs['preNode'];
     let itemEvos = !reqs['itemEvos'] ? [] : reqs['itemEvos'].split(/\]\s*,\s*/);
+    console.log(locVisits);
 
     //Check for container fulfillment requirements
     for (let i = 0; i < reqContainers.length; i++) {
         let checked = false;
         let containerName = reqContainers[i].toUpperCase();
         for (const key in save.nodes) {
-        //for (let j = 0; j < save.nodes.length; j++) {
             if (checked == true) {
                 break;
             }
@@ -484,7 +490,12 @@ function checkRequirements(reqs) {
                 //If true, found the container that is required to be complete
                 if (save.nodes[key].containers[k].name.split(/\s*,\s*/)[0].toUpperCase() == containerName) {
                     checked = true;
-                    if (!checkContainerComplete(save.nodes[key].containers[k])) {
+                    if (!checkContainerComplete(save.nodes[key].containers[k]) && reqAll === "true") {
+                        return false;
+                    } else if (checkContainerComplete(save.nodes[key].containers[k]) && reqAll !== "true") {
+                        return true;
+                    }
+                    if (!checkContainerComplete(save.nodes[key].containers[k]) && i == reqContainers.length - 1) {
                         return false;
                     }
                 }
@@ -494,19 +505,31 @@ function checkRequirements(reqs) {
 
     //Check local node action requirements
     for (let i = 0; i < reqLocal.length; i++) {
-        if (!save.nodes[currentNode].actions.includes(reqLocal[i].toUpperCase())) {
+        if (!save.nodes[currentNode].actions.includes(reqLocal[i].toUpperCase()) && reqAll === "true") {
+            return false;
+        } else if (save.nodes[currentNode].actions.includes(reqLocal[i].toUpperCase()) && reqAll !== "true") {
+            return true;
+        }
+        if (!save.nodes[currentNode].actions.includes(reqLocal[i].toUpperCase()) && i == reqLocal.length - 1) {
             return false;
         }
     }
     //Check global action requirements
     for (let i = 0; i < reqGlobal.length; i++) {
-        if (!save.actions.includes(reqGlobal[i].toUpperCase())) {
+        if (!save.actions.includes(reqGlobal[i].toUpperCase()) && reqAll === "true") {
+            return false;
+        } else if (save.actions.includes(reqGlobal[i].toUpperCase()) && reqAll !== "true") {
+            return true;
+        }
+        if (!save.actions.includes(reqGlobal[i].toUpperCase()) && i == reqGlobal.length - 1) {
             return false;
         }
     }
     //Check previous action requirement
     if (preAction != '' && preAction.toUpperCase() != save.actions[save.actions.length - 1]) {
         return false;
+    } else if (preAction != '' && reqAll !== "true") {
+        return true;
     }
 
     //Check location visit requirements
@@ -515,18 +538,36 @@ function checkRequirements(reqs) {
         let loc = `${locArray[0]},${locArray[1]},${locArray[2]}`;
         let quant = locArray[3];
         if (quant > 0){
-            if (!save.nodes.hasOwnProperty(loc)) {
+            if (!save.nodes.hasOwnProperty(loc) && reqAll === "true") {
                 return false;
+            } else if (!save.nodes.hasOwnProperty(loc) && reqAll !== "true") {
+                if (i == locVisits.length - 1) {
+                    return false;
+                } else {
+                    continue;
+                }
             } else {
-                if (Number(save.nodes[loc].visits) < quant) {
+                if (Number(save.nodes[loc].visits) < quant && reqAll === "true") {
+                    return false;
+                } else if (Number(save.nodes[loc].visits) >= quant && reqAll !== "true") {
+                    return true;
+                }
+                if (Number(save.nodes[loc].visits) < quant && i == locVisits.length - 1) {
                     return false;
                 }
             }
         } else if (quant == 0) {
-            if (!save.nodes.hasOwnProperty(loc)) {
+            if (!save.nodes.hasOwnProperty(loc) && reqAll === "true") {
                 continue;
+            } else if (!save.nodes.hasOwnProperty(loc) && reqAll !== "true") {
+                return true;
             } else {
-                if (Number(save.nodes[loc].visits) != 0) {
+                if (Number(save.nodes[loc].visits) != 0 && reqAll === "true") {
+                    return false;
+                } else if (Number(save.nodes[loc].visits) == 0 && reqAll !== "true") {
+                    return true;
+                }
+                if (Number(save.nodes[loc].visits) != 0 && i == locVisits.length - 1) {
                     return false;
                 }
             }
@@ -536,6 +577,8 @@ function checkRequirements(reqs) {
     //Check previous node requirement
     if (preNode != '' & preNode != previousNode) {
         return false;
+    } else if (preNode != '' && reqAll !== "true") {
+        return true;
     }
 
     //create saved items list
@@ -553,7 +596,12 @@ function checkRequirements(reqs) {
                 break;
             }
         }
-        if (!itemIncluded) {
+        if (!itemIncluded && reqAll === "true") {
+            return false;
+        } else if (itemIncluded && reqAll !== "true") {
+            return true;
+        }
+        if (!itemIncluded && i == reqItems.length - 1) {
             return false;
         }
     }
@@ -573,6 +621,7 @@ function checkRequirements(reqs) {
                         for (let l = 0; l < save["items"][k].evos.length; l++) {
                             checkIndex++;
                             let reqs = {
+                                "reqAll": save["items"][k].evos[l].reqAll,
                                 "reqItems": save["items"][k].evos[l].reqItems,
                                 "reqContainers": save["items"][k].evos[l].reqContainers,
                                 "reqLocal": save["items"][k].evos[l].reqLocal,
@@ -586,14 +635,22 @@ function checkRequirements(reqs) {
                                 evoIndex = checkIndex;
                             }
                         }
-                        if (evoIndex !== +itemEvo[1]) {
+                        if (evoIndex !== +itemEvo[1] && reqAll === "true") {
+                            return false;
+                        } else if (evoIndex === +itemEvo[1] && reqAll !== "true") {
+                            return true;
+                        }
+                        if (evoIndex !== +itemEvo[1] && i == itemEvos.length - 1) {
                             return false;
                         }
                     }
                 }
             } 
         }
-        if (!checked) {
+        if (!checked && reqAll === "true") {
+            return false;
+        }
+        if (!checked && i == itemEvos.length - 1) {
             return false;
         }
     }
@@ -604,6 +661,7 @@ function checkRequirements(reqs) {
 function checkWin() {
     let win = game[currentNode].win;
     let reqs = {
+        "reqAll": win.reqAll,
         "reqItems": win.reqItems,
         "reqContainers": win.reqContainers,
         "reqLocal": win.reqLocal,
@@ -627,6 +685,7 @@ function checkWin() {
 function checkLose() {
     let lose = game[currentNode].lose;
     let reqs = {
+        "reqAll": lose.reqAll,
         "reqItems": lose.reqItems,
         "reqContainers": lose.reqContainers,
         "reqLocal": lose.reqLocal,
@@ -659,6 +718,7 @@ function displayItems() {
         for (let i = 0; i < save.nodes[currentNode].items.length; i++) {
             let originNode = checkItemOrigin(save.nodes[currentNode].items[i]);
             let reqs = {
+                "reqAll": save.nodes[currentNode].items[i].reqAll,
                 "reqItems": save.nodes[currentNode].items[i].reqItems,
                 "reqContainers": save.nodes[currentNode].items[i].reqContainers,
                 "reqLocal": (originNode) ? save.nodes[currentNode].items[i].reqLocal : '',
@@ -858,6 +918,7 @@ function parseAction(input) {
                             foundMatch = true;
                             let actionObject = JSON.parse(JSON.stringify(game[currentNode].actions.actions[i]));
                             let reqs = {
+                                "reqAll": actionObject.reqAll,
                                 "reqItems": actionObject.reqItems,
                                 "reqContainers": actionObject.reqContainers,
                                 "reqLocal": actionObject.reqLocal,
@@ -1013,6 +1074,7 @@ function parseAction(input) {
                                         for (let q = 0; q < game[currentNode].containers.length; q++) {
                                             if (game[currentNode].containers[q].name.toUpperCase().match(regexp3)) {
                                                 reqs = {
+                                                    "reqAll": game[currentNode].containers[q].reqAll,
                                                     "reqItems": game[currentNode].containers[q].reqItems,
                                                     "reqContainers": game[currentNode].containers[q].reqContainers,
                                                     "reqLocal": game[currentNode].containers[q].reqLocal,
@@ -1071,6 +1133,7 @@ function parseAction(input) {
                                             if (game[currentNode].containers[q].name.toUpperCase().match(regexp3)) {
                                                 thisContainer = game[currentNode].containers[q];
                                                 reqs = {
+                                                    "reqAll": thisContainer.reqAll,
                                                     "reqItems": thisContainer.reqItems,
                                                     "reqContainers": thisContainer.reqContainers,
                                                     "reqLocal": thisContainer.reqLocal,
@@ -1177,6 +1240,7 @@ function parseAction(input) {
                 for (let j = 0; j < variants.length; j++) {
                     if (variants[j].toUpperCase() === actionItem) {
                         let reqs = {
+                            "reqAll": inspectableItems[i].reqAll,
                             "reqItems": inspectableItems[i].reqItems,
                             "reqContainers": inspectableItems[i].reqContainers,
                             "reqLocal": inspectableItems[i].reqLocal,
@@ -1192,6 +1256,7 @@ function parseAction(input) {
                                 for (let k = 0; k < inspectableItems[i].evos.length; k++) {
                                     let evo = inspectableItems[i].evos[k];
                                     reqs = {
+                                        "reqAll": evo.reqAll,
                                         "reqItems": evo.reqItems,
                                         "reqContainers": evo.reqContainers,
                                         "reqLocal": evo.reqLocal,
