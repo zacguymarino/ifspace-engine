@@ -70,6 +70,10 @@ $(function () {
     $("#conDepDisplay").css("visibility", "visible");
   })
 
+  $(document).on("click", "#conWitOpen", function () {
+    $("#conWitDisplay").css("visibility", "visible");
+  })
+
   $("#addGlobalAction").click(function () {
     dom.addGlobalAction();
   });

@@ -1,4 +1,4 @@
-import {game, gameTitle, gameStyle, gameAuthor, globalActions, initItems, customDeposits} from './if_generate.js';
+import {game, gameTitle, gameStyle, gameAuthor, globalActions, initItems, customDeposits, customWithdrawals} from './if_generate.js';
 
 var currentNode;
 var previousNode;
@@ -27,7 +27,7 @@ var containerDeposits = ["STORE","DEPOSIT","PLACE","PUT"];
 
 function gameInit() {
     if (customDeposits["customDeposits"] !== [""]) {
-        if (customDeposits["includeDefaults"] === "true") {
+        if (customDeposits["includeDefaults"] == "true") {
             for (let i = 0; i < customDeposits["customDeposits"].length; i++) {
                 containerDeposits.push(customDeposits["customDeposits"][i].toUpperCase());
             }
@@ -35,6 +35,18 @@ function gameInit() {
             containerDeposits = [];
             for (let i = 0; i < customDeposits["customDeposits"].length; i++) {
                 containerDeposits.push(customDeposits["customDeposits"][i].toUpperCase());
+            }
+        }
+    }
+    if (customWithdrawals["customWithdrawals"] !== [""]) {
+        if (customWithdrawals["includeDefaults"] == "true") {
+            for (let i = 0; i < customWithdrawals["customWithdrawals"].length; i++) {
+                containerWithdrawals.push(customWithdrawals["customWithdrawals"][i].toUpperCase());
+            }
+        } else {
+            containerWithdrawals = [];
+            for (let i = 0; i < customWithdrawals["customWithdrawals"].length; i++) {
+                containerWithdrawals.push(customWithdrawals["customWithdrawals"][i].toUpperCase());
             }
         }
     }
@@ -1344,4 +1356,4 @@ function parseAction(input) {
     }
 }
 
-export { gameInit, parseAction, containerDeposits }
+export { gameInit, parseAction, containerDeposits, containerWithdrawals }

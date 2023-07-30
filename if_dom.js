@@ -1,18 +1,28 @@
 import { currentNode } from "./if_nodemap.js";
-import { gameStyle, customDeposits } from "./if_generate.js";
-import { containerDeposits } from "./if_parser.js";
+import { gameStyle, customDeposits, customWithdrawals } from "./if_generate.js";
+import { containerDeposits, containerWithdrawals } from "./if_parser.js";
 
 function loadDefaultCommands() {
   $("#defaultContainerDeposits").html(containerDeposits.toString());
+  $("#defaultContainerWithdrawals").html(containerWithdrawals.toString());
 }
 
 function loadDomCustomCommands() {
+  //Container Deposits
   if (customDeposits["includeDefaults"] == "true") {
     $("#includeDefaultContainerDeposits").prop("checked", true);
   } else {
     $("#includeDefaultContainerDeposits").prop("checked", false);
   }
   $("#customContainerDepositCommands").val(customDeposits["customDeposits"]);
+
+  //Container Withdrawals
+  if (customWithdrawals["includeDefaults"] == "true") {
+    $("#includeDefaultContainerWithdrawals").prop("checked", true);
+  } else {
+    $("#includeDefaultContainerWithdrawals").prop("checked", false);
+  }
+  $("#customContainerWithdrawalCommands").val(customWithdrawals["customWithdrawals"]);
 }
 
 function loadDomInitItems(initItems) {

@@ -29,7 +29,8 @@
                 <div class="globalStuff">
                     <button class="globalButton" id="globalActionsOpen">Global Actions</button>
                     <button class="globalButton" id="initItemsOpen">Initial Items</button>
-                    <button class="globalButton" id="conDepOpen">Container Deposits</button>
+                    <button class="globalButton" id="conDepOpen">Deposits</button>
+                    <button class="globalButton" id="conWitOpen">Withdrawals</button>
                 </div>
             </div>
             <div class="pure-u-7-12">
@@ -306,6 +307,27 @@
                     <span class='popuptooltiptext'>Comma separated verbs to be used as container deposit commands (e.g. hang, bury, hide)</span>
                 </label>
                 <input class="customDefaultActions" id='customContainerDepositCommands' type='text'>
+            </div>
+            <button class="popupClose">Close</button>
+        </div>
+        <div class="popupScreen popupBlockElements" id="conWitDisplay" style="visibility: hidden">
+            <div class="popupContent">
+                <label class='tooltip'>
+                    <h1 class="popupTitle">Container Withdrawal Commands</h1>
+                    <span class='popuptooltiptext'>Verb commands for withdrawaling items from a container (in form of [Verb + item + [from, off, etc.] + container])</span>
+                </label>
+                <h3>Default commands:</h3>
+                <span id="defaultContainerWithdrawals"></span>
+                <label class='pure-checkbox tooltip'>
+                    <h3>Include Defaults:</h3>
+                    <span class='popuptooltiptext'>If checked, the default withdrawal commands are included in conjunction with any custom withdrawal commands</span>
+                </label>
+                <input type='checkbox' id='includeDefaultContainerWithdrawals' checked/>
+                <label class='tooltip'>
+                    <h3>Custom Container Withdrawals:</h3>
+                    <span class='popuptooltiptext'>Comma separated verbs to be used as container withdrawal commands (e.g. pull, extract, fish)</span>
+                </label>
+                <input class="customDefaultActions" id='customContainerWithdrawalCommands' type='text'>
             </div>
             <button class="popupClose">Close</button>
         </div>

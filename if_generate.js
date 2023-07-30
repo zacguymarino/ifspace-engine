@@ -10,6 +10,7 @@ var gameAuthor;
 var globalActions;
 var initItems;
 var customDeposits;
+var customWithdrawals;
 
 var node = {
   name: "",
@@ -52,6 +53,7 @@ async function saveGame() {
   gameFile['globalActions'] = globalActions;
   gameFile['initItems'] = initItems;
   gameFile['customDeposits'] = customDeposits;
+  gameFile['customWithdrawals'] = customWithdrawals;
   gameFile['gameContent'] = JSON.parse(JSON.stringify(game));
   window.IFS_API.saveGame(JSON.stringify(gameFile));
 }
@@ -67,6 +69,7 @@ async function loadGame() {
     globalActions = loadData['globalActions'];
     initItems = loadData['initItems']
     customDeposits = loadData['customDeposits']
+    customWithdrawals = loadData['customWithdrawals']
     game = loadData['gameContent'];
     cNode = loadData['gameContent']['0,0,0'];
     loadDomCustomCommands();
@@ -123,6 +126,20 @@ function saveDefaultCommands() {
   customDeposits = {
     "includeDefaults": includeDefaultDeposits,
     "customDeposits": customDefaultsInput
+  }
+
+  //default container withdrawals
+  let includeDefaultWithdrawals;
+  if ($("#includeDefaultContainerWithdrawals").is(":checked")) {
+    includeDefaultWithdrawals = "true";
+  } else {
+    includeDefaultWithdrawals = "false";
+  }
+  customDefaultsInput = $("#customContainerWithdrawalCommands").val().split(/\s*,\s*/);
+  
+  customWithdrawals = {
+    "includeDefaults": includeDefaultWithdrawals,
+    "customWithdrawals": customDefaultsInput
   }
 }
 
@@ -560,6 +577,7 @@ export {
   globalActions,
   initItems,
   customDeposits,
+  customWithdrawals,
   game,
   node,
   switchNode,
