@@ -1,4 +1,4 @@
-import { loadDomFromNode, loadDomGlobalActions, loadDomInitItems } from "./if_dom.js";
+import { loadDomFromNode, loadDomGlobalActions, loadDomInitItems, loadDomCustomCommands } from "./if_dom.js";
 import { createMapFromGame } from "./if_nodemap.js";
 
 var game = {};
@@ -9,6 +9,7 @@ var gameRating;
 var gameAuthor;
 var globalActions;
 var initItems;
+var customDeposits;
 
 var node = {
   name: "",
@@ -40,6 +41,7 @@ async function saveGame() {
   let gameTitle = $("#gameTitle").val();
   let gameFile = {};
   saveCNode();
+  saveDefaultCommands();
   saveGlobalActions();
   saveInitItems();
   gameFile['gameStyle'] = $("#gameStyle").val();
@@ -49,6 +51,7 @@ async function saveGame() {
   gameFile['gameTitle'] = gameTitle;
   gameFile['globalActions'] = globalActions;
   gameFile['initItems'] = initItems;
+  gameFile['customDeposits'] = customDeposits;
   gameFile['gameContent'] = JSON.parse(JSON.stringify(game));
   window.IFS_API.saveGame(JSON.stringify(gameFile));
 }
@@ -63,10 +66,12 @@ async function loadGame() {
     gameAuthor = loadData['gameAuthor'];
     globalActions = loadData['globalActions'];
     initItems = loadData['initItems']
+    customDeposits = loadData['customDeposits']
     game = loadData['gameContent'];
     cNode = loadData['gameContent']['0,0,0'];
-    loadDomInitItems();
-    loadDomGlobalActions();
+    loadDomCustomCommands();
+    loadDomInitItems(initItems);
+    loadDomGlobalActions(globalActions);
     loadDomFromNode(cNode);
     createMapFromGame(Object.keys(game));
     $("#gameTitle").val(gameTitle);
@@ -102,6 +107,23 @@ function switchNode(title) {
   }
   loadDomFromNode(cNode);
   saveCNode();
+}
+
+function saveDefaultCommands() {
+  //default container deposits
+  let includeDefaultDeposits;
+  let customDefaultsInput;
+  if ($("#includeDefaultContainerDeposits").is(":checked")) {
+    includeDefaultDeposits = "true";
+  } else {
+    includeDefaultDeposits = "false";
+  }
+  customDefaultsInput = $("#customContainerDepositCommands").val().split(/\s*,\s*/);
+  
+  customDeposits = {
+    "includeDefaults": includeDefaultDeposits,
+    "customDeposits": customDefaultsInput
+  }
 }
 
 function saveInitItems() {
@@ -537,6 +559,7 @@ export {
   gameAuthor,
   globalActions,
   initItems,
+  customDeposits,
   game,
   node,
   switchNode,

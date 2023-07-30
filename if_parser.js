@@ -1,4 +1,4 @@
-import {game, gameTitle, gameStyle, gameAuthor, globalActions, initItems} from './if_generate.js';
+import {game, gameTitle, gameStyle, gameAuthor, globalActions, initItems, customDeposits} from './if_generate.js';
 
 var currentNode;
 var previousNode;
@@ -22,8 +22,22 @@ var hintCommands = ["HINT", "HELP"];
 var lookCommands = ["LOOK", "L"];
 var itemInspectCommands = ["INSPECT", "LOOK", "EXAMINE", "X"];
 var ignorables = ["A", "AN", "THE", "TO", "FOR", "AT"];
+var containerWithdrawals = ["TAKE", "GET", "RETRIEVE", "WITHDRAWAL", "OBTAIN"];
+var containerDeposits = ["STORE","DEPOSIT","PLACE","PUT"];
 
 function gameInit() {
+    if (customDeposits["customDeposits"] !== [""]) {
+        if (customDeposits["includeDefaults"] === "true") {
+            for (let i = 0; i < customDeposits["customDeposits"].length; i++) {
+                containerDeposits.push(customDeposits["customDeposits"][i].toUpperCase());
+            }
+        } else {
+            containerDeposits = [];
+            for (let i = 0; i < customDeposits["customDeposits"].length; i++) {
+                containerDeposits.push(customDeposits["customDeposits"][i].toUpperCase());
+            }
+        }
+    }
     playing = true;
     previousNode = "0,0,0";
     currentNode = "0,0,0";
@@ -151,7 +165,7 @@ function getActions(location) {
 
 function getContainerDepositActions(location) {
     let actionParts = {
-        "verbs": ["STORE","DEPOSIT","PLACE","PUT"],
+        "verbs": containerDeposits,
         "items": [],
         "containers": []
     };
@@ -168,7 +182,7 @@ function getContainerDepositActions(location) {
 
 function getContainerWithdrawalActions(location) {
     let actionParts = {
-        "verbs": ["TAKE", "GET", "RETRIEVE", "WITHDRAWAL", "OBTAIN"],
+        "verbs": containerWithdrawals,
         "items": [],
         "containers": []
     }
@@ -473,7 +487,6 @@ function checkRequirements(reqs) {
     let locVisits = !reqs['locVisits'] ? [] : reqs['locVisits'].match(/\[(?:[^,]*,){3}[^,]*\]/g);
     let preNode = !reqs['preNode'] ? '' : reqs['preNode'];
     let itemEvos = !reqs['itemEvos'] ? [] : reqs['itemEvos'].split(/\]\s*,\s*/);
-    console.log(locVisits);
 
     //Check for container fulfillment requirements
     for (let i = 0; i < reqContainers.length; i++) {
@@ -1331,4 +1344,4 @@ function parseAction(input) {
     }
 }
 
-export { gameInit, parseAction }
+export { gameInit, parseAction, containerDeposits }

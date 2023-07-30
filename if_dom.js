@@ -1,7 +1,21 @@
 import { currentNode } from "./if_nodemap.js";
-import { gameStyle, globalActions, initItems } from "./if_generate.js";
+import { gameStyle, customDeposits } from "./if_generate.js";
+import { containerDeposits } from "./if_parser.js";
 
-function loadDomInitItems() {
+function loadDefaultCommands() {
+  $("#defaultContainerDeposits").html(containerDeposits.toString());
+}
+
+function loadDomCustomCommands() {
+  if (customDeposits["includeDefaults"] == "true") {
+    $("#includeDefaultContainerDeposits").prop("checked", true);
+  } else {
+    $("#includeDefaultContainerDeposits").prop("checked", false);
+  }
+  $("#customContainerDepositCommands").val(customDeposits["customDeposits"]);
+}
+
+function loadDomInitItems(initItems) {
   $("#initItemList").empty();
   let items = initItems
   for (let i = 0; i < items.length; i++) {
@@ -27,7 +41,7 @@ function loadDomInitItems() {
   }
 }
 
-function loadDomGlobalActions() {
+function loadDomGlobalActions(globalActions) {
   $("#globalActionList").empty();
   let actions = globalActions;
   for (let i = 0; i < actions.length; i++) {
@@ -471,17 +485,17 @@ function addInitItem() {
   let rmvButton = "<button class='removeObject'>Remove Item</button>";
   let nameLabel = `<label class='tooltip'>
                     Name
-                    <span class='tooltiptext'>Comma separated names of item [first option has requirement precedence] (e.g. lantern, light, torch)</span>
+                    <span class='popuptooltiptext'>Comma separated names of item [first option has requirement precedence] (e.g. lantern, light, torch)</span>
                     </label>`;
   let name = `<input type='text' id='${itemId}_Name'>`;
   let desLabel = `<label class='tooltip'>
                     Description
-                    <span class='tooltiptext'>Description of item (for "examine {item}" or "look {item}" command)</span>
+                    <span class='popuptooltiptext'>Description of item (for "examine {item}" or "look {item}" command)</span>
                     </label>`;
   let des = `<textarea id='${itemId}_Des' rows='3' cols='23'></textarea>`;
   let pointsLabel = `<label class='tooltip'>
                         Points
-                        <span class='tooltiptext'>Number of points awarded for getting this item [default of 0]</span>
+                        <span class='popuptooltiptext'>Number of points awarded for getting this item [default of 0]</span>
                         </label>`;
   let points = `<input type='text' id='${itemId}_Points'>`;
   let evoButton = "<button class='addInitEvoItems'>Add Evolution</button>";
@@ -516,27 +530,27 @@ function addGlobalAction() {
   let rmvButton = `<button class='removeObject'>Remove Action</button>`;
   let actionLabel = `<label class='tooltip'>
                         Action(s)
-                        <span class='tooltiptext'>Comma separated list of accepted action(e.g. crush egg, smash egg) [Ignores: a, an, the, to, for, at]</span>
+                        <span class='popuptooltiptext'>Comma separated list of accepted action(e.g. crush egg, smash egg) [Ignores: a, an, the, to, for, at]</span>
                         </label>`;
   let actions = `<input type='text' id='${actionId}_Actions'>`;
   let maxLabel = `<label class='tooltip'>
                     Max Uses
-                    <span class='tooltiptext'>A number for the maximum number of times this action can be called [leave blank for no maximum]</span>
+                    <span class='popuptooltiptext'>A number for the maximum number of times this action can be called [leave blank for no maximum]</span>
                     </label>`;
   let max = `<input type='text' id='${actionId}_Max'>`;
   let costsLabel = `<label class='tooltip'>
                     Costs
-                    <span class='tooltiptext'>Comma separated list of items which are spent/destroyed to perform this action</span>
+                    <span class='popuptooltiptext'>Comma separated list of items which are spent/destroyed to perform this action</span>
                     </label>`;
   let costs = `<input type='text' id='${actionId}_Costs'>`;
   let dropsLabel = `<label class='tooltip'>
                     Drops
-                    <span class='tooltiptext'>Comma separated list of items which are dropped to perform this action</span>
+                    <span class='popuptooltiptext'>Comma separated list of items which are dropped to perform this action</span>
                     </label>`;
   let drops = `<input type='text' id='${actionId}_Drops'>`;
   let visibilityLabel = `<label class='tooltip'>
                         Visibility
-                        <span class='tooltiptext'>Selection for how this action affects this node's visibility</span>
+                        <span class='popuptooltiptext'>Selection for how this action affects this node's visibility</span>
                         </label>`;
   let visibility = `<select id='${actionId}_Visibility'>
                         <option value='none' seleted='selected'>No change</option>
@@ -546,17 +560,17 @@ function addGlobalAction() {
                         </select>`;
   let responseLabel = `<label class='tooltip'>
                         Action Response
-                        <span class='tooltiptext'>Text displayed after successfully calling this action (e.g. The egg is now broken.)</span>
+                        <span class='popuptooltiptext'>Text displayed after successfully calling this action (e.g. The egg is now broken.)</span>
                         </label>`;
   let response = `<textarea id='${actionId}_Response' rows='3' cols='23'></textarea>`;
   let failLabel = `<label class='tooltip'>
                         Fail Response
-                        <span class='tooltiptext'>Text displayed after not meeting the action requirements (e.g. This door requires a key.)</span>
+                        <span class='popuptooltiptext'>Text displayed after not meeting the action requirements (e.g. This door requires a key.)</span>
                         </label>`;
   let fail = `<textarea id='${actionId}_Fail' rows='3' cols='23'></textarea>`;
   let pointsLabel = `<label class='tooltip'>
                     Points
-                    <span class='tooltiptext'>Points awarded for successfully calling this action [default of 0]</span>
+                    <span class='popuptooltiptext'>Points awarded for successfully calling this action [default of 0]</span>
                     </label>`;
   let points = `<input type='text' id='${actionId}_Points'>`;
   let requirements = getRequirements(actionId);
@@ -775,7 +789,7 @@ function addInitEvo(listId, itemNumber) {
   let requirements = getRequirements(evoId);
   let evoDesLabel = `<label class='tooltip'>
                     <b>Evo Description</b>
-                    <span class='tooltiptext'>The text displayed for this setting after meeting the above requirements</span>
+                    <span class='popuptooltiptext'>The text displayed for this setting after meeting the above requirements</span>
                     </label>`;
   let evoDes = `<textarea id='${evoId}_Des' rows='4' cols='23'></textarea>`;
   let rmvButton = `<button class='removeEvo'>Remove Evolution</button>`;
@@ -925,6 +939,8 @@ export {
   getRequirements,
   removeEvo,
   removeObject,
+  loadDomCustomCommands,
+  loadDefaultCommands,
   loadDomGlobalActions,
   loadDomInitItems,
   loadDomFromNode,

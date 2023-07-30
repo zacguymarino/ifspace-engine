@@ -66,6 +66,10 @@ $(function () {
     $("#initItemsDisplay").css("visibility", "visible");
   })
 
+  $(document).on("click", "#conDepOpen", function () {
+    $("#conDepDisplay").css("visibility", "visible");
+  })
+
   $("#addGlobalAction").click(function () {
     dom.addGlobalAction();
   });
@@ -80,6 +84,8 @@ $(function () {
     let listId = `${baseId}_EvoList`;
     dom.addInitEvo(listId, itemIndex);
   });
+
+  dom.loadDefaultCommands();
 
   ///////////////////////////////////
   //Help/Documentation/Game Settings

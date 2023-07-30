@@ -29,6 +29,7 @@
                 <div class="globalStuff">
                     <button class="globalButton" id="globalActionsOpen">Global Actions</button>
                     <button class="globalButton" id="initItemsOpen">Initial Items</button>
+                    <button class="globalButton" id="conDepOpen">Container Deposits</button>
                 </div>
             </div>
             <div class="pure-u-7-12">
@@ -267,7 +268,7 @@
             <div class="popupContent">
                 <label class='tooltip'>
                     <h1 class="popupTitle">Global Actions</h1>
-                    <span class='tooltiptext'>Custom actions available in every node
+                    <span class='popuptooltiptext'>Custom actions available in every node
                          (not item-acquiring or direction related)
                         [e.g. break egg, open window]</span>
                 </label>
@@ -280,10 +281,31 @@
             <div class="popupContent">
                 <label class='tooltip'>
                     <h1 class="popupTitle">Initial Items</h1>
-                    <span class='tooltiptext'>Items to start in the player's inventory</span>
+                    <span class='popuptooltiptext'>Items to start in the player's inventory</span>
                 </label>
                 <button id="addInitItem">Add Initial Item</button>
                 <div id="initItemList" class="container"></div>
+            </div>
+            <button class="popupClose">Close</button>
+        </div>
+        <div class="popupScreen popupBlockElements" id="conDepDisplay" style="visibility: hidden">
+            <div class="popupContent">
+                <label class='tooltip'>
+                    <h1 class="popupTitle">Container Deposit Commands</h1>
+                    <span class='popuptooltiptext'>Verb commands for depositing items into a container (in form of [Verb + item + [in, on, etc.] + container])</span>
+                </label>
+                <h3>Default commands:</h3>
+                <span id="defaultContainerDeposits"></span>
+                <label class='pure-checkbox tooltip'>
+                    <h3>Include Defaults:</h3>
+                    <span class='popuptooltiptext'>If checked, the default deposit commands are included in conjunction with any custom deposit commands</span>
+                </label>
+                <input type='checkbox' id='includeDefaultContainerDeposits' checked/>
+                <label class='tooltip'>
+                    <h3>Custom Container Deposits:</h3>
+                    <span class='popuptooltiptext'>Comma separated verbs to be used as container deposit commands (e.g. hang, bury, hide)</span>
+                </label>
+                <input class="customDefaultActions" id='customContainerDepositCommands' type='text'>
             </div>
             <button class="popupClose">Close</button>
         </div>
