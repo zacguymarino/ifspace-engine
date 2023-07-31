@@ -1,10 +1,15 @@
 import { currentNode } from "./if_nodemap.js";
-import { gameStyle, customDeposits, customWithdrawals } from "./if_generate.js";
-import { containerDeposits, containerWithdrawals } from "./if_parser.js";
+import { gameStyle, customDeposits, customWithdrawals, customTakes, customDrops, customIgnorables, customLooks, customExamines } from "./if_generate.js";
+import { containerDeposits, containerWithdrawals, takeCommands, dropCommands, ignorables, lookCommands, itemInspectCommands } from "./if_parser.js";
 
 function loadDefaultCommands() {
   $("#defaultContainerDeposits").html(containerDeposits.toString());
   $("#defaultContainerWithdrawals").html(containerWithdrawals.toString());
+  $("#defaultTakes").html(takeCommands.toString());
+  $("#defaultDrops").html(dropCommands.toString());
+  $("#defaultIgnorables").html(ignorables.toString());
+  $("#defaultLooks").html(lookCommands.toString());
+  $("#defaultExamines").html(itemInspectCommands.toString());
 }
 
 function loadDomCustomCommands() {
@@ -23,6 +28,46 @@ function loadDomCustomCommands() {
     $("#includeDefaultContainerWithdrawals").prop("checked", false);
   }
   $("#customContainerWithdrawalCommands").val(customWithdrawals["customWithdrawals"]);
+
+  //Takes
+  if (customTakes["includeDefaults"] == "true") {
+    $("#includeDefaultTakes").prop("checked", true);
+  } else {
+    $("#includeDefaultTakes").prop("checked", false);
+  }
+  $("#customTakeCommands").val(customTakes["customTakes"]);
+
+  //Drops
+  if (customDrops["includeDefaults"] == "true") {
+    $("#includeDefaultDrops").prop("checked", true);
+  } else {
+    $("#includeDefaultDrops").prop("checked", false);
+  }
+  $("#customDropCommands").val(customDrops["customDrops"]);
+
+  //Ignorables
+  if (customIgnorables["includeDefaults"] == "true") {
+    $("#includeDefaultIgnorables").prop("checked", true);
+  } else {
+    $("#includeDefaultIgnorables").prop("checked", false);
+  }
+  $("#customIgnorables").val(customIgnorables["customIgnorables"]);
+
+  //Looks
+  if (customLooks["includeDefaults"] == "true") {
+    $("#includeDefaultLooks").prop("checked", true);
+  } else {
+    $("#includeDefaultLooks").prop("checked", false);
+  }
+  $("#customLooks").val(customLooks["customLooks"]);
+
+  //Examines
+  if (customExamines["includeDefaults"] == "true") {
+    $("#includeDefaultExamines").prop("checked", true);
+  } else {
+    $("#includeDefaultExamines").prop("checked", false);
+  }
+  $("#customExamines").val(customExamines["customExamines"]);
 }
 
 function loadDomInitItems(initItems) {

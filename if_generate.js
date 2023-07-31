@@ -11,6 +11,11 @@ var globalActions;
 var initItems;
 var customDeposits;
 var customWithdrawals;
+var customTakes;
+var customDrops;
+var customIgnorables;
+var customLooks;
+var customExamines;
 
 var node = {
   name: "",
@@ -54,6 +59,11 @@ async function saveGame() {
   gameFile['initItems'] = initItems;
   gameFile['customDeposits'] = customDeposits;
   gameFile['customWithdrawals'] = customWithdrawals;
+  gameFile['customTakes'] = customTakes;
+  gameFile['customDrops'] = customDrops;
+  gameFile['customIgnorables'] = customIgnorables;
+  gameFile['customLooks'] = customLooks;
+  gameFile['customExamines'] = customExamines;
   gameFile['gameContent'] = JSON.parse(JSON.stringify(game));
   window.IFS_API.saveGame(JSON.stringify(gameFile));
 }
@@ -67,9 +77,14 @@ async function loadGame() {
     gameRating = loadData['gameRating'];
     gameAuthor = loadData['gameAuthor'];
     globalActions = loadData['globalActions'];
-    initItems = loadData['initItems']
-    customDeposits = loadData['customDeposits']
-    customWithdrawals = loadData['customWithdrawals']
+    initItems = loadData['initItems'];
+    customDeposits = loadData['customDeposits'];
+    customWithdrawals = loadData['customWithdrawals'];
+    customTakes = loadData['customTakes'];
+    customDrops = loadData['customDrops'];
+    customIgnorables = loadData['customIgnorables'];
+    customLooks = loadData['customLooks'];
+    customExamines = loadData['customExamines'];
     game = loadData['gameContent'];
     cNode = loadData['gameContent']['0,0,0'];
     loadDomCustomCommands();
@@ -140,6 +155,76 @@ function saveDefaultCommands() {
   customWithdrawals = {
     "includeDefaults": includeDefaultWithdrawals,
     "customWithdrawals": customDefaultsInput
+  }
+
+  //default take commands
+  let includeDefaultTakes;
+  if ($("#includeDefaultTakes").is(":checked")) {
+    includeDefaultTakes = "true";
+  } else {
+    includeDefaultTakes = "false";
+  }
+  customDefaultsInput = $("#customTakeCommands").val().split(/\s*,\s*/);
+  
+  customTakes = {
+    "includeDefaults": includeDefaultTakes,
+    "customTakes": customDefaultsInput
+  }
+
+  //default drop commands
+  let includeDefaultDrops;
+  if ($("#includeDefaultDrops").is(":checked")) {
+    includeDefaultDrops = "true";
+  } else {
+    includeDefaultDrops = "false";
+  }
+  customDefaultsInput = $("#customDropCommands").val().split(/\s*,\s*/);
+  
+  customDrops = {
+    "includeDefaults": includeDefaultDrops,
+    "customDrops": customDefaultsInput
+  }
+
+  //default ignorables
+  let includeDefaultIgnorables;
+  if ($("#includeDefaultIgnorables").is(":checked")) {
+    includeDefaultIgnorables = "true";
+  } else {
+    includeDefaultIgnorables = "false";
+  }
+  customDefaultsInput = $("#customIgnorables").val().split(/\s*,\s*/);
+  
+  customIgnorables = {
+    "includeDefaults": includeDefaultIgnorables,
+    "customIgnorables": customDefaultsInput
+  }
+
+  //default looks
+  let includeDefaultLooks;
+  if ($("#includeDefaultLooks").is(":checked")) {
+    includeDefaultLooks = "true";
+  } else {
+    includeDefaultLooks = "false";
+  }
+  customDefaultsInput = $("#customLooks").val().split(/\s*,\s*/);
+  
+  customLooks = {
+    "includeDefaults": includeDefaultLooks,
+    "customLooks": customDefaultsInput
+  }
+
+  //default examines
+  let includeDefaultExamines;
+  if ($("#includeDefaultExamines").is(":checked")) {
+    includeDefaultExamines = "true";
+  } else {
+    includeDefaultExamines = "false";
+  }
+  customDefaultsInput = $("#customExamines").val().split(/\s*,\s*/);
+  
+  customExamines = {
+    "includeDefaults": includeDefaultExamines,
+    "customExamines": customDefaultsInput
   }
 }
 
@@ -578,6 +663,11 @@ export {
   initItems,
   customDeposits,
   customWithdrawals,
+  customTakes,
+  customDrops,
+  customIgnorables,
+  customLooks,
+  customExamines,
   game,
   node,
   switchNode,

@@ -74,6 +74,26 @@ $(function () {
     $("#conWitDisplay").css("visibility", "visible");
   })
 
+  $(document).on("click", "#takesOpen", function () {
+    $("#takesDisplay").css("visibility", "visible");
+  })
+
+  $(document).on("click", "#dropsOpen", function () {
+    $("#dropsDisplay").css("visibility", "visible");
+  })
+
+  $(document).on("click", "#ignorablesOpen", function () {
+    $("#ignorablesDisplay").css("visibility", "visible");
+  })
+
+  $(document).on("click", "#looksOpen", function () {
+    $("#looksDisplay").css("visibility", "visible");
+  })
+
+  $(document).on("click", "#examinesOpen", function () {
+    $("#examinesDisplay").css("visibility", "visible");
+  })
+
   $("#addGlobalAction").click(function () {
     dom.addGlobalAction();
   });

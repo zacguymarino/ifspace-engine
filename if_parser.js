@@ -1,4 +1,16 @@
-import {game, gameTitle, gameStyle, gameAuthor, globalActions, initItems, customDeposits, customWithdrawals} from './if_generate.js';
+import {game, 
+    gameTitle, 
+    gameStyle, 
+    gameAuthor, 
+    globalActions, 
+    initItems, 
+    customDeposits, 
+    customWithdrawals, 
+    customTakes,
+    customDrops,
+    customIgnorables,
+    customLooks,
+    customExamines} from './if_generate.js';
 
 var currentNode;
 var previousNode;
@@ -47,6 +59,66 @@ function gameInit() {
             containerWithdrawals = [];
             for (let i = 0; i < customWithdrawals["customWithdrawals"].length; i++) {
                 containerWithdrawals.push(customWithdrawals["customWithdrawals"][i].toUpperCase());
+            }
+        }
+    }
+    if (customTakes["customTakes"] !== [""]) {
+        if (customTakes["includeDefaults"] == "true") {
+            for (let i = 0; i < customTakes["customTakes"].length; i++) {
+                takeCommands.push(customTakes["customTakes"][i].toUpperCase());
+            }
+        } else {
+            takeCommands = [];
+            for (let i = 0; i < customTakes["customTakes"].length; i++) {
+                takeCommands.push(customTakes["customTakes"][i].toUpperCase());
+            }
+        }
+    }
+    if (customDrops["customDrops"] !== [""]) {
+        if (customDrops["includeDefaults"] == "true") {
+            for (let i = 0; i < customDrops["customDrops"].length; i++) {
+                dropCommands.push(customDrops["customDrops"][i].toUpperCase());
+            }
+        } else {
+            dropCommands = [];
+            for (let i = 0; i < customDrops["customDrops"].length; i++) {
+                dropCommands.push(customDrops["customDrops"][i].toUpperCase());
+            }
+        }
+    }
+    if (customIgnorables["customIgnorables"] !== [""]) {
+        if (customIgnorables["includeDefaults"] == "true") {
+            for (let i = 0; i < customIgnorables["customIgnorables"].length; i++) {
+                ignorables.push(customIgnorables["customIgnorables"][i].toUpperCase());
+            }
+        } else {
+            ignorables = [];
+            for (let i = 0; i < customIgnorables["customIgnorables"].length; i++) {
+                ignorables.push(customIgnorables["customIgnorables"][i].toUpperCase());
+            }
+        }
+    }
+    if (customLooks["customLooks"] !== [""]) {
+        if (customLooks["includeDefaults"] == "true") {
+            for (let i = 0; i < customLooks["customLooks"].length; i++) {
+                lookCommands.push(customLooks["customLooks"][i].toUpperCase());
+            }
+        } else {
+            lookCommands = [];
+            for (let i = 0; i < customLooks["customLooks"].length; i++) {
+                lookCommands.push(customLooks["customLooks"][i].toUpperCase());
+            }
+        }
+    }
+    if (customExamines["customExamines"] !== [""]) {
+        if (customExamines["includeDefaults"] == "true") {
+            for (let i = 0; i < customExamines["customExamines"].length; i++) {
+                itemInspectCommands.push(customExamines["customExamines"][i].toUpperCase());
+            }
+        } else {
+            itemInspectCommands = [];
+            for (let i = 0; i < customExamines["customExamines"].length; i++) {
+                itemInspectCommands.push(customExamines["customExamines"][i].toUpperCase());
             }
         }
     }
@@ -1356,4 +1428,12 @@ function parseAction(input) {
     }
 }
 
-export { gameInit, parseAction, containerDeposits, containerWithdrawals }
+export { gameInit,
+    parseAction,
+    containerDeposits,
+    containerWithdrawals,
+    takeCommands,
+    dropCommands,
+    ignorables,
+    lookCommands,
+    itemInspectCommands }

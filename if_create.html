@@ -31,6 +31,11 @@
                     <button class="globalButton" id="initItemsOpen">Initial Items</button>
                     <button class="globalButton" id="conDepOpen">Deposits</button>
                     <button class="globalButton" id="conWitOpen">Withdrawals</button>
+                    <button class="globalButton" id="takesOpen">Takes</button>
+                    <button class="globalButton" id="dropsOpen">Drops</button>
+                    <button class="globalButton" id="ignorablesOpen">Ignorables</button>
+                    <button class="globalButton" id="looksOpen">Looks</button>
+                    <button class="globalButton" id="examinesOpen">Examines</button>
                 </div>
             </div>
             <div class="pure-u-7-12">
@@ -328,6 +333,111 @@
                     <span class='popuptooltiptext'>Comma separated verbs to be used as container withdrawal commands (e.g. pull, extract, fish)</span>
                 </label>
                 <input class="customDefaultActions" id='customContainerWithdrawalCommands' type='text'>
+            </div>
+            <button class="popupClose">Close</button>
+        </div>
+        <div class="popupScreen popupBlockElements" id="takesDisplay" style="visibility: hidden">
+            <div class="popupContent">
+                <label class='tooltip'>
+                    <h1 class="popupTitle">Take Commands</h1>
+                    <span class='popuptooltiptext'>Verb commands for 'taking' items (in form of [Verb + item])</span>
+                </label>
+                <h3>Default commands:</h3>
+                <span id="defaultTakes"></span>
+                <label class='pure-checkbox tooltip'>
+                    <h3>Include Defaults:</h3>
+                    <span class='popuptooltiptext'>If checked, the default take commands are included in conjunction with any custom take commands</span>
+                </label>
+                <input type='checkbox' id='includeDefaultTakes' checked/>
+                <label class='tooltip'>
+                    <h3>Custom Take Commands:</h3>
+                    <span class='popuptooltiptext'>Comma separated verbs to be used as take commands (e.g. seize, collect, recieve)</span>
+                </label>
+                <input class="customDefaultActions" id='customTakeCommands' type='text'>
+            </div>
+            <button class="popupClose">Close</button>
+        </div>
+        <div class="popupScreen popupBlockElements" id="dropsDisplay" style="visibility: hidden">
+            <div class="popupContent">
+                <label class='tooltip'>
+                    <h1 class="popupTitle">Drop Commands</h1>
+                    <span class='popuptooltiptext'>Verb commands for 'dropping' items (in form of [Verb + item])</span>
+                </label>
+                <h3>Default commands:</h3>
+                <span id="defaultDrops"></span>
+                <label class='pure-checkbox tooltip'>
+                    <h3>Include Defaults:</h3>
+                    <span class='popuptooltiptext'>If checked, the default drop commands are included in conjunction with any custom drop commands</span>
+                </label>
+                <input type='checkbox' id='includeDefaultDrops' checked/>
+                <label class='tooltip'>
+                    <h3>Custom Drop Commands:</h3>
+                    <span class='popuptooltiptext'>Comma separated verbs to be used as drop commands (e.g. release, reject)</span>
+                </label>
+                <input class="customDefaultActions" id='customDropCommands' type='text'>
+            </div>
+            <button class="popupClose">Close</button>
+        </div>
+        <div class="popupScreen popupBlockElements" id="ignorablesDisplay" style="visibility: hidden">
+            <div class="popupContent">
+                <label class='tooltip'>
+                    <h1 class="popupTitle">Ignorable Words</h1>
+                    <span class='popuptooltiptext'>Words to be ignored by the parser</span>
+                </label>
+                <h3>Default ignorables:</h3>
+                <span id="defaultIgnorables"></span>
+                <label class='pure-checkbox tooltip'>
+                    <h3>Include Defaults:</h3>
+                    <span class='popuptooltiptext'>If checked, the default ignorables are included in conjunction with any custom ignorables</span>
+                </label>
+                <input type='checkbox' id='includeDefaultIgnorables' checked/>
+                <label class='tooltip'>
+                    <h3>Custom Ignorables:</h3>
+                    <span class='popuptooltiptext'>Comma separated words to be ignored (e.g. here, there)</span>
+                </label>
+                <input class="customDefaultActions" id='customIgnorables' type='text'>
+            </div>
+            <button class="popupClose">Close</button>
+        </div>
+        <div class="popupScreen popupBlockElements" id="looksDisplay" style="visibility: hidden">
+            <div class="popupContent">
+                <label class='tooltip'>
+                    <h1 class="popupTitle">Look Words</h1>
+                    <span class='popuptooltiptext'>Look verbs for looking around the area/node</span>
+                </label>
+                <h3>Default looks:</h3>
+                <span id="defaultLooks"></span>
+                <label class='pure-checkbox tooltip'>
+                    <h3>Include Defaults:</h3>
+                    <span class='popuptooltiptext'>If checked, the default looks are included in conjunction with any custom looks</span>
+                </label>
+                <input type='checkbox' id='includeDefaultLooks' checked/>
+                <label class='tooltip'>
+                    <h3>Custom Looks:</h3>
+                    <span class='popuptooltiptext'>Comma separated look words (e.g. scan, view)</span>
+                </label>
+                <input class="customDefaultActions" id='customLooks' type='text'>
+            </div>
+            <button class="popupClose">Close</button>
+        </div>
+        <div class="popupScreen popupBlockElements" id="examinesDisplay" style="visibility: hidden">
+            <div class="popupContent">
+                <label class='tooltip'>
+                    <h1 class="popupTitle">Examine Words</h1>
+                    <span class='popuptooltiptext'>Examine verbs for examining an item (in form of [Verb + item])</span>
+                </label>
+                <h3>Default examines:</h3>
+                <span id="defaultExamines"></span>
+                <label class='pure-checkbox tooltip'>
+                    <h3>Include Defaults:</h3>
+                    <span class='popuptooltiptext'>If checked, the default examines are included in conjunction with any custom examines</span>
+                </label>
+                <input type='checkbox' id='includeDefaultExamines' checked/>
+                <label class='tooltip'>
+                    <h3>Custom Examines:</h3>
+                    <span class='popuptooltiptext'>Comma separated examine words (e.g. checkout, view)</span>
+                </label>
+                <input class="customDefaultActions" id='customExamines' type='text'>
             </div>
             <button class="popupClose">Close</button>
         </div>
