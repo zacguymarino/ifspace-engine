@@ -38,7 +38,7 @@ var containerWithdrawals = ["TAKE", "GET", "RETRIEVE", "WITHDRAWAL", "OBTAIN"];
 var containerDeposits = ["STORE","DEPOSIT","PLACE","PUT"];
 
 function gameInit() {
-    if (customDeposits["customDeposits"] !== [""]) {
+    if (customDeposits["customDeposits"] != [""]) {
         if (customDeposits["includeDefaults"] == "true") {
             for (let i = 0; i < customDeposits["customDeposits"].length; i++) {
                 containerDeposits.push(customDeposits["customDeposits"][i].toUpperCase());
@@ -50,7 +50,7 @@ function gameInit() {
             }
         }
     }
-    if (customWithdrawals["customWithdrawals"] !== [""]) {
+    if (customWithdrawals["customWithdrawals"] != [""]) {
         if (customWithdrawals["includeDefaults"] == "true") {
             for (let i = 0; i < customWithdrawals["customWithdrawals"].length; i++) {
                 containerWithdrawals.push(customWithdrawals["customWithdrawals"][i].toUpperCase());
@@ -62,7 +62,7 @@ function gameInit() {
             }
         }
     }
-    if (customTakes["customTakes"] !== [""]) {
+    if (customTakes["customTakes"] != [""]) {
         if (customTakes["includeDefaults"] == "true") {
             for (let i = 0; i < customTakes["customTakes"].length; i++) {
                 takeCommands.push(customTakes["customTakes"][i].toUpperCase());
@@ -74,7 +74,7 @@ function gameInit() {
             }
         }
     }
-    if (customDrops["customDrops"] !== [""]) {
+    if (customDrops["customDrops"] != [""]) {
         if (customDrops["includeDefaults"] == "true") {
             for (let i = 0; i < customDrops["customDrops"].length; i++) {
                 dropCommands.push(customDrops["customDrops"][i].toUpperCase());
@@ -86,7 +86,7 @@ function gameInit() {
             }
         }
     }
-    if (customIgnorables["customIgnorables"] !== [""]) {
+    if (customIgnorables["customIgnorables"] != [""]) {
         if (customIgnorables["includeDefaults"] == "true") {
             for (let i = 0; i < customIgnorables["customIgnorables"].length; i++) {
                 ignorables.push(customIgnorables["customIgnorables"][i].toUpperCase());
@@ -98,7 +98,7 @@ function gameInit() {
             }
         }
     }
-    if (customLooks["customLooks"] !== [""]) {
+    if (customLooks["customLooks"] != [""]) {
         if (customLooks["includeDefaults"] == "true") {
             for (let i = 0; i < customLooks["customLooks"].length; i++) {
                 lookCommands.push(customLooks["customLooks"][i].toUpperCase());
@@ -110,7 +110,7 @@ function gameInit() {
             }
         }
     }
-    if (customExamines["customExamines"] !== [""]) {
+    if (customExamines["customExamines"] != [""]) {
         if (customExamines["includeDefaults"] == "true") {
             for (let i = 0; i < customExamines["customExamines"].length; i++) {
                 itemInspectCommands.push(customExamines["customExamines"][i].toUpperCase());
@@ -398,7 +398,7 @@ function getDirectionsActions (location) {
         let alts = game[location].directions[i].alternatives.split(/\s*,\s*/);
         let exclude = game[location].directions[i].exclude;
 
-        if (exclude !== "true") {
+        if (exclude != "true") {
             switch (thisDirection) {
                 case ("N"):
                     directionObject["alternatives"] = [
@@ -587,9 +587,9 @@ function checkRequirements(reqs) {
                 //If true, found the container that is required to be complete
                 if (save.nodes[key].containers[k].name.split(/\s*,\s*/)[0].toUpperCase() == containerName) {
                     checked = true;
-                    if (!checkContainerComplete(save.nodes[key].containers[k]) && reqAll === "true") {
+                    if (!checkContainerComplete(save.nodes[key].containers[k]) && reqAll == "true") {
                         return false;
-                    } else if (checkContainerComplete(save.nodes[key].containers[k]) && reqAll !== "true") {
+                    } else if (checkContainerComplete(save.nodes[key].containers[k]) && reqAll != "true") {
                         return true;
                     }
                     if (!checkContainerComplete(save.nodes[key].containers[k]) && i == reqContainers.length - 1) {
@@ -602,9 +602,9 @@ function checkRequirements(reqs) {
 
     //Check local node action requirements
     for (let i = 0; i < reqLocal.length; i++) {
-        if (!save.nodes[currentNode].actions.includes(reqLocal[i].toUpperCase()) && reqAll === "true") {
+        if (!save.nodes[currentNode].actions.includes(reqLocal[i].toUpperCase()) && reqAll == "true") {
             return false;
-        } else if (save.nodes[currentNode].actions.includes(reqLocal[i].toUpperCase()) && reqAll !== "true") {
+        } else if (save.nodes[currentNode].actions.includes(reqLocal[i].toUpperCase()) && reqAll != "true") {
             return true;
         }
         if (!save.nodes[currentNode].actions.includes(reqLocal[i].toUpperCase()) && i == reqLocal.length - 1) {
@@ -613,9 +613,9 @@ function checkRequirements(reqs) {
     }
     //Check global action requirements
     for (let i = 0; i < reqGlobal.length; i++) {
-        if (!save.actions.includes(reqGlobal[i].toUpperCase()) && reqAll === "true") {
+        if (!save.actions.includes(reqGlobal[i].toUpperCase()) && reqAll == "true") {
             return false;
-        } else if (save.actions.includes(reqGlobal[i].toUpperCase()) && reqAll !== "true") {
+        } else if (save.actions.includes(reqGlobal[i].toUpperCase()) && reqAll != "true") {
             return true;
         }
         if (!save.actions.includes(reqGlobal[i].toUpperCase()) && i == reqGlobal.length - 1) {
@@ -625,7 +625,7 @@ function checkRequirements(reqs) {
     //Check previous action requirement
     if (preAction != '' && preAction.toUpperCase() != save.actions[save.actions.length - 1]) {
         return false;
-    } else if (preAction != '' && reqAll !== "true") {
+    } else if (preAction != '' && reqAll != "true") {
         return true;
     }
 
@@ -635,18 +635,18 @@ function checkRequirements(reqs) {
         let loc = `${locArray[0]},${locArray[1]},${locArray[2]}`;
         let quant = locArray[3];
         if (quant > 0){
-            if (!save.nodes.hasOwnProperty(loc) && reqAll === "true") {
+            if (!save.nodes.hasOwnProperty(loc) && reqAll == "true") {
                 return false;
-            } else if (!save.nodes.hasOwnProperty(loc) && reqAll !== "true") {
+            } else if (!save.nodes.hasOwnProperty(loc) && reqAll != "true") {
                 if (i == locVisits.length - 1) {
                     return false;
                 } else {
                     continue;
                 }
             } else {
-                if (Number(save.nodes[loc].visits) < quant && reqAll === "true") {
+                if (Number(save.nodes[loc].visits) < quant && reqAll == "true") {
                     return false;
-                } else if (Number(save.nodes[loc].visits) >= quant && reqAll !== "true") {
+                } else if (Number(save.nodes[loc].visits) >= quant && reqAll != "true") {
                     return true;
                 }
                 if (Number(save.nodes[loc].visits) < quant && i == locVisits.length - 1) {
@@ -654,14 +654,14 @@ function checkRequirements(reqs) {
                 }
             }
         } else if (quant == 0) {
-            if (!save.nodes.hasOwnProperty(loc) && reqAll === "true") {
+            if (!save.nodes.hasOwnProperty(loc) && reqAll == "true") {
                 continue;
-            } else if (!save.nodes.hasOwnProperty(loc) && reqAll !== "true") {
+            } else if (!save.nodes.hasOwnProperty(loc) && reqAll != "true") {
                 return true;
             } else {
-                if (Number(save.nodes[loc].visits) != 0 && reqAll === "true") {
+                if (Number(save.nodes[loc].visits) != 0 && reqAll == "true") {
                     return false;
-                } else if (Number(save.nodes[loc].visits) == 0 && reqAll !== "true") {
+                } else if (Number(save.nodes[loc].visits) == 0 && reqAll != "true") {
                     return true;
                 }
                 if (Number(save.nodes[loc].visits) != 0 && i == locVisits.length - 1) {
@@ -674,7 +674,7 @@ function checkRequirements(reqs) {
     //Check previous node requirement
     if (preNode != '' & preNode != previousNode) {
         return false;
-    } else if (preNode != '' && reqAll !== "true") {
+    } else if (preNode != '' && reqAll != "true") {
         return true;
     }
 
@@ -693,9 +693,9 @@ function checkRequirements(reqs) {
                 break;
             }
         }
-        if (!itemIncluded && reqAll === "true") {
+        if (!itemIncluded && reqAll == "true") {
             return false;
-        } else if (itemIncluded && reqAll !== "true") {
+        } else if (itemIncluded && reqAll != "true") {
             return true;
         }
         if (!itemIncluded && i == reqItems.length - 1) {
@@ -712,7 +712,7 @@ function checkRequirements(reqs) {
             if (item == itemEvo[0].toUpperCase()) {
                 checked = true;
                 for (let k = 0; k < save.items.length; k++) {
-                    if (save["items"][k].name.split(/\s*,\s*/)[0].toUpperCase() === itemEvo[0].toUpperCase()) {
+                    if (save["items"][k].name.split(/\s*,\s*/)[0].toUpperCase() == itemEvo[0].toUpperCase()) {
                         let checkIndex = 0;
                         let evoIndex = 0;
                         for (let l = 0; l < save["items"][k].evos.length; l++) {
@@ -732,19 +732,19 @@ function checkRequirements(reqs) {
                                 evoIndex = checkIndex;
                             }
                         }
-                        if (evoIndex !== +itemEvo[1] && reqAll === "true") {
+                        if (evoIndex != +itemEvo[1] && reqAll == "true") {
                             return false;
-                        } else if (evoIndex === +itemEvo[1] && reqAll !== "true") {
+                        } else if (evoIndex == +itemEvo[1] && reqAll != "true") {
                             return true;
                         }
-                        if (evoIndex !== +itemEvo[1] && i == itemEvos.length - 1) {
+                        if (evoIndex != +itemEvo[1] && i == itemEvos.length - 1) {
                             return false;
                         }
                     }
                 }
             } 
         }
-        if (!checked && reqAll === "true") {
+        if (!checked && reqAll == "true") {
             return false;
         }
         if (!checked && i == itemEvos.length - 1) {
@@ -1028,7 +1028,7 @@ function parseAction(input) {
                             if (checkRequirements(reqs)) {
                                 let mainAction = actionObject.actions.split(/\s*,\s*/)[0].toUpperCase();
                                 let maxTimes;
-                                if (actionObject.max !== '' && actionObject.max !== null) {
+                                if (actionObject.max != '' && actionObject.max != null) {
                                     maxTimes = +actionObject.max;
                                 } else {
                                     maxTimes = 9999;
@@ -1113,7 +1113,7 @@ function parseAction(input) {
             sentMessage = true;
         }
 
-        if (action === "SCORE") {
+        if (action == "SCORE") {
             pushAction("SCORE");
             let max = getMaxPoints();
             if (max == 0) {
@@ -1304,7 +1304,7 @@ function parseAction(input) {
                 let checked = false;
                 let variants = save.nodes[currentNode].items[i].name.split(/\s*,\s*/);
                 for (let j = 0; j < variants.length; j++) {
-                    if (variants[j].toUpperCase() === actionItem) {
+                    if (variants[j].toUpperCase() == actionItem) {
                         let discoveredItem = JSON.parse(JSON.stringify(save.nodes[currentNode].items[i]));
                         save.items.push(discoveredItem);
                         save.nodes[currentNode].items.splice(i,1);
@@ -1335,7 +1335,7 @@ function parseAction(input) {
             for (let i = 0; i < inspectableItems.length; i++) {
                 let variants = inspectableItems[i].name.split(/\s*,\s*/);
                 for (let j = 0; j < variants.length; j++) {
-                    if (variants[j].toUpperCase() === actionItem) {
+                    if (variants[j].toUpperCase() == actionItem) {
                         let reqs = {
                             "reqAll": inspectableItems[i].reqAll,
                             "reqItems": inspectableItems[i].reqItems,
@@ -1401,7 +1401,7 @@ function parseAction(input) {
             for (let i = 0; i < save.items.length; i++) {
                 let variants = save.items[i].name.split(/\s*,\s*/);
                 for (let j = 0; j < variants.length; j++) {
-                    if (variants[j].toUpperCase() === actionItem) {
+                    if (variants[j].toUpperCase() == actionItem) {
                         let existingItem = JSON.parse(JSON.stringify(save.items[i]));
                         save.nodes[currentNode].items.push(existingItem);
                         save.items.splice(i,1);
