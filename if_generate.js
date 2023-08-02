@@ -248,7 +248,8 @@ function saveInitItems() {
     let evoListItems = [];
     for (let j = 0; j < evoDivs.length; j++) {
       let baseId = $(evoDivs[j]).attr("id");
-      let reqAll = $(`#${baseId}reqAll`).is(":checked").toString();
+      let reqAll = $(`#${baseId}_reqAll`).is(":checked").toString();
+      let reqNot = $(`#${baseId}_reqNot`).is(":checked").toString();
       let reqItems = $(`#${baseId}_Items`).val();
       let reqContainers = $(`#${baseId}_Containers`).val();
       let reqLocal = $(`#${baseId}_Local`).val();
@@ -260,6 +261,7 @@ function saveInitItems() {
       let evoDes = $(`#${baseId}_Des`).val();
       let evo = {
         reqAll: reqAll,
+        reqNot: reqNot,
         reqItems: reqItems,
         reqContainers: reqContainers,
         reqLocal: reqLocal,
@@ -292,6 +294,7 @@ function saveGlobalActions() {
     let fail = $(`#${baseId}_Fail`).val();
     let points = $(`#${baseId}_Points`).val();
     let reqAll = $(`#${baseId}_reqAll`).is(":checked").toString();
+    let reqNot = $(`#${baseId}_reqNot`).is(":checked").toString();
     let reqItems = $(`#${baseId}_Items`).val();
     let reqContainers = $(`#${baseId}_Containers`).val();
     let reqLocal = $(`#${baseId}_Local`).val();
@@ -311,6 +314,7 @@ function saveGlobalActions() {
       fail: fail,
       points: points,
       reqAll: reqAll,
+      reqNot: reqNot,
       reqItems: reqItems,
       reqContainers: reqContainers,
       reqLocal: reqLocal,
@@ -364,6 +368,7 @@ function generateNode() {
       let alternatives = $(`#${direction}_Alternatives`).val();
       let exclude = $(`#${direction}_Exclude`).is(":checked");
       let reqAll = $(`#${direction}_reqAll`).is(":checked").toString();
+      let reqNot = $(`#${direction}_reqNot`).is(":checked").toString();
       let reqItems = $(`#${direction}_Items`).val();
       let reqContainers = $(`#${direction}_Containers`).val();
       let reqLocal = $(`#${direction}_Local`).val();
@@ -385,6 +390,7 @@ function generateNode() {
         alternatives: alternatives,
         exclude: exclude,
         reqAll: reqAll,
+        reqNot: reqNot,
         reqItems: reqItems,
         reqContainers: reqContainers,
         reqLocal: reqLocal,
@@ -412,6 +418,7 @@ function generateNode() {
     for (let i = 0; i < evoListDes.length; i++) {
       let baseId = $(evoListDes[i]).attr("id");
       let reqAll = $(`#${baseId}_reqAll`).is(":checked").toString();
+      let reqNot = $(`#${baseId}_reqNot`).is(":checked").toString();
       let reqItems = $(`#${baseId}_Items`).val();
       let reqContainers = $(`#${baseId}_Containers`).val();
       let reqLocal = $(`#${baseId}_Local`).val();
@@ -424,6 +431,7 @@ function generateNode() {
 
       let evo = {
         reqAll: reqAll,
+        reqNot: reqNot,
         reqItems: reqItems,
         reqContainers: reqContainers,
         reqLocal: reqLocal,
@@ -448,6 +456,7 @@ function generateNode() {
     let description = $(`#${itemId}_Des`).val();
     let points = $(`#${itemId}_Points`).val();
     let reqAll = $(`#${itemId}_reqAll`).is(":checked").toString();
+    let reqNot = $(`#${itemId}_reqNot`).is(":checked").toString();
     let reqItems = $(`#${itemId}_Items`).val();
     let reqContainers = $(`#${itemId}_Containers`).val();
     let reqLocal = $(`#${itemId}_Local`).val();
@@ -461,6 +470,7 @@ function generateNode() {
       description: description,
       points: points,
       reqAll: reqAll,
+      reqNot: reqNot,
       reqItems: reqItems,
       reqContainers: reqContainers,
       reqLocal: reqLocal,
@@ -476,6 +486,7 @@ function generateNode() {
     for (let j = 0; j < evoDivs.length; j++) {
       let baseId = $(evoDivs[j]).attr("id");
       let reqAll = $(`#${baseId}_reqAll`).is(":checked").toString();
+      let reqNot = $(`#${baseId}_reqNot`).is(":checked").toString();
       let reqItems = $(`#${baseId}_Items`).val();
       let reqContainers = $(`#${baseId}_Containers`).val();
       let reqLocal = $(`#${baseId}_Local`).val();
@@ -487,6 +498,7 @@ function generateNode() {
       let evoDes = $(`#${baseId}_Des`).val();
       let evo = {
         reqAll: reqAll,
+        reqNot: reqNot,
         reqItems: reqItems,
         reqContainers: reqContainers,
         reqLocal: reqLocal,
@@ -515,6 +527,7 @@ function generateNode() {
     let complete = $(`#${containerId}_Complete`).val();
     let points = $(`#${containerId}_Points`).val();
     let reqAll = $(`#${containerId}_reqAll`).is(":checked").toString();
+    let reqNot = $(`#${containerId}_reqNot`).is(":checked").toString();
     let reqItems = $(`#${containerId}_Items`).val();
     let reqContainers = $(`#${containerId}_Containers`).val();
     let reqLocal = $(`#${containerId}_Local`).val();
@@ -530,7 +543,8 @@ function generateNode() {
       complete: complete,
       illegal: illegal,
       points: points,
-      reqAll, reqAll,
+      reqAll: reqAll,
+      reqNot: reqNot,
       reqItems: reqItems,
       reqContainers: reqContainers,
       reqLocal: reqLocal,
@@ -563,6 +577,7 @@ function generateNode() {
     let fail = $(`#${baseId}_Fail`).val();
     let points = $(`#${baseId}_Points`).val();
     let reqAll = $(`#${baseId}_reqAll`).is(":checked").toString();
+    let reqNot = $(`#${baseId}_reqNot`).is(":checked").toString();
     let reqItems = $(`#${baseId}_Items`).val();
     let reqContainers = $(`#${baseId}_Containers`).val();
     let reqLocal = $(`#${baseId}_Local`).val();
@@ -582,6 +597,7 @@ function generateNode() {
       fail: fail,
       points: points,
       reqAll: reqAll,
+      reqNot: reqNot,
       reqItems: reqItems,
       reqContainers: reqContainers,
       reqLocal: reqLocal,
@@ -600,6 +616,7 @@ function generateNode() {
   //generate win
   let winDes = $("#winDes").val();
   let winReqAll = $("win_reqAll").is(":checked").toString();
+  let winReqNot = $("win_reqNot").is(":checked").toString();
   let winReqItems = $("#win_Items").val();
   let winReqContainers = $("#win_Containers").val();
   let winReqLocal = $("#win_Local").val();
@@ -611,6 +628,7 @@ function generateNode() {
   let win = {
     description: winDes,
     reqAll: winReqAll,
+    reqNot: winReqNot,
     reqItems: winReqItems,
     reqContainers: winReqContainers,
     reqLocal: winReqLocal,
@@ -625,6 +643,7 @@ function generateNode() {
   //generate lose
   let loseDes = $("#loseDes").val();
   let loseReqAll = $("#lose_reqAll").is(":checked").toString();
+  let loseReqNot = $("#lose_reqNot").is(":checked").toString();
   let loseReqItems = $("#lose_Items").val();
   let loseReqContainers = $("#lose_Containers").val();
   let loseReqLocal = $("#lose_Local").val();
@@ -636,6 +655,7 @@ function generateNode() {
   let lose = {
     description: loseDes,
     reqAll: loseReqAll,
+    reqNot: loseReqNot,
     reqItems: loseReqItems,
     reqContainers: loseReqContainers,
     reqLocal: loseReqLocal,

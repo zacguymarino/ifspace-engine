@@ -151,7 +151,7 @@ function loadDomFromNode(node) {
 
   $("#name").val(name);
 
-  if (visibility === "true") {
+  if (visibility == "true") {
     $("#visibility").prop("checked", true);
   } else {
     $("#visibility").prop("checked", false);
@@ -168,15 +168,20 @@ function loadDomFromNode(node) {
     let checkbox = nodeDirections[i].direction;
     $(`#${checkbox}_Location`).val(nodeDirections[i].location);
     $(`#${checkbox}_Alternatives`).val(nodeDirections[i].alternatives);
-    if (nodeDirections[i].exclude === "true") {
+    if (nodeDirections[i].exclude == "true") {
       $(`#${checkbox}_Exclude`).prop("checked", true);
     } else {
       $(`#${checkbox}_Exclude`).prop("checked", false);
     }
-    if (nodeDirections[i].reqAll === "true") {
+    if (nodeDirections[i].reqAll == "true") {
       $(`#${checkbox}_reqAll`).prop("checked", true);
     } else {
       $(`#${checkbox}_reqAll`).prop("checked", false);
+    }
+    if (nodeDirections[i].reqNot == "true") {
+      $(`#${checkbox}_reqNot`).prop("checked", true);
+    } else {
+      $(`#${checkbox}_reqNot`).prop("checked", false);
     }
     $(`#${checkbox}_Items`).val(nodeDirections[i].reqItems);
     $(`#${checkbox}_Containers`).val(nodeDirections[i].reqContainers);
@@ -196,10 +201,15 @@ function loadDomFromNode(node) {
       let baseId = `evoDes_${i + 1}`;
       $(`#${baseId}_Items`).val(descriptions.evos[i].reqItems);
       $(`#${baseId}_Containers`).val(descriptions.evos[i].reqContainers);
-      if (descriptions.evos[i].reqAll === "true") {
+      if (descriptions.evos[i].reqAll == "true") {
         $(`#${baseId}_reqAll`).prop("checked", true);
       } else {
         $(`#${baseId}_reqAll`).prop("checked", false);
+      }
+      if (descriptions.evos[i].reqNot == "true") {
+        $(`#${baseId}_reqNot`).prop("checked", true);
+      } else {
+        $(`#${baseId}_reqNot`).prop("checked", false);
       }
       $(`#${baseId}_Local`).val(descriptions.evos[i].reqLocal);
       $(`#${baseId}_Global`).val(descriptions.evos[i].reqGlobal);
@@ -217,10 +227,15 @@ function loadDomFromNode(node) {
     $(`#${baseId}_Name`).val(items[i].name);
     $(`#${baseId}_Des`).val(items[i].description);
     $(`#${baseId}_Points`).val(items[i].points);
-    if (items[i].reqAll === "true") {
+    if (items[i].reqAll == "true") {
       $(`#${baseId}_reqAll`).prop("checked", true);
     } else {
       $(`#${baseId}_reqAll`).prop("checked", false);
+    }
+    if (items[i].reqNot == "true") {
+      $(`#${baseId}_reqNot`).prop("checked", true);
+    } else {
+      $(`#${baseId}_reqNot`).prop("checked", false);
     }
     $(`#${baseId}_Items`).val(items[i].reqItems);
     $(`#${baseId}_Containers`).val(items[i].reqContainers);
@@ -233,10 +248,15 @@ function loadDomFromNode(node) {
     for (let j = 0; j < items[i].evos.length; j++) {
       addEvo(`${baseId}_EvoList`, i+1);
       let baseEvoId = `evoItems_${i + 1}_${j + 1}`;
-      if (items[i].evos[j].reqAll === "true") {
+      if (items[i].evos[j].reqAll == "true") {
         $(`#${baseEvoId}_reqAll`).prop("checked", true);
       } else {
         $(`#${baseEvoId}_reqAll`).prop("checked", false);
+      }
+      if (items[i].evos[j].reqNot == "true") {
+        $(`#${baseEvoId}_reqNot`).prop("checked", true);
+      } else {
+        $(`#${baseEvoId}_reqNot`).prop("checked", false);
       }
       $(`#${baseEvoId}_Items`).val(items[i].evos[j].reqItems);
       $(`#${baseEvoId}_Containers`).val(items[i].evos[j].reqContainers);
@@ -258,10 +278,15 @@ function loadDomFromNode(node) {
     $(`#${baseId}_Illegal`).val(containers[i].illegal);
     $(`#${baseId}_Complete`).val(containers[i].complete);
     $(`#${baseId}_Points`).val(containers[i].points);
-    if (containers[i].reqAll === "true") {
+    if (containers[i].reqAll == "true") {
       $(`#${baseId}_reqAll`).prop("checked", true);
     } else {
       $(`#${baseId}_reqAll`).prop("checked", false);
+    }
+    if (containers[i].reqNot == "true") {
+      $(`#${baseId}_reqNot`).prop("checked", true);
+    } else {
+      $(`#${baseId}_reqNot`).prop("checked", false);
     }
     $(`#${baseId}_Items`).val(containers[i].reqItems);
     $(`#${baseId}_Containers`).val(containers[i].reqContainers);
@@ -286,10 +311,15 @@ function loadDomFromNode(node) {
       $(`#${baseId}_Response`).val(actions.actions[i].response);
       $(`#${baseId}_Fail`).val(actions.actions[i].fail);
       $(`#${baseId}_Points`).val(actions.actions[i].points);
-      if (actions.actions[i].reqAll === "true") {
+      if (actions.actions[i].reqAll == "true") {
         $(`#${baseId}_reqAll`).prop("checked", true);
       } else {
         $(`#${baseId}_reqAll`).prop("checked", false);
+      }
+      if (actions.actions[i].reqNot == "true") {
+        $(`#${baseId}_reqNot`).prop("checked", true);
+      } else {
+        $(`#${baseId}_reqNot`).prop("checked", false);
       }
       $(`#${baseId}_Items`).val(actions.actions[i].reqItems);
       $(`#${baseId}_Containers`).val(actions.actions[i].reqContainers);
@@ -303,10 +333,15 @@ function loadDomFromNode(node) {
   }
 
   $("#winDes").val(win.description);
-  if (win.reqAll === "true") {
+  if (win.reqAll == "true") {
     $(`#win_reqAll`).prop("checked", true);
   } else {
     $(`#win_reqAll`).prop("checked", false);
+  }
+  if (win.reqNot == "true") {
+    $(`#win_reqNot`).prop("checked", true);
+  } else {
+    $(`#win_reqNot`).prop("checked", false);
   }
   $("#win_Items").val(win.reqItems);
   $("#win_Containers").val(win.reqContainers);
@@ -318,10 +353,15 @@ function loadDomFromNode(node) {
   $("#win_Evos").val(win.itemEvos);
 
   $("#loseDes").val(lose.description);
-  if (lose.reqAll === "true") {
+  if (lose.reqAll == "true") {
     $(`#lose_reqAll`).prop("checked", true);
   } else {
     $(`#lose_reqAll`).prop("checked", false);
+  }
+  if (lose.reqNot == "true") {
+    $(`#lose_reqNot`).prop("checked", true);
+  } else {
+    $(`#lose_reqNot`).prop("checked", false);
   }
   $("#lose_Items").val(lose.reqItems);
   $("#lose_Containers").val(lose.reqContainers);
@@ -814,12 +854,12 @@ function showHide(ID) {
     ];
 
     for (let menu of menus) {
-      if (menu !== block) {
+      if (menu != block) {
         let x = $(`#${menu}`)[0];
         x.style.display = "none";
       } else {
         let x = $(`#${menu}`)[0];
-        if (x.style.display === "none") {
+        if (x.style.display == "none") {
           x.style.display = "block";
         } else {
           x.style.display = "none";
@@ -912,11 +952,22 @@ function getRequirements(baseId) {
                     <b>Requirements</b>
                     <span class='tooltiptext'>The current node setting will only exist/apply if the following conditions are met</span>
                     </label>`;
-  let reqAll = `<label class='pure-checkbox tooltip'>
-                  Require All
-                  <span class='tooltiptext'>If checked, all listed requirements must be satisified (otherwise only one or more is required)</span>
-                  </label>
-                  <input type='checkbox' id='${baseId}_reqAll' checked/>`;
+  let reqAllAndNot = `<div style="display: flex;">
+                    <div>
+                    <label class='pure-checkbox tooltip'>
+                    Require All
+                    <span class='tooltiptext'>If checked, all listed requirements must be satisified (otherwise only one or more is required)</span>
+                    </label>
+                    <input type='checkbox' id='${baseId}_reqAll' checked/>
+                    </div>
+                    <div>
+                    <label class='pure-checkbox tooltip'>
+                    Not
+                    <span class='tooltiptext'>If checked, all listed requirements must NOT be true (otherwise the requirement check fails)[accounts for req. all]</span>
+                    </label>
+                    <input type='checkbox' id='${baseId}_reqNot'/>
+                    </div>
+                  </div>`;
   let reqItems = `<label class='tooltip'>
                     Items
                     <span class='tooltiptext'>Comma separated items required for this setting (e.g. keys, bottle, food, etc.)</span>
@@ -962,7 +1013,7 @@ function getRequirements(baseId) {
   let html =
     divStart +
     reqLabel +
-    reqAll +
+    reqAllAndNot +
     reqItems +
     reqContainers +
     reqLocal +
