@@ -495,7 +495,9 @@ function getDirectionsActions (location) {
             }
         }
         for (let j = 0; j < alts.length; j++) {
-            directionObject.alternatives.push(alts[j].toUpperCase());
+            if (alts[j] != "") {
+                directionObject.alternatives.push(alts[j].toUpperCase());
+            }
         }
         directions.push(directionObject);
     }
@@ -914,7 +916,9 @@ function checkLose() {
 
 function handleHint() {
     if (badAction >= 5) {
-        displayMessage(game[currentNode].hint, false);
+        if (game[currentNode].hint != "") {
+            displayMessage("Hint: " + game[currentNode].hint, false);
+        }
     }
 }
 
