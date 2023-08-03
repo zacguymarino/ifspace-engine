@@ -4,8 +4,7 @@ An interactive Fiction Space Engine
 
 ## Description:
 
-An application for creating Interactive Fiction games.
-(Think Colossal Cave, Zork, or Choose your path books)
+An application for creating interactive fiction games without code.
 
 ## Build Requirements:
 
@@ -24,15 +23,7 @@ An application for creating Interactive Fiction games.
 
 To do:
 - [ ] **Sanitize input fields**.
-- [ ] Change scrollbar colors to match UI.
-- [ ] Change checkbox colors.
-- [ ] Add scrolling and zooming with mouse for map.
-- [x] Fix button border in nodetools.
-- [x] Make game input sim textbox value empty when submit.
-- [x] Clean up UI
-- [x] Improve README
-- [x] Change window startsize.
-- [x] Remove electron native menu. Done but reactivating 'cause removing this disables DevTools from opening up. 
+
 
 ---
 
