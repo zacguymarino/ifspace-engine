@@ -24,6 +24,7 @@ var cItemInspections;
 var cNodeActions;
 var badAction;
 var playing;
+var previousInput = "";
 
 var save;
 
@@ -1100,6 +1101,9 @@ function parseAction(input) {
 
         displayMessage(input, true);
 
+        //Update previous input
+        previousInput = input;
+
         //Filter out ignorables
         action = filterIgnorables(action);
 
@@ -1555,4 +1559,5 @@ export { gameInit,
     dropCommands,
     ignorables,
     lookCommands,
-    itemInspectCommands }
+    itemInspectCommands,
+    previousInput }

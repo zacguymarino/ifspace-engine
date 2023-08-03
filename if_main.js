@@ -1,7 +1,7 @@
 import { saveGame, loadGame, deleteNode, startGameSim } from "./if_generate.js";
 import * as dom from "./if_dom.js";
 import { nodeMap, resizeCanvas, zoom, draw } from "./if_nodemap.js";
-import { gameInit, parseAction } from "./if_parser.js";
+import { gameInit, parseAction, previousInput } from "./if_parser.js";
 
 $(function () {
   ///////////////
@@ -13,7 +13,7 @@ $(function () {
     $("#classicStyleInput").focus();
   });
 
-  $(document).on("keypress", "#classicStyleInput", function (event) {
+  $(document).on("keydown", "#classicStyleInput", function (event) {
     if (event.which == 13) {
       try {
         parseAction($("#classicStyleInput").val());
@@ -22,6 +22,9 @@ $(function () {
       }
       $("#classicStyleInput").val("");
       event.preventDefault();
+    }
+    if (event.which == 38) {
+      $("#classicStyleInput").val(previousInput);
     }
   });
 
