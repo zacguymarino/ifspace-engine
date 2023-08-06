@@ -179,6 +179,11 @@ $(function () {
     dom.addEvo(listId);
   });
 
+  $(document).on("click", ".addEvoInvalid", function (event) {
+    let listId = "evoListInvalids";
+    dom.addEvo(listId);
+  });
+
   $(document).on("click", ".removeEvo", function (event) {
     let baseId = $(event.currentTarget.parentElement).attr("id");
     let listId = $(event.currentTarget.parentElement.parentElement).attr("id");
@@ -209,4 +214,16 @@ $(function () {
 
   $("#winBlock").append(dom.getRequirements("win"));
   $("#loseBlock").append(dom.getRequirements("lose"));
+
+  $(document).on("click", ".toggleNots", function (event) {
+    let eventId = event.currentTarget.id;
+    let baseId = eventId.slice(0, eventId.lastIndexOf('_'));
+    let status;
+    if ($(`#${eventId}`).is(":checked")) {
+      status = true;
+    } else {
+      status = false;
+    }
+    dom.showHideNotBoxes(baseId, status);
+  });
 });

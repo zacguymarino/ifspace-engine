@@ -177,6 +177,14 @@
                     </div>
                     <div id="actionsBlock" class="pure-u-1-1 tabElements"
                         style="display: none;">
+                        <label class='tooltip'>
+                            <b>Actions</b>
+                            <span class='tooltiptext'>Custom actions for this
+                                node (not item-acquiring or direction related)
+                                [e.g. break egg, open window]</span>
+                        </label>
+                        <button id="addAction">Add Action</button>
+                        <div id="actionList" class="container"></div>
                         <details>
                             <summary class="boldAccordion">
                                 Invalid Response
@@ -187,13 +195,12 @@
                         <textarea id='invalidAction' rows="2" style="width:
                             90%;"></textarea>
                         <label class='tooltip'>
-                            <b>Actions</b>
-                            <span class='tooltiptext'>Custom actions for this
-                                node (not item-acquiring or direction related)
-                                [e.g. break egg, open window]</span>
+                            Evolution
+                            <span class='tooltiptext'>Invalid action evolution
+                                settings and text</span>
                         </label>
-                        <button id="addAction">Add Action</button>
-                        <div id="actionList" class="container"></div>
+                        <button class="addEvoInvalid">Add Evolution</button>
+                        <div id="evoListInvalids" class="container"></div>
                     </div>
                     <div id="winBlock" class="pure-u-1-1 tabElements" style="display: none;">
                         <details>

@@ -147,13 +147,17 @@ function addNodeToSave (location) {
     if (!save["nodes"].hasOwnProperty(location)) {
         let visibility = JSON.parse(JSON.stringify(game[location].visibility));
         let points = JSON.parse(JSON.stringify(game[location].points));
+        let description = JSON.parse(JSON.stringify(game[location].description));
         let nodeInit = {
             "visibility": visibility,
             "visits": "0",
             "items": JSON.parse(JSON.stringify(game[location].items)),
             "containers": JSON.parse(JSON.stringify(game[location].containers)),
+            "description": description,
             "actions": [],
-            "points": points
+            "points": points,
+            "fails": {"total": "0", "consecutive": "0"},
+            "valids": {"total": "0", "consecutive": "0"}
         }
         save.nodes[location] = JSON.parse(JSON.stringify(nodeInit));
     }
@@ -183,13 +187,23 @@ function displayMessage(message, input) {
     }
 }
 
-function getActions(location) {
+function getActions() {
     let actions = [];
     if (gameStyle == "modern") {
         for (let i = 0; i < game[currentNode].actions.actions.length; i++) {
             let reqs = {
+                "reqItemsNot": game[currentNode].actions.actions[i].reqItemsNot,
+                "reqContainersNot": game[currentNode].actions.actions[i].reqContainersNot,
+                "reqLocalNot": game[currentNode].actions.actions[i].reqLocalNot,
+                "reqGlobalNot": game[currentNode].actions.actions[i].reqGlobalNot,
+                "preActionNot": game[currentNode].actions.actions[i].preActionNot,
+                "locVisitsNot": game[currentNode].actions.actions[i].locVisitsNot,
+                "preNodeNot": game[currentNode].actions.actions[i].preNodeNot,
+                "itemEvosNot": game[currentNode].actions.actions[i].itemEvosNot,
+                "pastDesNot": game[currentNode].actions.actions[i].pastDesNot,
+                "reqFailsNot": game[currentNode].actions.actions[i].reqFailsNot,
+                "reqValidsNot": game[currentNode].actions.actions[i].reqValidsNot,
                 "reqAll": game[currentNode].actions.actions[i].reqAll,
-                "reqNot": game[currentNode].actions.actions[i].reqNot,
                 "reqItems": game[currentNode].actions.actions[i].reqItems,
                 "reqContainers": game[currentNode].actions.actions[i].reqContainers,
                 "reqLocal": game[currentNode].actions.actions[i].reqLocal,
@@ -197,7 +211,10 @@ function getActions(location) {
                 "preAction": game[currentNode].actions.actions[i].preAction,
                 "locVisits": game[currentNode].actions.actions[i].locVisits,
                 "preNode": game[currentNode].actions.actions[i].preNode,
-                "itemEvos": game[currentNode].actions.actions[i].itemEvos
+                "itemEvos": game[currentNode].actions.actions[i].itemEvos,
+                "pastDes": game[currentNode].actions.actions[i].pastDes,
+                "reqFails": game[currentNode].actions.actions[i].reqFails,
+                "reqValids": game[currentNode].actions.actions[i].reqValids,
             }
             let reqCheck = checkRequirements(reqs);
             if (!reqCheck && game[currentNode].actions.actions[i].fail.length == 0) {
@@ -211,8 +228,18 @@ function getActions(location) {
         }
         for (let i = 0; i < globalActions.length; i++) {
             let reqs = {
+                "reqItemsNot": globalActions[i].reqItemsNot,
+                "reqContainersNot": globalActions[i].reqContainersNot,
+                "reqLocalNot": globalActions[i].reqLocalNot,
+                "reqGlobalNot": globalActions[i].reqGlobalNot,
+                "preActionNot": globalActions[i].preActionNot,
+                "locVisitsNot": globalActions[i].locVisitsNot,
+                "preNodeNot": globalActions[i].preNodeNot,
+                "itemEvosNot": globalActions[i].itemEvosNot,
+                "pastDesNot": globalActions[i].pastDesNot,
+                "reqFailsNot": globalActions[i].reqFailsNot,
+                "reqValidsNot": globalActions[i].reqValidsNot,
                 "reqAll": globalActions[i].reqAll,
-                "reqNot": globalActions[i].reqNot,
                 "reqItems": globalActions[i].reqItems,
                 "reqContainers": globalActions[i].reqContainers,
                 "reqLocal": globalActions[i].reqLocal,
@@ -220,10 +247,13 @@ function getActions(location) {
                 "preAction": globalActions[i].preAction,
                 "locVisits": globalActions[i].locVisits,
                 "preNode": globalActions[i].preNode,
-                "itemEvos": globalActions[i].itemEvos
+                "itemEvos": globalActions[i].itemEvos,
+                "pastDes": globalActions[i].pastDes,
+                "reqFails": globalActions[i].reqFails,
+                "reqValids": globalActions[i].reqValids
             }
             let reqCheck = checkRequirements(reqs);
-            if (!reqCheck) {
+            if (!reqCheck && globalActions[i].fail.length == 0) {
                 continue;
             } else {
                 let variants = globalActions[i].actions.split(/\s*,\s*/);
@@ -318,8 +348,18 @@ function getDiscoveredItemsActions(location) {
     for (let i = 0; i < items.length; i++) {
         let originNode = checkItemOrigin(items[i]);
         let reqs = {
+            "reqItemsNot": items[i].reqItemsNot,
+            "reqContainersNot": items[i].reqContainersNot,
+            "reqLocalNot": items[i].reqLocalNot,
+            "reqGlobalNot": items[i].reqGlobalNot,
+            "preActionNot": items[i].preActionNot,
+            "locVisitsNot": items[i].locVisitsNot,
+            "preNodeNot": items[i].preNodeNot,
+            "itemEvosNot": items[i].itemEvosNot,
+            "pastDesNot": items[i].pastDesNot,
+            "reqFailsNot": items[i].reqFailsNot,
+            "reqValidsNot": items[i].reqValidsNot,
             "reqAll": items[i].reqAll,
-            "reqNot": items[i].reqNot,
             "reqItems": items[i].reqItems,
             "reqContainers": items[i].reqContainers,
             "reqLocal": (originNode) ? items[i].reqLocal: '',
@@ -327,7 +367,10 @@ function getDiscoveredItemsActions(location) {
             "preAction": (originNode) ? items[i].preAction: '',
             "locVisits": items[i].locVisits,
             "preNode": (originNode) ? items[i].preNode: '',
-            "itemEvos": items[i].itemEvos
+            "itemEvos": items[i].itemEvos,
+            "pastDes": items[i].pastDes,
+            "reqFails": items[i].reqFails,
+            "reqValids": items[i].reqValids
         }
         if (checkRequirements(reqs)) {
             let variants = items[i].name.split(/\s*,\s*/);
@@ -383,8 +426,18 @@ function getDirectionsActions (location) {
         let thisDirection = game[location].directions[i].direction;
         let thisLocation = game[location].directions[i].location;
         let reqs = {
+            "reqItemsNot": game[location].directions[i].reqItemsNot,
+            "reqContainersNot": game[location].directions[i].reqContainersNot,
+            "reqLocalNot": game[location].directions[i].reqLocalNot,
+            "reqGlobalNot": game[location].directions[i].reqGlobalNot,
+            "preActionNot": game[location].directions[i].preActionNot,
+            "locVisitsNot": game[location].directions[i].locVisitsNot,
+            "preNodeNot": game[location].directions[i].preNodeNot,
+            "itemEvosNot": game[location].directions[i].itemEvosNot,
+            "pastDesNot": game[location].directions[i].pastDesNot,
+            "reqFailsNot": game[location].directions[i].reqFailsNot,
+            "reqValidsNot": game[location].directions[i].reqValidsNot,
             "reqAll": game[location].directions[i].reqAll,
-            "reqNot": game[location].directions[i].reqNot,
             "reqItems": game[location].directions[i].reqItems,
             "reqContainers": game[location].directions[i].reqContainers,
             "reqLocal": game[location].directions[i].reqLocal,
@@ -392,7 +445,10 @@ function getDirectionsActions (location) {
             "preAction": game[location].directions[i].preAction,
             "locVisits": game[location].directions[i].locVisits,
             "preNode": game[location].directions[i].preNode,
-            "itemEvos": game[location].directions[i].itemEvos
+            "itemEvos": game[location].directions[i].itemEvos,
+            "pastDes": game[location].directions[i].pastDes,
+            "reqFails": game[location].directions[i].reqFails,
+            "reqValids": game[location].directions[i].reqValids
         };
         let directionObject = {
             "direction": thisDirection,
@@ -408,6 +464,7 @@ function getDirectionsActions (location) {
                 case ("N"):
                     directionObject["alternatives"] = [
                             "N",
+                            "NORTH",
                             "GO N",
                             "GO NORTH",
                             "TRAVEL N",
@@ -417,6 +474,7 @@ function getDirectionsActions (location) {
                 case ("NE"):
                     directionObject["alternatives"] = [
                             "NE",
+                            "NORTHEAST",
                             "GO NE",
                             "GO NORTHEAST",
                             "TRAVEL NE",
@@ -426,6 +484,7 @@ function getDirectionsActions (location) {
                 case ("E"):
                     directionObject["alternatives"] = [
                             "E",
+                            "EAST",
                             "GO E",
                             "GO EAST",
                             "TRAVEL E",
@@ -435,6 +494,7 @@ function getDirectionsActions (location) {
                 case ("SE"):
                     directionObject["alternatives"] = [
                             "SE",
+                            "SOUTHEAST",
                             "GO SE",
                             "GO SOUTHEAST",
                             "TRAVEL SE",
@@ -444,6 +504,7 @@ function getDirectionsActions (location) {
                 case ("S"):
                     directionObject["alternatives"] = [
                             "S",
+                            "SOUTH",
                             "GO S",
                             "GO SOUTH",
                             "TRAVEL S",
@@ -453,6 +514,7 @@ function getDirectionsActions (location) {
                 case ("SW"):
                     directionObject["alternatives"] = [
                             "SW",
+                            "SOUTHWEST",
                             "GO SW",
                             "GO SOUTHWEST",
                             "TRAVEL SW",
@@ -462,6 +524,7 @@ function getDirectionsActions (location) {
                 case ("W"):
                     directionObject["alternatives"] = [
                             "W",
+                            "WEST",
                             "GO W",
                             "GO WEST",
                             "TRAVEL W",
@@ -471,6 +534,7 @@ function getDirectionsActions (location) {
                 case ("NW"):
                     directionObject["alternatives"] = [
                             "NW",
+                            "NORTHWEST",
                             "GO NW",
                             "GO NORTHWEST",
                             "TRAVEL NW",
@@ -511,8 +575,18 @@ function getDescription (location) {
     for (let i = 0; i < description.evos.length; i++) {
         let thisEvo = description.evos[i];
         let reqs = {
+            "reqItemsNot": thisEvo.reqItemsNot,
+            "reqContainersNot": thisEvo.reqContainersNot,
+            "reqLocalNot": thisEvo.reqLocalNot,
+            "reqGlobalNot": thisEvo.reqGlobalNot,
+            "preActionNot": thisEvo.preActionNot,
+            "locVisitsNot": thisEvo.locVisitsNot,
+            "preNodeNot": thisEvo.preNodeNot,
+            "itemEvosNot": thisEvo.itemEvosNot,
+            "pastDesNot": thisEvo.pastDesNot,
+            "reqFailsNot": thisEvo.reqFailsNot,
+            "reqValidsNot": thisEvo.reqValidsNot,
             "reqAll": thisEvo.reqAll,
-            "reqNot": thisEvo.reqNot,
             "reqItems": thisEvo.reqItems,
             "reqContainers": thisEvo.reqContainers,
             "reqLocal": thisEvo.reqLocal,
@@ -520,9 +594,13 @@ function getDescription (location) {
             "preAction": thisEvo.preAction,
             "locVisits": thisEvo.locVisits,
             "preNode": thisEvo.preNode,
-            "itemEvos": thisEvo.itemEvos
+            "itemEvos": thisEvo.itemEvos,
+            "pastDes": thisEvo.pastDes,
+            "reqFails": thisEvo.reqFails,
+            "reqValids": thisEvo.reqValids
         }
         if (checkRequirements(reqs)) {
+            save.nodes[location].description.evos[i].passed = "true";
             output = thisEvo.evoDes;
         }
     }
@@ -570,8 +648,18 @@ function checkContainerComplete(container) {
 }
 
 function checkRequirements(reqs) {
-    let reqAll = reqs.reqAll;
-    let reqNot = reqs.reqNot;
+    let reqAll = !reqs.reqAll ? "false" : reqs.reqAll;
+    let reqItemsNot = !reqs.reqItemsNot ? "false" : reqs.reqItemsNot;
+    let reqContainersNot = !reqs.reqContainersNot ? "false" : reqs.reqContainersNot;
+    let reqLocalNot = !reqs.reqLocalNot ? "false" : reqs.reqLocalNot;
+    let reqGlobalNot = !reqs.reqGlobalNot ? "false" : reqs.reqGlobalNot;
+    let preActionNot = !reqs.preActionNot ? "false" : reqs.preActionNot;
+    let locVisitsNot = !reqs.locVisitsNot ? "false" : reqs.locVisitsNot;
+    let preNodeNot = !reqs.preNodeNot ? "false" : reqs.preNodeNot;
+    let itemEvosNot = !reqs.itemEvosNot ? "false" : reqs.itemEvosNot;
+    let pastDesNot = !reqs.pastDesNot ? "false" : reqs.pastDesNot;
+    let reqFailsNot = !reqs.reqFailsNot ? "false" : reqs.reqFailsNot;
+    let reqValidsNot = !reqs.reqValidsNot ? "false" : reqs.reqValidsNot;
     let reqItems = !reqs['reqItems'] ? [] : reqs['reqItems'].split(/\s*,\s*/);
     let reqContainers = !reqs['reqContainers'] ? [] : reqs['reqContainers'].split(/\s*,\s*/);
     let reqLocal = !reqs['reqLocal'] ? [] : reqs['reqLocal'].split(/\s*,\s*/);
@@ -580,7 +668,9 @@ function checkRequirements(reqs) {
     let locVisits = !reqs['locVisits'] ? [] : reqs['locVisits'].match(/\[(?:[^,]*,){3}[^,]*\]/g);
     let preNode = !reqs['preNode'] ? '' : reqs['preNode'];
     let itemEvos = !reqs['itemEvos'] ? [] : reqs['itemEvos'].split(/\]\s*,\s*/);
-
+    let pastDes = !reqs['pastDes'] ? [] : reqs['pastDes'].match(/\[(?:[^,]*,){3}[^,]*\]/g);
+    let reqFails = !reqs['reqFails'] ? {"reqFails": "", "consecutive": "false"} : reqs['reqFails'];
+    let reqValids = !reqs['reqValids'] ? {"reqValids": "", "consecutive": "false"} : reqs['reqValids'];
     //Check for container fulfillment requirements
     for (let i = 0; i < reqContainers.length; i++) {
         let checked = false;
@@ -597,19 +687,19 @@ function checkRequirements(reqs) {
                 if (save.nodes[key].containers[k].name.split(/\s*,\s*/)[0].toUpperCase() == containerName) {
                     checked = true;
                     if (!checkContainerComplete(save.nodes[key].containers[k]) && reqAll == "true") {
-                        if (reqNot != "true") {
+                        if (reqContainersNot != "true") {
                             return false;
                         }
                     } else if (checkContainerComplete(save.nodes[key].containers[k]) && reqAll != "true") {
-                        if (reqNot != "true") {
+                        if (reqContainersNot != "true") {
                             return true;
                         }
                     } else if (!checkContainerComplete(save.nodes[key].containers[k]) && reqAll != "true") {
-                        if (reqNot == "true") {
+                        if (reqContainersNot == "true") {
                             return true;
                         }
                     } else if (checkContainerComplete(save.nodes[key].containers[k]) && reqAll == "true") {
-                        if (reqNot == "true") {
+                        if (reqContainersNot == "true") {
                             return false;
                         }
                     }
@@ -621,19 +711,19 @@ function checkRequirements(reqs) {
     //Check local node action requirements
     for (let i = 0; i < reqLocal.length; i++) {
         if (!save.nodes[currentNode].actions.includes(reqLocal[i].toUpperCase()) && reqAll == "true") {
-            if (reqNot != "true") {
+            if (reqLocalNot != "true") {
                 return false;
             }
         } else if (save.nodes[currentNode].actions.includes(reqLocal[i].toUpperCase()) && reqAll != "true") {
-            if (reqNot != "true") {
+            if (reqLocalNot != "true") {
                 return true;
             }
         } else if (!save.nodes[currentNode].actions.includes(reqLocal[i].toUpperCase()) && reqAll != "true") {
-            if (reqNot == "true") {
+            if (reqLocalNot == "true") {
                 return true;
             }
         } else if (save.nodes[currentNode].actions.includes(reqLocal[i].toUpperCase()) && reqAll == "true") {
-            if (reqNot == "true") {
+            if (reqLocalNot == "true") {
                 return false;
             }
         }
@@ -642,19 +732,19 @@ function checkRequirements(reqs) {
     //Check global action requirements
     for (let i = 0; i < reqGlobal.length; i++) {
         if (!save.actions.includes(reqGlobal[i].toUpperCase()) && reqAll == "true") {
-            if (reqNot != "true") {
+            if (reqGlobalNot != "true") {
                 return false;
             }
         } else if (save.actions.includes(reqGlobal[i].toUpperCase()) && reqAll != "true") {
-            if (reqNot != "true") {
+            if (reqGlobalNot != "true") {
                 return true;
             }
         } else if (!save.actions.includes(reqGlobal[i].toUpperCase()) && reqAll != "true") {
-            if (reqNot == "true") {
+            if (reqGlobalNot == "true") {
                 return true;
             }
         } else if (save.actions.includes(reqGlobal[i].toUpperCase()) && reqAll == "true") {
-            if (reqNot == "true") {
+            if (reqGlobalNot == "true") {
                 return false;
             }
         }
@@ -662,19 +752,19 @@ function checkRequirements(reqs) {
 
     //Check previous action requirement
     if (preAction != '' && preAction.toUpperCase() != save.actions[save.actions.length - 1] && reqAll == "true") {
-        if (reqNot != "true") {
+        if (preActionNot != "true") {
             return false;
         }
     } else if (preAction != '' && preAction.toUpperCase() == save.actions[save.actions.length - 1] && reqAll != "true") {
-        if (reqNot == "true") {
+        if (preActionNot == "true") {
             return true;
         }
     } else if (preAction != '' && preAction.toUpperCase() != save.actions[save.actions.length - 1] && reqAll != "true") {
-        if (reqNot == "true") {
+        if (preActionNot == "true") {
             return true;
         }
     } else if (preAction != '' && preAction.toUpperCase() == save.actions[save.actions.length - 1] && reqAll == "true") {
-        if (reqNot == "true") {
+        if (preActionNot == "true") {
             return false;
         }
     }
@@ -686,56 +776,56 @@ function checkRequirements(reqs) {
         let quant = locArray[3];
         if (quant > 0){
             if (!save.nodes.hasOwnProperty(loc) && reqAll == "true") {
-                if (reqNot != "true") {
+                if (locVisitsNot != "true") {
                     return false;
                 }
             } else if (!save.nodes.hasOwnProperty(loc) && reqAll != "true") {
-                if (reqNot == "true") {
+                if (locVisitsNot == "true") {
                     return true;
                 }
             } else {
                 if (Number(save.nodes[loc].visits) < quant && reqAll == "true") {
-                    if (reqNot != "true") {
+                    if (locVisitsNot != "true") {
                         return false;
                     }
                 } else if (Number(save.nodes[loc].visits) >= quant && reqAll != "true") {
-                    if (reqNot != "true") {
+                    if (locVisitsNot != "true") {
                         return true;
                     }
                 } else if (Number(save.nodes[loc].visits) < quant && reqAll != "true") {
-                    if (reqNot == "true") {
+                    if (locVisitsNot == "true") {
                         return true;
                     }
                 } else if (Number(save.nodes[loc].visits) >= quant && reqAll == "true") {
-                    if (reqNot == "true") {
+                    if (locVisitsNot == "true") {
                         return false;
                     }
                 }
             }
         } else if (quant == 0) {
             if (!save.nodes.hasOwnProperty(loc) && reqAll == "true") {
-                if (reqNot == "true") {
+                if (locVisitsNot == "true") {
                     return false;
                 }
             } else if (!save.nodes.hasOwnProperty(loc) && reqAll != "true") {
-                if (reqNot != "true") {
+                if (locVisitsNot != "true") {
                     return true;
                 }
             } else {
                 if (Number(save.nodes[loc].visits) != 0 && reqAll == "true") {
-                    if (reqNot != "true") {
+                    if (locVisitsNot != "true") {
                         return false;
                     }
                 } else if (Number(save.nodes[loc].visits) == 0 && reqAll != "true") {
-                    if (reqNot != "true") {
+                    if (locVisitsNot != "true") {
                         return true;
                     }
                 } else if (Number(save.nodes[loc].visits) != 0 && reqAll != "true") {
-                    if (reqNot == "true") {
+                    if (locVisitsNot == "true") {
                         return true;
                     }
                 } else if (Number(save.nodes[loc].visits) == 0 && reqAll == "true") {
-                    if (reqNot == "true") {
+                    if (locVisitsNot == "true") {
                         return false;
                     }
                 }
@@ -745,19 +835,19 @@ function checkRequirements(reqs) {
 
     //Check previous node requirement
     if (preNode != '' && preNode != previousNode && reqAll == "true") {
-        if (reqNot != "true") {
+        if (preNodeNot != "true") {
             return false;
         }
     } else if (preNode != '' && preNode == previousNode && reqAll != "true") {
-        if (reqNot != "true") {
+        if (preNodeNot != "true") {
             return true;
         }
     } else if (preNode != '' && preNode != previousNode && reqAll != "true") {
-        if (reqNot == "true") {
+        if (preNodeNot == "true") {
             return true;
         }
     } else if (preNode != '' && preNode == previousNode && reqAll == "true") {
-        if (reqNot == "true") {
+        if (preNodeNot == "true") {
             return false;
         }
     }
@@ -778,19 +868,19 @@ function checkRequirements(reqs) {
             }
         }
         if (!itemIncluded && reqAll == "true") {
-            if (reqNot != "true") {
+            if (reqItemsNot != "true") {
                 return false;
             }
         } else if (itemIncluded && reqAll != "true") {
-            if (reqNot != "true") {
+            if (reqItemsNot != "true") {
                 return true;
             }
         } else if (!itemIncluded && reqAll != "true") {
-            if (reqNot == "true") {
+            if (reqItemsNot == "true") {
                 return true;
             }
         } else if (itemIncluded && reqAll == "true") {
-            if (reqNot == "true") {
+            if (reqItemsNot == "true") {
                 return false;
             }
         }
@@ -811,6 +901,17 @@ function checkRequirements(reqs) {
                         for (let l = 0; l < save["items"][k].evos.length; l++) {
                             checkIndex++;
                             let reqs = {
+                                "reqItemsNot": save["items"][k].evos[l].reqItemsNot,
+                                "reqContainersNot": save["items"][k].evos[l].reqContainersNot,
+                                "reqLocalNot": save["items"][k].evos[l].reqLocalNot,
+                                "reqGlobalNot": save["items"][k].evos[l].reqGlobalNot,
+                                "preActionNot": save["items"][k].evos[l].preActionNot,
+                                "locVisitsNot": save["items"][k].evos[l].locVisitsNot,
+                                "preNodeNot": save["items"][k].evos[l].preNodeNot,
+                                "itemEvosNot": save["items"][k].evos[l].itemEvosNot,
+                                "pastDesNot": save["items"][k].evos[l].pastDesNot,
+                                "reqFailsNot": save["items"][k].evos[l].reqFailsNot,
+                                "reqValidsNot": save["items"][k].evos[l].reqValidsNot,
                                 "reqAll": save["items"][k].evos[l].reqAll,
                                 "reqItems": save["items"][k].evos[l].reqItems,
                                 "reqContainers": save["items"][k].evos[l].reqContainers,
@@ -826,19 +927,19 @@ function checkRequirements(reqs) {
                             }
                         }
                         if (evoIndex != +itemEvo[1] && reqAll == "true") {
-                            if (reqNot != "true") {
+                            if (itemEvosNot != "true") {
                                 return false;
                             }
                         } else if (evoIndex == +itemEvo[1] && reqAll != "true") {
-                            if (reqNot != "true") {
+                            if (itemEvosNot != "true") {
                                 return true;
                             }
                         } else if (evoIndex != +itemEvo[1] && reqAll != "true") {
-                            if (reqNot == "true") {
+                            if (itemEvosNot == "true") {
                                 return true;
                             }
                         } else if (evoIndex == +itemEvo[1] && reqAll == "true") {
-                            if (reqNot == "true") {
+                            if (itemEvosNot == "true") {
                                 return false;
                             }
                         }
@@ -847,17 +948,181 @@ function checkRequirements(reqs) {
             } 
         }
         if (!checked && reqAll == "true") {
-            if (reqNot != "true") {
+            if (itemEvosNot != "true") {
                 return false;
             }
         }
         if (!checked && reqAll != "true") {
-            if (reqNot == "true") {
+            if (itemEvosNot == "true") {
                 return true;
             }
         }
     }
 
+    //check if given node evolution stage 'passed' value is true
+    for (let i = 0; i < pastDes.length; i++) {
+        let locArray = JSON.parse(pastDes[i]);
+        let loc = `${locArray[0]},${locArray[1]},${locArray[2]}`;
+        let stage = locArray[3];
+        if (stage > 0){
+            if (!save.nodes.hasOwnProperty(loc) && reqAll == "true") {
+                if (pastDesNot != "true") {
+                    return false;
+                }
+            } else if (!save.nodes.hasOwnProperty(loc) && reqAll != "true") {
+                if (pastDesNot == "true") {
+                    return true;
+                }
+            } else {
+                let nodeEvos = save.nodes[loc].description.evos;
+                if (typeof nodeEvos[stage - 1] == "undefined" && reqAll == "true") {
+                    if (pastDesNot != "true") {
+                        return false;
+                    }
+                } else if (typeof nodeEvos[stage - 1] == "undefined" && reqAll != "true") {
+                    if (pastDesNot == "true") {
+                        return true;
+                    }
+                } else {
+                    if (nodeEvos[stage - 1].passed != "true" && reqAll == "true") {
+                        if (pastDesNot != "true") {
+                            return false;
+                        }
+                    } else if (nodeEvos[stage - 1].passed == "true" && reqAll != "true") {
+                        if (pastDesNot != "true") {
+                            return true;
+                        }
+                    } else if (nodeEvos[stage - 1].passed != "true" && reqAll != "true") {
+                        if (pastDesNot == "true") {
+                            return true;
+                        }
+                    } else if (nodeEvos[stage - 1].passed == "true" && reqAll == "true") {
+                        if (pastDesNot == "true") {
+                            return false;
+                        }
+                    }
+                }
+            }
+        } else {
+            if (!save.nodes.hasOwnProperty(loc) && reqAll == "true") {
+                if (pastDesNot != "true") {
+                    return false;
+                }
+            } else if (!save.nodes.hasOwnProperty(loc) && reqAll != "true") {
+                if (pastDesNot == "true") {
+                    return true;
+                }
+            } else if (save.nodes.hasOwnProperty(loc) && reqAll != "true") {
+                if (pastDesNot != "true") {
+                    return true;
+                }
+            } else if (save.nodes.hasOwnProperty(loc) && reqAll == "true") {
+                if (pastDesNot == "true") {
+                    return false;
+                }
+            }
+        }
+    }
+    //check reqFails
+    if (+reqFails["reqFails"] != 0) {
+        let quantity = +reqFails["reqFails"];
+        let consecutive = reqFails["consecutive"];
+        if (consecutive == "true") {
+            if (quantity > +save.nodes[currentNode]["fails"]["consecutive"] && reqAll == "true") {
+                if (reqFailsNot != "true") {
+                    return false;
+                }
+            } else if (quantity <= +save.nodes[currentNode]["fails"]["consecutive"] && reqAll != "true") {
+                if (reqFailsNot != "true") {
+                    return true;
+                }
+            } else if (quantity > +save.nodes[currentNode]["fails"]["consecutive"] && reqAll != "true") {
+                if (reqFailsNot == "true") {
+                    return true;
+                }
+            } else if (quantity <= +save.nodes[currentNode]["fails"]["consecutive"] && reqAll == "true") {
+                if (reqFailsNot == "true") {
+                    return false;
+                }
+            }
+        } else {
+            if (quantity > +save.nodes[currentNode]["fails"]["total"] && reqAll == "true") {
+                if (reqFailsNot != "true") {
+                    return false;
+                }
+            } else if (quantity <= +save.nodes[currentNode]["fails"]["total"] && reqAll != "true") {
+                if (reqFailsNot != "true") {
+                    return true;
+                }
+            } else if (quantity > +save.nodes[currentNode]["fails"]["total"] && reqAll != "true") {
+                if (reqFailsNot == "true") {
+                    return true;
+                }
+            } else if (quantity <= +save.nodes[currentNode]["fails"]["total"] && reqAll == "true") {
+                if (reqFailsNot == "true") {
+                    return false;
+                }
+            }
+        }
+    }
+
+    //check reqValids
+    if (+reqValids["reqValids"] != 0) {
+        let quantity = +reqValids["reqValids"];
+        let consecutive = reqValids["consecutive"];
+        if (consecutive == "true") {
+            if (quantity > +save.nodes[currentNode]["valids"]["consecutive"] && reqAll == "true") {
+                if (reqValidsNot != "true") {
+                    return false;
+                }
+            } else if (quantity <= +save.nodes[currentNode]["valids"]["consecutive"] && reqAll != "true") {
+                if (reqValidsNot != "true") {
+                    return true;
+                }
+            } else if (quantity > +save.nodes[currentNode]["valids"]["consecutive"] && reqAll != "true") {
+                if (reqValidsNot == "true") {
+                    return true;
+                }
+            } else if (quantity <= +save.nodes[currentNode]["valids"]["consecutive"] && reqAll == "true") {
+                if (reqValidsNot == "true") {
+                    return false;
+                }
+            }
+        } else {
+            if (quantity > +save.nodes[currentNode]["valids"]["total"] && reqAll == "true") {
+                if (reqValidsNot != "true") {
+                    return false;
+                }
+            } else if (quantity <= +save.nodes[currentNode]["valids"]["total"] && reqAll != "true") {
+                if (reqValidsNot != "true") {
+                    return true;
+                }
+            } else if (quantity > +save.nodes[currentNode]["valids"]["total"] && reqAll != "true") {
+                if (reqValidsNot == "true") {
+                    return true;
+                }
+            } else if (quantity <= +save.nodes[currentNode]["valids"]["total"] && reqAll == "true") {
+                if (reqValidsNot == "true") {
+                    return false;
+                }
+            }
+        }
+    }
+    //check if no requirements
+    if (reqContainers.length == 0 &&
+        reqLocal.length == 0 &&
+        reqGlobal.length == 0 &&
+        preAction == '' &&
+        locVisits.length == 0 &&
+        preNode == '' &&
+        reqItems.length == 0 &&
+        itemEvos.length == 0 &&
+        pastDes.length == 0 &&
+        +reqFails["reqFails"] == 0 &&
+        +reqValids["reqValids"] == 0) {
+            return true;
+        }
+        
     if (reqAll == "true") {
         return true;
     } else {
@@ -868,8 +1133,18 @@ function checkRequirements(reqs) {
 function checkWin() {
     let win = game[currentNode].win;
     let reqs = {
+        "reqItemsNot": win.reqItemsNot,
+        "reqContainersNot": win.reqContainersNot,
+        "reqLocalNot": win.reqLocalNot,
+        "reqGlobalNot": win.reqGlobalNot,
+        "preActionNot": win.preActionNot,
+        "locVisitsNot": win.locVisitsNot,
+        "preNodeNot": win.preNodeNot,
+        "itemEvosNot": win.itemEvosNot,
+        "pastDesNot": win.pastDesNot,
+        "reqFailsNot": win.reqFailsNot,
+        "reqValidsNot": win.reqValidsNot,
         "reqAll": win.reqAll,
-        "reqNot": win.reqNot,
         "reqItems": win.reqItems,
         "reqContainers": win.reqContainers,
         "reqLocal": win.reqLocal,
@@ -877,7 +1152,10 @@ function checkWin() {
         "preAction": win.preAction,
         "locVisits": win.locVisits,
         "preNode": win.preNode,
-        "itemEvos": win.itemEvos
+        "itemEvos": win.itemEvos,
+        "pastDes": win.pastDes,
+        "reqFails": win.reqFails,
+        "reqValids": win.reqValids
     }
     if (checkRequirements(reqs) && win.description.length > 0) {
         let max = getMaxPoints();
@@ -893,8 +1171,18 @@ function checkWin() {
 function checkLose() {
     let lose = game[currentNode].lose;
     let reqs = {
+        "reqItemsNot": lose.reqItemsNot,
+        "reqContainersNot": lose.reqContainersNot,
+        "reqLocalNot": lose.reqLocalNot,
+        "reqGlobalNot": lose.reqGlobalNot,
+        "preActionNot": lose.preActionNot,
+        "locVisitsNot": lose.locVisitsNot,
+        "preNodeNot": lose.preNodeNot,
+        "itemEvosNot": lose.itemEvosNot,
+        "pastDesNot": lose.pastDesNot,
+        "reqFailsNot": lose.reqFailsNot,
+        "reqValidsNot": lose.reqValidsNot,
         "reqAll": lose.reqAll,
-        "reqNot": lose.reqNot,
         "reqItems": lose.reqItems,
         "reqContainers": lose.reqContainers,
         "reqLocal": lose.reqLocal,
@@ -902,7 +1190,10 @@ function checkLose() {
         "preAction": lose.preAction,
         "locVisits": lose.locVisits,
         "preNode": lose.preNode,
-        "itemEvos": lose.itemEvos
+        "itemEvos": lose.itemEvos,
+        "pastDes": lose.pastDes,
+        "reqFails": lose.reqFails,
+        "reqValids": lose.reqValids
     }
     if (checkRequirements(reqs) && lose.description.length > 0) {
         let max = getMaxPoints();
@@ -929,8 +1220,18 @@ function displayItems() {
         for (let i = 0; i < save.nodes[currentNode].items.length; i++) {
             let originNode = checkItemOrigin(save.nodes[currentNode].items[i]);
             let reqs = {
+                "reqItemsNot": save.nodes[currentNode].items[i].reqItemsNot,
+                "reqContainersNot": save.nodes[currentNode].items[i].reqContainersNot,
+                "reqLocalNot": save.nodes[currentNode].items[i].reqLocalNot,
+                "reqGlobalNot": save.nodes[currentNode].items[i].reqGlobalNot,
+                "preActionNot": save.nodes[currentNode].items[i].preActionNot,
+                "locVisitsNot": save.nodes[currentNode].items[i].locVisitsNot,
+                "preNodeNot": save.nodes[currentNode].items[i].preNodeNot,
+                "itemEvosNot": save.nodes[currentNode].items[i].itemEvosNot,
+                "pastDesNot": save.nodes[currentNode].items[i].pastDesNot,
+                "reqFailsNot": save.nodes[currentNode].items[i].reqFailsNot,
+                "reqValidsNot": save.nodes[currentNode].items[i].reqValidsNot,
                 "reqAll": save.nodes[currentNode].items[i].reqAll,
-                "reqNot": save.nodes[currentNode].items[i].reqNot,
                 "reqItems": save.nodes[currentNode].items[i].reqItems,
                 "reqContainers": save.nodes[currentNode].items[i].reqContainers,
                 "reqLocal": (originNode) ? save.nodes[currentNode].items[i].reqLocal : '',
@@ -938,7 +1239,10 @@ function displayItems() {
                 "preAction": save.nodes[currentNode].items[i].preAction,
                 "locVisits": save.nodes[currentNode].items[i].locVisits,
                 "preNode": save.nodes[currentNode].items[i].preNode,
-                "itemEvos": save.nodes[currentNode].items[i].itemEvos
+                "itemEvos": save.nodes[currentNode].items[i].itemEvos,
+                "pastDes": save.nodes[currentNode].items[i].pastDes,
+                "reqFails": save.nodes[currentNode].items[i].reqFails,
+                "reqValids": save.nodes[currentNode].items[i].reqValids
             }
             if (checkRequirements(reqs)) {
                 let mainName = save.nodes[currentNode].items[i].name.split(/\s*,\s*/)[0];
@@ -1061,6 +1365,26 @@ function pushAction(action) {
     save.nodes[currentNode].actions.push(action);
 }
 
+function increaseFails(currentNode) {
+    let total = +save.nodes[currentNode].fails["total"];
+    let consecutive = +save.nodes[currentNode].fails["consecutive"];
+    total += 1;
+    consecutive += 1;
+    save.nodes[currentNode].fails["total"] = total.toString();
+    save.nodes[currentNode].fails["consecutive"] = consecutive.toString();
+    save.nodes[currentNode].valids["consecutive"] = "0";
+}
+
+function increaseValids(currentNode) {
+    let total = +save.nodes[currentNode].valids["total"];
+    let consecutive = +save.nodes[currentNode].valids["consecutive"];
+    total += 1;
+    consecutive += 1;
+    save.nodes[currentNode].valids["total"] = total.toString();
+    save.nodes[currentNode].valids["consecutive"] = consecutive.toString();
+    save.nodes[currentNode].fails["consecutive"] = "0";
+}
+
 function nodeReload() {
     cNodeDescription = getDescription(currentNode);
     cNodeDirections = getDirectionsActions(currentNode);
@@ -1119,7 +1443,6 @@ function parseAction(input) {
                     let variants = globalActions[i].actions.toUpperCase().split(/\s*,\s*/);
                     for (let j = 0; j < variants.length; j++) {
                         if (filterIgnorables(variants[j]) == action) {
-                            globalActions[i].fail = "This did nothing.";
                             game[currentNode].actions.actions.push(globalActions[i]);
                             isGlobal = true;
                             break;
@@ -1133,8 +1456,18 @@ function parseAction(input) {
                             foundMatch = true;
                             let actionObject = JSON.parse(JSON.stringify(game[currentNode].actions.actions[i]));
                             let reqs = {
+                                "reqItemsNot": actionObject.reqItemsNot,
+                                "reqContainersNot": actionObject.reqContainersNot,
+                                "reqLocalNot": actionObject.reqLocalNot,
+                                "reqGlobalNot": actionObject.reqGlobalNot,
+                                "preActionNot": actionObject.preActionNot,
+                                "locVisitsNot": actionObject.locVisitsNot,
+                                "preNodeNot": actionObject.preNodeNot,
+                                "itemEvosNot": actionObject.itemEvosNot,
+                                "pastDesNot": actionObject.pastDesNot,
+                                "reqFailsNot": actionObject.reqFailsNot,
+                                "reqValidsNot": actionObject.reqValidsNot,
                                 "reqAll": actionObject.reqAll,
-                                "reqNot": actionObject.reqNot,
                                 "reqItems": actionObject.reqItems,
                                 "reqContainers": actionObject.reqContainers,
                                 "reqLocal": actionObject.reqLocal,
@@ -1142,7 +1475,10 @@ function parseAction(input) {
                                 "preAction": actionObject.preAction,
                                 "locVisits": actionObject.locVisits,
                                 "preNode": actionObject.preNode,
-                                "itemEvos": actionObject.itemEvos
+                                "itemEvos": actionObject.itemEvos,
+                                "pastDes": actionObject.pastDes,
+                                "reqFails": actionObject.reqFails,
+                                "reqValids": actionObject.reqValids
                             }
                             if (checkRequirements(reqs)) {
                                 let mainAction = actionObject.actions.split(/\s*,\s*/)[0].toUpperCase();
@@ -1290,8 +1626,18 @@ function parseAction(input) {
                                         for (let q = 0; q < game[currentNode].containers.length; q++) {
                                             if (game[currentNode].containers[q].name.toUpperCase().match(regexp3)) {
                                                 reqs = {
+                                                    "reqItemsNot": game[currentNode].containers[q].reqItemsNot,
+                                                    "reqContainersNot": game[currentNode].containers[q].reqContainersNot,
+                                                    "reqLocalNot": game[currentNode].containers[q].reqLocalNot,
+                                                    "reqGlobalNot": game[currentNode].containers[q].reqGlobalNot,
+                                                    "preActionNot": game[currentNode].containers[q].preActionNot,
+                                                    "locVisitsNot": game[currentNode].containers[q].locVisitsNot,
+                                                    "preNodeNot": game[currentNode].containers[q].preNodeNot,
+                                                    "itemEvosNot": game[currentNode].containers[q].itemEvosNot,
+                                                    "pastDesNot": game[currentNode].containers[q].pastDesNot,
+                                                    "reqFailsNot": game[currentNode].containers[q].reqFailsNot,
+                                                    "reqValidsNot": game[currentNode].containers[q].reqValidsNot,
                                                     "reqAll": game[currentNode].containers[q].reqAll,
-                                                    "reqNot": game[currentNode].containers[q].reqNot,
                                                     "reqItems": game[currentNode].containers[q].reqItems,
                                                     "reqContainers": game[currentNode].containers[q].reqContainers,
                                                     "reqLocal": game[currentNode].containers[q].reqLocal,
@@ -1299,7 +1645,10 @@ function parseAction(input) {
                                                     "preAction": game[currentNode].containers[q].preAction,
                                                     "locVisits": game[currentNode].containers[q].locVisits,
                                                     "preNode": game[currentNode].containers[q].preNode,
-                                                    "itemEvos": game[currentNode].containers[q].itemEvos
+                                                    "itemEvos": game[currentNode].containers[q].itemEvos,
+                                                    "pastDes": game[currentNode].containers[q].pastDes,
+                                                    "reqFails": game[currentNode].containers[q].reqFails,
+                                                    "reqValids": game[currentNode].containers[q].reqValids
                                                 }
                                                 break;
                                             }
@@ -1350,8 +1699,18 @@ function parseAction(input) {
                                             if (game[currentNode].containers[q].name.toUpperCase().match(regexp3)) {
                                                 thisContainer = game[currentNode].containers[q];
                                                 reqs = {
+                                                    "reqItemsNot": thisContainer.reqItemsNot,
+                                                    "reqContainersNot": thisContainer.reqContainersNot,
+                                                    "reqLocalNot": thisContainer.reqLocalNot,
+                                                    "reqGlobalNot": thisContainer.reqGlobalNot,
+                                                    "preActionNot": thisContainer.preActionNot,
+                                                    "locVisitsNot": thisContainer.locVisitsNot,
+                                                    "preNodeNot": thisContainer.preNodeNot,
+                                                    "itemEvosNot": thisContainer.itemEvosNot,
+                                                    "pastDesNot": thisContainer.pastDesNot,
+                                                    "reqFailsNot": thisContainer.reqFailsNot,
+                                                    "reqValidsNot": thisContainer.reqValidsNot,
                                                     "reqAll": thisContainer.reqAll,
-                                                    "reqNot": thisContainer.reqNot,
                                                     "reqItems": thisContainer.reqItems,
                                                     "reqContainers": thisContainer.reqContainers,
                                                     "reqLocal": thisContainer.reqLocal,
@@ -1359,7 +1718,10 @@ function parseAction(input) {
                                                     "preAction": thisContainer.preAction,
                                                     "locVisits": thisContainer.locVisits,
                                                     "preNode": thisContainer.preNode,
-                                                    "itemEvos": thisContainer.itemEvos
+                                                    "itemEvos": thisContainer.itemEvos,
+                                                    "pastDes": thisContainer.pastDes,
+                                                    "reqFails": thisContainer.reqFails,
+                                                    "reqValids": thisContainer.reqValids
                                                 }
                                                 break;
                                             }
@@ -1458,8 +1820,18 @@ function parseAction(input) {
                 for (let j = 0; j < variants.length; j++) {
                     if (variants[j].toUpperCase() == actionItem) {
                         let reqs = {
+                            "reqItemsNot": inspectableItems[i].reqItemsNot,
+                            "reqContainersNot": inspectableItems[i].reqContainersNot,
+                            "reqLocalNot": inspectableItems[i].reqLocalNot,
+                            "reqGlobalNot": inspectableItems[i].reqGlobalNot,
+                            "preActionNot": inspectableItems[i].preActionNot,
+                            "locVisitsNot": inspectableItems[i].locVisitsNot,
+                            "preNodeNot": inspectableItems[i].preNodeNot,
+                            "itemEvosNot": inspectableItems[i].itemEvosNot,
+                            "pastDesNot": inspectableItems[i].pastDesNot,
+                            "reqFailsNot": inspectableItems[i].reqFailsNot,
+                            "reqValidsNot": inspectableItems[i].reqValidsNot,
                             "reqAll": inspectableItems[i].reqAll,
-                            "reqNot": inspectableItems[i].reqNot,
                             "reqItems": inspectableItems[i].reqItems,
                             "reqContainers": inspectableItems[i].reqContainers,
                             "reqLocal": inspectableItems[i].reqLocal,
@@ -1467,7 +1839,10 @@ function parseAction(input) {
                             "preAction": inspectableItems[i].preAction,
                             "locVisits": inspectableItems[i].locVisits,
                             "preNode": inspectableItems[i].preNode,
-                            "itemEvos": inspectableItems[i].itemEvos
+                            "itemEvos": inspectableItems[i].itemEvos,
+                            "pastDes": inspectableItems[i].pastDes,
+                            "reqFails": inspectableItems[i].reqFails,
+                            "reqValids": inspectableItems[i].reqValids
                         }
                         if (checkRequirements(reqs)) {
                             if (inspectableItems[i].evos.length > 0) {
@@ -1475,8 +1850,18 @@ function parseAction(input) {
                                 for (let k = 0; k < inspectableItems[i].evos.length; k++) {
                                     let evo = inspectableItems[i].evos[k];
                                     reqs = {
+                                        "reqItemsNot": evo.reqItemsNot,
+                                        "reqContainersNot": evo.reqContainersNot,
+                                        "reqLocalNot": evo.reqLocalNot,
+                                        "reqGlobalNot": evo.reqGlobalNot,
+                                        "preActionNot": evo.preActionNot,
+                                        "locVisitsNot": evo.locVisitsNot,
+                                        "preNodeNot": evo.preNodeNot,
+                                        "itemEvosNot": evo.itemEvosNot,
+                                        "pastDesNot": evo.pastDesNot,
+                                        "reqFailsNot": evo.reqFailsNot,
+                                        "reqValidsNot": evo.reqValidsNot,
                                         "reqAll": evo.reqAll,
-                                        "reqNot": evo.reqNot,
                                         "reqItems": evo.reqItems,
                                         "reqContainers": evo.reqContainers,
                                         "reqLocal": evo.reqLocal,
@@ -1484,7 +1869,10 @@ function parseAction(input) {
                                         "preAction": evo.preAction,
                                         "locVisits": evo.locVisits,
                                         "preNode": evo.preNode,
-                                        "itemEvos": evo.itemEvos
+                                        "itemEvos": evo.itemEvos,
+                                        "pastDes": evo.pastDes,
+                                        "reqFails": evo.reqFails,
+                                        "reqValids": evo.reqValids
                                     }
                                     if (checkRequirements(reqs)) {
                                         messageToDisplay = inspectableItems[i].evos[k].evoDes;
@@ -1541,10 +1929,49 @@ function parseAction(input) {
         }
 
         if (!sentMessage) {
+            let message
             badAction += 1;
-            displayMessage(game[currentNode].actions.invalid, false);
+            increaseFails(currentNode);
+            if (game[currentNode].actions.evos.length == 0 && game[currentNode].actions.invalid == "") {
+                message = "This did nothing.";
+            } else {
+                message = game[currentNode].actions.invalid;
+            }
+            for (let i = 0; i < game[currentNode].actions.evos.length; i++) {
+                let evo = game[currentNode].actions.evos[i];
+                let reqs = {
+                    "reqItemsNot": evo.reqItemsNot,
+                    "reqContainersNot": evo.reqContainersNot,
+                    "reqLocalNot": evo.reqLocalNot,
+                    "reqGlobalNot": evo.reqGlobalNot,
+                    "preActionNot": evo.preActionNot,
+                    "locVisitsNot": evo.locVisitsNot,
+                    "preNodeNot": evo.preNodeNot,
+                    "itemEvosNot": evo.itemEvosNot,
+                    "pastDesNot": evo.pastDesNot,
+                    "reqFailsNot": evo.reqFailsNot,
+                    "reqValidsNot": evo.reqValidsNot,
+                    "reqAll": evo.reqAll,
+                    "reqItems": evo.reqItems,
+                    "reqContainers": evo.reqContainers,
+                    "reqLocal": evo.reqLocal,
+                    "reqGlobal": evo.reqGlobal,
+                    "preAction": evo.preAction,
+                    "locVisits": evo.locVisits,
+                    "preNode": evo.preNode,
+                    "itemEvos": evo.itemEvos,
+                    "pastDes": evo.pastDes,
+                    "reqFails": evo.reqFails,
+                    "reqValids": evo.reqValids
+                }
+                if (checkRequirements(reqs)) {
+                    message = game[currentNode].actions.evos[i].evoDes;
+                }
+            }
+            displayMessage(message, false);
         } else {
             badAction = 0;
+            increaseValids(currentNode);
         }
         handleHint();
         nodeReload();

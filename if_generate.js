@@ -250,6 +250,17 @@ function saveInitItems() {
       let baseId = $(evoDivs[j]).attr("id");
       let reqAll = $(`#${baseId}_reqAll`).is(":checked").toString();
       let reqNot = $(`#${baseId}_reqNot`).is(":checked").toString();
+      let reqItemsNot = $(`#${baseId}_itemsNot`).is(":checked").toString();
+      let reqContainersNot = $(`#${baseId}_containersNot`).is(":checked").toString();
+      let reqLocalNot = $(`#${baseId}_localNot`).is(":checked").toString();
+      let reqGlobalNot = $(`#${baseId}_globalNot`).is(":checked").toString();
+      let preActionNot = $(`#${baseId}_preActionNot`).is(":checked").toString();
+      let locVisitsNot = $(`#${baseId}_visitsNot`).is(":checked").toString();
+      let preNodeNot = $(`#${baseId}_preNodeNot`).is(":checked").toString();
+      let itemEvosNot = $(`#${baseId}_evosNot`).is(":checked").toString();
+      let pastDesNot = $(`#${baseId}_pastDesNot`).is(":checked").toString();
+      let reqFailsNot = $(`#${baseId}_reqFailsNot`).is(":checked").toString();
+      let reqValidsNot = $(`#${baseId}_reqValidsNot`).is(":checked").toString();
       let reqItems = $(`#${baseId}_Items`).val();
       let reqContainers = $(`#${baseId}_Containers`).val();
       let reqLocal = $(`#${baseId}_Local`).val();
@@ -258,18 +269,45 @@ function saveInitItems() {
       let locVisits = $(`#${baseId}_Visits`).val();
       let preNode = $(`#${baseId}_preNode`).val();
       let itemEvos = $(`#${baseId}_Evos`).val();
+      let pastDes = $(`#${baseId}_pastDes`).val();
+      let reqFails;
+      if ($(`#${baseId}_reqFailsCheck`).is(":checked")) {
+        reqFails = {"reqFails": $(`#${baseId}_reqFails`).val(), "consecutive": "true"};
+      } else {
+        reqFails = {"reqFails": $(`#${baseId}_reqFails`).val(), "consecutive": "false"};
+      }
+      let reqValids;
+      if ($(`#${baseId}_reqValidsCheck`).is(":checked")) {
+        reqValids = {"reqValids": $(`#${baseId}_reqValids`).val(), "consecutive": "true"};
+      } else {
+        reqValids = {"reqValids": $(`#${baseId}_reqValids`).val(), "consecutive": "false"};
+      }
       let evoDes = $(`#${baseId}_Des`).val();
       let evo = {
         reqAll: reqAll,
         reqNot: reqNot,
         reqItems: reqItems,
+        reqItemsNot: reqItemsNot,
         reqContainers: reqContainers,
+        reqContainersNot: reqContainersNot,
         reqLocal: reqLocal,
+        reqLocalNot: reqLocalNot,
         reqGlobal: reqGlobal,
+        reqGlobalNot: reqGlobalNot,
         preAction: preAction,
+        preActionNot: preActionNot,
         locVisits: locVisits,
+        locVisitsNot: locVisitsNot,
         preNode: preNode,
+        preNodeNot: preNodeNot,
         itemEvos: itemEvos,
+        itemEvosNot: itemEvosNot,
+        pastDes: pastDes,
+        pastDesNot: pastDesNot,
+        reqFails: reqFails,
+        reqFailsNot: reqFailsNot,
+        reqValids: reqValids,
+        reqValidsNot: reqValidsNot,
         evoDes: evoDes,
       };
       evoListItems.push(evo);
@@ -295,6 +333,17 @@ function saveGlobalActions() {
     let points = $(`#${baseId}_Points`).val();
     let reqAll = $(`#${baseId}_reqAll`).is(":checked").toString();
     let reqNot = $(`#${baseId}_reqNot`).is(":checked").toString();
+    let reqItemsNot = $(`#${baseId}_itemsNot`).is(":checked").toString();
+    let reqContainersNot = $(`#${baseId}_containersNot`).is(":checked").toString();
+    let reqLocalNot = $(`#${baseId}_localNot`).is(":checked").toString();
+    let reqGlobalNot = $(`#${baseId}_globalNot`).is(":checked").toString();
+    let preActionNot = $(`#${baseId}_preActionNot`).is(":checked").toString();
+    let locVisitsNot = $(`#${baseId}_visitsNot`).is(":checked").toString();
+    let preNodeNot = $(`#${baseId}_preNodeNot`).is(":checked").toString();
+    let itemEvosNot = $(`#${baseId}_evosNot`).is(":checked").toString();
+    let pastDesNot = $(`#${baseId}_pastDesNot`).is(":checked").toString();
+    let reqFailsNot = $(`#${baseId}_reqFailsNot`).is(":checked").toString();
+    let reqValidsNot = $(`#${baseId}_reqValidsNot`).is(":checked").toString();
     let reqItems = $(`#${baseId}_Items`).val();
     let reqContainers = $(`#${baseId}_Containers`).val();
     let reqLocal = $(`#${baseId}_Local`).val();
@@ -303,7 +352,19 @@ function saveGlobalActions() {
     let locVisits = $(`#${baseId}_Visits`).val();
     let preNode = $(`#${baseId}_preNode`).val();
     let itemEvos = $(`#${baseId}_Evos`).val();
-
+    let pastDes = $(`#${baseId}_pastDes`).val();
+    let reqFails;
+    if ($(`#${baseId}_reqFailsCheck`).is(":checked")) {
+      reqFails = {"reqFails": $(`#${baseId}_reqFails`).val(), "consecutive": "true"};
+    } else {
+      reqFails = {"reqFails": $(`#${baseId}_reqFails`).val(), "consecutive": "false"};
+    }
+    let reqValids;
+    if ($(`#${baseId}_reqValidsCheck`).is(":checked")) {
+      reqValids = {"reqValids": $(`#${baseId}_reqValids`).val(), "consecutive": "true"};
+    } else {
+      reqValids = {"reqValids": $(`#${baseId}_reqValids`).val(), "consecutive": "false"};
+    }
     let action = {
       actions: actions,
       max: max,
@@ -316,13 +377,27 @@ function saveGlobalActions() {
       reqAll: reqAll,
       reqNot: reqNot,
       reqItems: reqItems,
+      reqItemsNot: reqItemsNot,
       reqContainers: reqContainers,
+      reqContainersNot: reqContainersNot,
       reqLocal: reqLocal,
+      reqLocalNot: reqLocalNot,
       reqGlobal: reqGlobal,
+      reqGlobalNot: reqGlobalNot,
       preAction: preAction,
+      preActionNot: preActionNot,
       locVisits: locVisits,
+      locVisitsNot: locVisitsNot,
       preNode: preNode,
+      preNodeNot: preNodeNot,
       itemEvos: itemEvos,
+      itemEvosNot: itemEvosNot,
+      pastDes: pastDes,
+      pastDesNot: pastDesNot,
+      reqFails: reqFails,
+      reqFailsNot: reqFailsNot,
+      reqValids: reqValids,
+      reqValidsNot: reqValidsNot
     };
     actionArray.push(action);
   }
@@ -369,6 +444,17 @@ function generateNode() {
       let exclude = $(`#${direction}_Exclude`).is(":checked");
       let reqAll = $(`#${direction}_reqAll`).is(":checked").toString();
       let reqNot = $(`#${direction}_reqNot`).is(":checked").toString();
+      let reqItemsNot = $(`#${direction}_itemsNot`).is(":checked").toString();
+      let reqContainersNot = $(`#${direction}_containersNot`).is(":checked").toString();
+      let reqLocalNot = $(`#${direction}_localNot`).is(":checked").toString();
+      let reqGlobalNot = $(`#${direction}_globalNot`).is(":checked").toString();
+      let preActionNot = $(`#${direction}_preActionNot`).is(":checked").toString();
+      let locVisitsNot = $(`#${direction}_visitsNot`).is(":checked").toString();
+      let preNodeNot = $(`#${direction}_preNodeNot`).is(":checked").toString();
+      let itemEvosNot = $(`#${direction}_evosNot`).is(":checked").toString();
+      let pastDesNot = $(`#${direction}_pastDesNot`).is(":checked").toString();
+      let reqFailsNot = $(`#${direction}_reqFailsNot`).is(":checked").toString();
+      let reqValidsNot = $(`#${direction}_reqValidsNot`).is(":checked").toString();
       let reqItems = $(`#${direction}_Items`).val();
       let reqContainers = $(`#${direction}_Containers`).val();
       let reqLocal = $(`#${direction}_Local`).val();
@@ -377,6 +463,20 @@ function generateNode() {
       let locVisits = $(`#${direction}_Visits`).val();
       let preNode = $(`#${direction}_preNode`).val();
       let itemEvos = $(`#${direction}_Evos`).val();
+      let pastDes = $(`#${direction}_pastDes`).val();
+      
+      let reqFails;
+      if ($(`#${direction}_reqFailsCheck`).is(":checked")) {
+        reqFails = {"reqFails":$(`#${direction}_reqFails`).val(), "consecutive":"true"};
+      } else {
+        reqFails = {"reqFails":$(`#${direction}_reqFails`).val(), "consecutive":"false"};
+      }
+      let reqValids;
+      if ($(`#${direction}_reqValidsCheck`).is(":checked")) {
+        reqValids = {"reqValids":$(`#${direction}_reqValids`).val(), "consecutive":"true"};
+      } else {
+        reqValids = {"reqValids":$(`#${direction}_reqValids`).val(), "consecutive":"false"};
+      }
 
       if (exclude) {
         exclude = "true";
@@ -392,13 +492,27 @@ function generateNode() {
         reqAll: reqAll,
         reqNot: reqNot,
         reqItems: reqItems,
+        reqItemsNot: reqItemsNot,
         reqContainers: reqContainers,
+        reqContainersNot: reqContainersNot,
         reqLocal: reqLocal,
+        reqLocalNot: reqLocalNot,
         reqGlobal: reqGlobal,
+        reqGlobalNot: reqGlobalNot,
         preAction: preAction,
+        preActionNot: preActionNot,
         locVisits: locVisits,
+        locVisitsNot: locVisitsNot,
         preNode: preNode,
+        preNodeNot: preNodeNot,
         itemEvos: itemEvos,
+        itemEvosNot: itemEvosNot,
+        pastDes: pastDes,
+        pastDesNot: pastDesNot,
+        reqFails: reqFails,
+        reqFailsNot: reqFailsNot,
+        reqValids: reqValids,
+        reqValidsNot: reqValidsNot
       };
       directions.push(object);
     }
@@ -419,6 +533,17 @@ function generateNode() {
       let baseId = $(evoListDes[i]).attr("id");
       let reqAll = $(`#${baseId}_reqAll`).is(":checked").toString();
       let reqNot = $(`#${baseId}_reqNot`).is(":checked").toString();
+      let reqItemsNot = $(`#${baseId}_itemsNot`).is(":checked").toString();
+      let reqContainersNot = $(`#${baseId}_containersNot`).is(":checked").toString();
+      let reqLocalNot = $(`#${baseId}_localNot`).is(":checked").toString();
+      let reqGlobalNot = $(`#${baseId}_globalNot`).is(":checked").toString();
+      let preActionNot = $(`#${baseId}_preActionNot`).is(":checked").toString();
+      let locVisitsNot = $(`#${baseId}_visitsNot`).is(":checked").toString();
+      let preNodeNot = $(`#${baseId}_preNodeNot`).is(":checked").toString();
+      let itemEvosNot = $(`#${baseId}_evosNot`).is(":checked").toString();
+      let pastDesNot = $(`#${baseId}_pastDesNot`).is(":checked").toString();
+      let reqFailsNot = $(`#${baseId}_reqFailsNot`).is(":checked").toString();
+      let reqValidsNot = $(`#${baseId}_reqValidsNot`).is(":checked").toString();
       let reqItems = $(`#${baseId}_Items`).val();
       let reqContainers = $(`#${baseId}_Containers`).val();
       let reqLocal = $(`#${baseId}_Local`).val();
@@ -427,20 +552,52 @@ function generateNode() {
       let locVisits = $(`#${baseId}_Visits`).val();
       let preNode = $(`#${baseId}_preNode`).val();
       let itemEvos = $(`#${baseId}_Evos`).val();
+      let pastDes = $(`#${baseId}_pastDes`).val();
+      let reqFails;
+      if ($(`#${baseId}_reqFailsCheck`).is(":checked")) {
+        reqFails = {"reqFails": $(`#${baseId}_reqFails`).val(),
+                    "consecutive": "true"};
+      } else {
+        reqFails = {"reqFails": $(`#${baseId}_reqFails`).val(),
+                    "consecutive": "false"};
+      }
+      let reqValids;
+      if ($(`#${baseId}_reqValidsCheck`).is(":checked")) {
+        reqValids = {"reqValids": $(`#${baseId}_reqValids`).val(),
+                    "consecutive": "true"};
+      } else {
+        reqValids = {"reqValids": $(`#${baseId}_reqValids`).val(),
+                    "consecutive": "false"};
+      }
       let evoDes = $(`#${baseId}_Des`).val();
 
       let evo = {
         reqAll: reqAll,
         reqNot: reqNot,
         reqItems: reqItems,
+        reqItemsNot: reqItemsNot,
         reqContainers: reqContainers,
+        reqContainersNot: reqContainersNot,
         reqLocal: reqLocal,
+        reqLocalNot: reqLocalNot,
         reqGlobal: reqGlobal,
+        reqGlobalNot: reqGlobalNot,
         preAction: preAction,
+        preActionNot: preActionNot,
         locVisits: locVisits,
+        locVisitsNot: locVisitsNot,
         preNode: preNode,
+        preNodeNot: preNodeNot,
         itemEvos: itemEvos,
+        itemEvosNot: itemEvosNot,
+        pastDes: pastDes,
+        pastDesNot: pastDesNot,
+        reqFails: reqFails,
+        reqFailsNot: reqFailsNot,
+        reqValids: reqValids,
+        reqValidsNot: reqValidsNot,
         evoDes: evoDes,
+        passed: "false"
       };
       descriptionObject.evos.push(evo);
     }
@@ -457,6 +614,17 @@ function generateNode() {
     let points = $(`#${itemId}_Points`).val();
     let reqAll = $(`#${itemId}_reqAll`).is(":checked").toString();
     let reqNot = $(`#${itemId}_reqNot`).is(":checked").toString();
+    let reqItemsNot = $(`#${itemId}_itemsNot`).is(":checked").toString();
+    let reqContainersNot = $(`#${itemId}_containersNot`).is(":checked").toString();
+    let reqLocalNot = $(`#${itemId}_localNot`).is(":checked").toString();
+    let preActionNot = $(`#${itemId}_preActionNot`).is(":checked").toString();
+    let reqGlobalNot = $(`#${itemId}_globalNot`).is(":checked").toString();
+    let locVisitsNot = $(`#${itemId}_visitsNot`).is(":checked").toString();
+    let preNodeNot = $(`#${itemId}_preNodeNot`).is(":checked").toString();
+    let itemEvosNot = $(`#${itemId}_evosNot`).is(":checked").toString();
+    let pastDesNot = $(`#${itemId}_pastDesNot`).is(":checked").toString();
+    let reqFailsNot = $(`#${itemId}_reqFailsNot`).is(":checked").toString();
+    let reqValidsNot = $(`#${itemId}_reqValidsNot`).is(":checked").toString();
     let reqItems = $(`#${itemId}_Items`).val();
     let reqContainers = $(`#${itemId}_Containers`).val();
     let reqLocal = $(`#${itemId}_Local`).val();
@@ -465,6 +633,19 @@ function generateNode() {
     let locVisits = $(`#${itemId}_Visits`).val();
     let preNode = $(`#${itemId}_preNode`).val();
     let itemEvos = $(`#${itemId}_Evos`).val();
+    let pastDes = $(`#${itemId}_pastDes`).val();
+    let reqFails;
+    if ($(`#${itemId}_reqFailsCheck`).is(":checked")) {
+      reqFails = {"reqFails": $(`#${itemId}_reqFails`).val(), "consecutive": "true"};
+    } else {
+      reqFails = {"reqFails": $(`#${itemId}_reqFails`).val(), "consecutive": "false"};
+    }
+    let reqValids;
+    if ($(`#${itemId}_reqValidsCheck`).is(":checked")) {
+      reqValids = {"reqValids": $(`#${itemId}_reqValids`).val(), "consecutive": "true"};
+    } else {
+      reqValids = {"reqValids": $(`#${itemId}_reqValids`).val(), "consecutive": "false"};
+    }
     let item = {
       name: name,
       description: description,
@@ -472,13 +653,27 @@ function generateNode() {
       reqAll: reqAll,
       reqNot: reqNot,
       reqItems: reqItems,
+      reqItemsNot: reqItemsNot,
       reqContainers: reqContainers,
+      reqContainersNot: reqContainersNot,
       reqLocal: reqLocal,
+      reqLocalNot: reqLocalNot,
       reqGlobal: reqGlobal,
+      reqGlobalNot: reqGlobalNot,
       preAction: preAction,
+      preActionNot: preActionNot,
       locVisits: locVisits,
+      locVisitsNot: locVisitsNot,
       preNode: preNode,
+      preNodeNot: preNodeNot,
       itemEvos: itemEvos,
+      itemEvosNot: itemEvosNot,
+      pastDes: pastDes,
+      pastDesNot: pastDesNot,
+      reqFails: reqFails,
+      reqFailsNot: reqFailsNot,
+      reqValids: reqValids,
+      reqValidsNot: reqValidsNot,
       evos: [],
     };
     let evoDivs = $(`#${itemId}_EvoList`).children();
@@ -487,6 +682,17 @@ function generateNode() {
       let baseId = $(evoDivs[j]).attr("id");
       let reqAll = $(`#${baseId}_reqAll`).is(":checked").toString();
       let reqNot = $(`#${baseId}_reqNot`).is(":checked").toString();
+      let reqItemsNot = $(`#${baseId}_itemsNot`).is(":checked").toString();
+      let reqContainersNot = $(`#${baseId}_containersNot`).is(":checked").toString();
+      let reqLocalNot = $(`#${baseId}_localNot`).is(":checked").toString();
+      let reqGlobalNot = $(`#${baseId}_globalNot`).is(":checked").toString();
+      let preActionNot = $(`#${baseId}_preActionNot`).is(":checked").toString();
+      let locVisitsNot = $(`#${baseId}_visitsNot`).is(":checked").toString();
+      let preNodeNot = $(`#${baseId}_preNodeNot`).is(":checked").toString();
+      let itemEvosNot = $(`#${baseId}_evosNot`).is(":checked").toString();
+      let pastDesNot = $(`#${baseId}_pastDesNot`).is(":checked").toString();
+      let reqFailsNot = $(`#${baseId}_reqFailsNot`).is(":checked").toString();
+      let reqValidsNot = $(`#${baseId}_reqValidsNot`).is(":checked").toString();
       let reqItems = $(`#${baseId}_Items`).val();
       let reqContainers = $(`#${baseId}_Containers`).val();
       let reqLocal = $(`#${baseId}_Local`).val();
@@ -495,18 +701,45 @@ function generateNode() {
       let locVisits = $(`#${baseId}_Visits`).val();
       let preNode = $(`#${baseId}_preNode`).val();
       let itemEvos = $(`#${baseId}_Evos`).val();
+      let pastDes = $(`#${baseId}_pastDes`).val();
+      let reqFails;
+      if ($(`#${baseId}_reqFailsCheck`).is(":checked")) {
+        reqFails = {"reqFails": $(`#${baseId}_reqFails`).val(), "consecutive": "true"};
+      } else {
+        reqFails = {"reqFails": $(`#${baseId}_reqFails`).val(), "consecutive": "false"};
+      }
+      let reqValids;
+      if ($(`#${baseId}_reqValidsCheck`).is(":checked")) {
+        reqValids = {"reqValids": $(`#${baseId}_reqValids`).val(), "consecutive": "true"};
+      } else {
+        reqValids = {"reqValids": $(`#${baseId}_reqValids`).val(), "consecutive": "false"};
+      }
       let evoDes = $(`#${baseId}_Des`).val();
       let evo = {
         reqAll: reqAll,
         reqNot: reqNot,
         reqItems: reqItems,
+        reqItemsNot: reqItemsNot,
         reqContainers: reqContainers,
+        reqContainersNot: reqContainersNot,
         reqLocal: reqLocal,
+        reqLocalNot: reqLocalNot,
         reqGlobal: reqGlobal,
+        reqGlobalNot: reqGlobalNot,
         preAction: preAction,
+        preActionNot: preActionNot,
         locVisits: locVisits,
+        locVisitsNot: locVisitsNot,
         preNode: preNode,
+        preNodeNot: preNodeNot,
         itemEvos: itemEvos,
+        itemEvosNot: itemEvosNot,
+        pastDes: pastDes,
+        pastDesNot: pastDesNot,
+        reqFails: reqFails,
+        reqFailsNot: reqFailsNot,
+        reqValids: reqValids,
+        reqValidsNot: reqValidsNot,
         evoDes: evoDes,
       };
       evoListItems.push(evo);
@@ -528,6 +761,17 @@ function generateNode() {
     let points = $(`#${containerId}_Points`).val();
     let reqAll = $(`#${containerId}_reqAll`).is(":checked").toString();
     let reqNot = $(`#${containerId}_reqNot`).is(":checked").toString();
+    let reqItemsNot = $(`#${containerId}_itemsNot`).is(":checked").toString();
+    let reqContainersNot = $(`#${containerId}_containersNot`).is(":checked").toString();
+    let reqLocalNot = $(`#${containerId}_localNot`).is(":checked").toString();
+    let reqGlobalNot = $(`#${containerId}_globalNot`).is(":checked").toString();
+    let preActionNot = $(`#${containerId}_preActionNot`).is(":checked").toString();
+    let locVisitsNot = $(`#${containerId}_visitsNot`).is(":checked").toString();
+    let preNodeNot = $(`#${containerId}_preNodeNot`).is(":checked").toString();
+    let itemEvosNot = $(`#${containerId}_evosNot`).is(":checked").toString();
+    let pastDesNot = $(`#${containerId}_pastDesNot`).is(":checked").toString();
+    let reqFailsNot = $(`#${containerId}_reqFailsNot`).is(":checked").toString();
+    let reqValidsNot = $(`#${containerId}_reqValidsNot`).is(":checked").toString();
     let reqItems = $(`#${containerId}_Items`).val();
     let reqContainers = $(`#${containerId}_Containers`).val();
     let reqLocal = $(`#${containerId}_Local`).val();
@@ -536,6 +780,19 @@ function generateNode() {
     let locVisits = $(`#${containerId}_Visits`).val();
     let preNode = $(`#${containerId}_preNode`).val();
     let itemEvos = $(`#${containerId}_Evos`).val();
+    let pastDes = $(`#${containerId}_pastDes`).val();
+    let reqFails;
+    if ($(`#${containerId}_reqFailsCheck`).is(":checked")) {
+      reqFails = {"reqFails": $(`#${containerId}_reqFails`).val(), "consecutive": "true"};
+    } else {
+      reqFails = {"reqFails": $(`#${containerId}_reqFails`).val(), "consecutive": "false"};
+    }
+    let reqValids;
+    if ($(`#${containerId}_reqValidsCheck`).is(":checked")) {
+      reqValids = {"reqValids": $(`#${containerId}_reqValids`).val(), "consecutive": "true"};
+    } else {
+      reqValids = {"reqValids": $(`#${containerId}_reqValids`).val(), "consecutive": "false"};
+    }
     let container = {
       name: name,
       capacity: cap,
@@ -546,13 +803,27 @@ function generateNode() {
       reqAll: reqAll,
       reqNot: reqNot,
       reqItems: reqItems,
+      reqItemsNot: reqItemsNot,
       reqContainers: reqContainers,
+      reqContainersNot: reqContainersNot,
       reqLocal: reqLocal,
+      reqLocalNot: reqLocalNot,
       reqGlobal: reqGlobal,
+      reqGlobalNot: reqGlobalNot,
       preAction: preAction,
+      preActionNot: preActionNot,
       locVisits: locVisits,
+      locVisitsNot: locVisitsNot,
       preNode: preNode,
+      preNodeNot: preNodeNot,
       itemEvos: itemEvos,
+      itemEvosNot: itemEvosNot,
+      pastDes: pastDes,
+      pastDesNot: pastDesNot,
+      reqFails: reqFails,
+      reqFailsNot: reqFailsNot,
+      reqValids: reqValids,
+      reqValidsNot: reqValidsNot
     };
     containersArray.push(container);
   }
@@ -562,6 +833,7 @@ function generateNode() {
   let actionsObject = {
     invalid: "",
     actions: [],
+    evos: []
   };
   let actionArray = [];
   let actionList = $("#actionList").children();
@@ -578,6 +850,17 @@ function generateNode() {
     let points = $(`#${baseId}_Points`).val();
     let reqAll = $(`#${baseId}_reqAll`).is(":checked").toString();
     let reqNot = $(`#${baseId}_reqNot`).is(":checked").toString();
+    let reqItemsNot = $(`#${baseId}_itemsNot`).is(":checked").toString();
+    let reqContainersNot = $(`#${baseId}_containersNot`).is(":checked").toString();
+    let reqLocalNot = $(`#${baseId}_localNot`).is(":checked").toString();
+    let reqGlobalNot = $(`#${baseId}_globalNot`).is(":checked").toString();
+    let preActionNot = $(`#${baseId}_preActionNot`).is(":checked").toString();
+    let locVisitsNot = $(`#${baseId}_visitsNot`).is(":checked").toString();
+    let preNodeNot = $(`#${baseId}_preNodeNot`).is(":checked").toString();
+    let itemEvosNot = $(`#${baseId}_evosNot`).is(":checked").toString();
+    let pastDesNot = $(`#${baseId}_pastDesNot`).is(":checked").toString();
+    let reqFailsNot = $(`#${baseId}_reqFailsNot`).is(":checked").toString();
+    let reqValidsNot =$(`#${baseId}_reqValidsNot`).is(":checked").toString();
     let reqItems = $(`#${baseId}_Items`).val();
     let reqContainers = $(`#${baseId}_Containers`).val();
     let reqLocal = $(`#${baseId}_Local`).val();
@@ -586,6 +869,19 @@ function generateNode() {
     let locVisits = $(`#${baseId}_Visits`).val();
     let preNode = $(`#${baseId}_preNode`).val();
     let itemEvos = $(`#${baseId}_Evos`).val();
+    let pastDes = $(`#${baseId}_pastDes`).val();
+    let reqFails;
+    if ($(`#${baseId}_reqFailsCheck`).is(":checked")) {
+      reqFails = {"reqFails": $(`#${baseId}_reqFails`).val(), "consecutive": "true"};
+    } else {
+      reqFails = {"reqFails": $(`#${baseId}_reqFails`).val(), "consecutive": "false"};
+    }
+    let reqValids;
+    if ($(`#${baseId}_reqValidsCheck`).is(":checked")) {
+      reqValids = {"reqValids": $(`#${baseId}_reqValids`).val(), "consecutive": "true"};
+    } else {
+      reqValids = {"reqValids": $(`#${baseId}_reqValids`).val(), "consecutive": "false"};
+    }
 
     let action = {
       actions: actions,
@@ -599,24 +895,125 @@ function generateNode() {
       reqAll: reqAll,
       reqNot: reqNot,
       reqItems: reqItems,
+      reqItemsNot: reqItemsNot,
       reqContainers: reqContainers,
+      reqContainersNot: reqContainersNot,
       reqLocal: reqLocal,
+      reqLocalNot: reqLocalNot,
       reqGlobal: reqGlobal,
+      reqGlobalNot: reqGlobalNot,
       preAction: preAction,
+      preActionNot: preActionNot,
       locVisits: locVisits,
+      locVisitsNot: locVisitsNot,
       preNode: preNode,
+      preNodeNot: preNodeNot,
       itemEvos: itemEvos,
+      itemEvosNot: itemEvosNot,
+      pastDes: pastDes,
+      pastDesNot: pastDesNot,
+      reqFails: reqFails,
+      reqFailsNot: reqFailsNot,
+      reqValids: reqValids,
+      reqValidsNot: reqValidsNot
     };
     actionArray.push(action);
   }
+  //Invalid Action Evolutions
+  let evoListInvalids = $("#evoListInvalids").children();
+  if (evoListInvalids.length > 0) {
+    for (let i = 0; i < evoListInvalids.length; i++) {
+      let baseId = $(evoListInvalids[i]).attr("id");
+      let reqAll = $(`#${baseId}_reqAll`).is(":checked").toString();
+      let reqNot = $(`#${baseId}_reqNot`).is(":checked").toString();
+      let reqItemsNot = $(`#${baseId}_itemsNot`).is(":checked").toString();
+      let reqContainersNot = $(`#${baseId}_containersNot`).is(":checked").toString();
+      let reqLocalNot = $(`#${baseId}_localNot`).is(":checked").toString();
+      let reqGlobalNot = $(`#${baseId}_globalNot`).is(":checked").toString();
+      let preActionNot = $(`#${baseId}_preActionNot`).is(":checked").toString();
+      let locVisitsNot = $(`#${baseId}_visitsNot`).is(":checked").toString();
+      let preNodeNot = $(`#${baseId}_preNodeNot`).is(":checked").toString();
+      let itemEvosNot = $(`#${baseId}_evosNot`).is(":checked").toString();
+      let pastDesNot = $(`#${baseId}_pastDesNot`).is(":checked").toString();
+      let reqFailsNot = $(`#${baseId}_reqFailsNot`).is(":checked").toString();
+      let reqValidsNot = $(`#${baseId}_reqValidsNot`).is(":checked").toString();
+      let reqItems = $(`#${baseId}_Items`).val();
+      let reqContainers = $(`#${baseId}_Containers`).val();
+      let reqLocal = $(`#${baseId}_Local`).val();
+      let reqGlobal = $(`#${baseId}_Global`).val();
+      let preAction = $(`#${baseId}_preAction`).val();
+      let locVisits = $(`#${baseId}_Visits`).val();
+      let preNode = $(`#${baseId}_preNode`).val();
+      let itemEvos = $(`#${baseId}_Evos`).val();
+      let pastDes = $(`#${baseId}_pastDes`).val();
+      let reqFails;
+      if ($(`#${baseId}_reqFailsCheck`).is(":checked")) {
+        reqFails = {"reqFails": $(`#${baseId}_reqFails`).val(),
+                    "consecutive": "true"};
+      } else {
+        reqFails = {"reqFails": $(`#${baseId}_reqFails`).val(),
+                    "consecutive": "false"};
+      }
+      let reqValids;
+      if ($(`#${baseId}_reqValidsCheck`).is(":checked")) {
+        reqValids = {"reqValids": $(`#${baseId}_reqValids`).val(),
+                    "consecutive": "true"};
+      } else {
+        reqValids = {"reqValids": $(`#${baseId}_reqValids`).val(),
+                    "consecutive": "false"};
+      }
+      let evoDes = $(`#${baseId}_Des`).val();
+
+      let evo = {
+        reqAll: reqAll,
+        reqNot: reqNot,
+        reqItems: reqItems,
+        reqItemsNot: reqItemsNot,
+        reqContainers: reqContainers,
+        reqContainersNot: reqContainersNot,
+        reqLocal: reqLocal,
+        reqLocalNot: reqLocalNot,
+        reqGlobal: reqGlobal,
+        reqGlobalNot: reqGlobalNot,
+        preAction: preAction,
+        preActionNot: preActionNot,
+        locVisits: locVisits,
+        locVisitsNot: locVisitsNot,
+        preNode: preNode,
+        preNodeNot: preNodeNot,
+        itemEvos: itemEvos,
+        itemEvosNot: itemEvosNot,
+        pastDes: pastDes,
+        pastDesNot: pastDesNot,
+        reqFails: reqFails,
+        reqFailsNot: reqFailsNot,
+        reqValids: reqValids,
+        reqValidsNot: reqValidsNot,
+        evoDes: evoDes
+      };
+      actionsObject.evos.push(evo);
+    }
+  }
+
   actionsObject.actions = actionArray;
   actionsObject.invalid = invalidAction;
   cNode.actions = JSON.parse(JSON.stringify(actionsObject));
 
   //generate win
   let winDes = $("#winDes").val();
-  let winReqAll = $("win_reqAll").is(":checked").toString();
-  let winReqNot = $("win_reqNot").is(":checked").toString();
+  let winReqAll = $("#win_reqAll").is(":checked").toString();
+  let winReqNot = $("#win_reqNot").is(":checked").toString();
+  let winReqItemsNot = $("#win_itemsNot").is(":checked").toString();
+  let winReqContainersNot = $("#win_containersNot").is(":checked").toString();
+  let winReqLocalNot = $("#win_localNot").is(":checked").toString();
+  let winReqGlobalNot = $("#win_globalNot").is(":checked").toString();
+  let winPreActionNot = $("#win_preActionNot").is(":checked").toString();
+  let winLocVisitsNot = $("#win_visitsNot").is(":checked").toString();
+  let winPreNodeNot = $("#win_preNodeNot").is(":checked").toString();
+  let winItemEvosNot = $("#win_evosNot").is(":checked").toString();
+  let winPastDesNot = $("#win_pastDesNot").is(":checked").toString();
+  let winReqFailsNot = $("#win_reqFailsNot").is(":checked").toString();
+  let winReqValidsNot = $("#win_reqValidsNot").is(":checked").toString();
   let winReqItems = $("#win_Items").val();
   let winReqContainers = $("#win_Containers").val();
   let winReqLocal = $("#win_Local").val();
@@ -625,18 +1022,45 @@ function generateNode() {
   let winLocVisits = $("#win_Visits").val();
   let winPreNode = $("#win_preNode").val();
   let winItemEvos = $("#win_Evos").val();
+  let winPastDes = $("#win_pastDes").val();
+  let winReqFails;
+  if ($("#win_reqFailsCheck").is(":checked")) {
+    winReqFails = {"reqFails": $("#win_reqFails").val(), "consecutive": "true"};
+  } else {
+    winReqFails = {"reqFails": $("#win_reqFails").val(), "consecutive": "false"};
+  }
+  let winReqValids;
+  if ($("#win_reqValidsCheck").is(":checked")) {
+    winReqValids = {"reqValids": $("#win_reqValids").val(), "consecutive": "true"};
+  } else {
+    winReqValids = {"reqValids": $("#win_reqValids").val(), "consecutive": "false"};
+  }
   let win = {
     description: winDes,
     reqAll: winReqAll,
     reqNot: winReqNot,
     reqItems: winReqItems,
+    reqItemsNot: winReqItemsNot,
     reqContainers: winReqContainers,
+    reqContainersNot: winReqContainersNot,
     reqLocal: winReqLocal,
+    reqLocalNot: winReqLocalNot,
     reqGlobal: winReqGlobal,
+    reqGlobalNot: winReqGlobalNot,
     preAction: winPreAction,
+    preActionNot: winPreActionNot,
     locVisits: winLocVisits,
+    locVisitsNot: winLocVisitsNot,
     preNode: winPreNode,
+    preNodeNot: winPreNodeNot,
     itemEvos: winItemEvos,
+    itemEvosNot: winItemEvosNot,
+    pastDes: winPastDes,
+    pastDesNot: winPastDesNot,
+    reqFails: winReqFails,
+    reqFailsNot: winReqFailsNot,
+    reqValids: winReqValids,
+    reqValidsNot: winReqValidsNot
   };
   cNode.win = win;
 
@@ -644,6 +1068,17 @@ function generateNode() {
   let loseDes = $("#loseDes").val();
   let loseReqAll = $("#lose_reqAll").is(":checked").toString();
   let loseReqNot = $("#lose_reqNot").is(":checked").toString();
+  let loseReqItemsNot = $("#lose_itemsNot").is(":checked").toString();
+  let loseReqContainersNot = $("#lose_containersNot").is(":checked").toString();
+  let loseReqLocalNot = $("#lose_localNot").is(":checked").toString();
+  let loseReqGlobalNot = $("#lose_globalNot").is(":checked").toString();
+  let losePreActionNot = $("#lose_preActionNot").is(":checked").toString();
+  let loseLocVisitsNot = $("#lose_visitsNot").is(":checked").toString();
+  let losePreNodeNot = $("#lose_preNodeNot").is(":checked").toString();
+  let loseItemEvosNot = $("#lose_evosNot").is(":checked").toString();
+  let losePastDesNot = $("#lose_pastDesNot").is(":checked").toString();
+  let loseReqFailsNot = $("#lose_reqFailsNot").is(":checked").toString();
+  let loseReqValidsNot = $("#lose_reqValidsNot").is(":checked").toString();
   let loseReqItems = $("#lose_Items").val();
   let loseReqContainers = $("#lose_Containers").val();
   let loseReqLocal = $("#lose_Local").val();
@@ -652,18 +1087,45 @@ function generateNode() {
   let loseLocVisits = $("#lose_Visits").val();
   let losePreNode = $("#lose_preNode").val();
   let loseItemEvos = $("#lose_Evos").val();
+  let losePastDes = $("#lose_pastDes").val();
+  let loseReqFails;
+  if ($("#lose_reqFailsCheck").is(":checked")) {
+    loseReqFails = {"reqFails": $("#lose_reqFails").val(), "consecutive": "true"};
+  } else {
+    loseReqFails = {"reqFails": $("#lose_reqFails").val(), "consecutive": "false"};
+  }
+  let loseReqValids;
+  if ($("#lose_reqValidsCheck").is(":checked")) {
+    loseReqValids = {"reqValids": $("#lose_reqValids").val(), "consecutive": "true"};
+  } else {
+    loseReqValids = {"reqValids": $("#lose_reqValids").val(), "consecutive": "false"};
+  }
   let lose = {
     description: loseDes,
     reqAll: loseReqAll,
     reqNot: loseReqNot,
     reqItems: loseReqItems,
+    reqItemsNot: loseReqItemsNot,
     reqContainers: loseReqContainers,
+    reqContainersNot: loseReqContainersNot,
     reqLocal: loseReqLocal,
+    reqLocalNot: loseReqLocalNot,
     reqGlobal: loseReqGlobal,
+    reqGlobalNot: loseReqGlobalNot,
     preAction: losePreAction,
+    preActionNot: losePreActionNot,
     locVisits: loseLocVisits,
+    locVisitsNot: loseLocVisitsNot,
     preNode: losePreNode,
+    preNodeNot: losePreNodeNot,
     itemEvos: loseItemEvos,
+    itemEvosNot: loseItemEvosNot,
+    pastDes: losePastDes,
+    pastDesNot: losePastDesNot,
+    reqFails: loseReqFails,
+    reqFailsNot: loseReqFailsNot,
+    reqValids: loseReqValids,
+    reqValidsNot: loseReqValidsNot
   };
   cNode.lose = lose;
 
