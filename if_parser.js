@@ -1561,108 +1561,192 @@ function parseAction(input) {
             }
         }
 
-        if (lookCommands.includes(action)) {
-            pushAction("LOOK");
-            displayMessage(getDescription(currentNode), false);
-            displayItems();
-            sentMessage = true;
-        }
-
-        if (action == "SCORE") {
-            pushAction("SCORE");
-            let max = getMaxPoints();
-            if (max == 0) {
-                displayMessage("This game keeps no score.", false);
-                sentMessage = true;
-            } else {
-                let points = tallyPoints();
-                displayMessage(points.toString() + "/" + max.toString(), false);
+        //If sentMessage is true, custom actions trump everything so do not continue
+        if (sentMessage != true) {
+            if (lookCommands.includes(action)) {
+                pushAction("LOOK");
+                displayMessage(getDescription(currentNode), false);
+                displayItems();
                 sentMessage = true;
             }
-        }
 
-        if (hintCommands.includes(action)) {
-            pushAction("HINT");
-            if (game[currentNode].hint != '') {
-                displayMessage(game[currentNode].hint, false);
-            } else {
-                displayMessage("There is no help here.", false);
-            }
-            sentMessage = true;
-        }
-
-        if (inventoryCommands.includes(action)) {
-            pushAction("INENTORY");
-            if (save.items.length > 0) {
-                displayMessage("Inventory:", false);
-                for (let i = 0; i < save.items.length; i++) {
-                    let name = save.items[i].name.split(/\s*,\s*/)[0];
-                    displayMessage(name, false);
+            if (action == "SCORE") {
+                pushAction("SCORE");
+                let max = getMaxPoints();
+                if (max == 0) {
+                    displayMessage("This game keeps no score.", false);
+                    sentMessage = true;
+                } else {
+                    let points = tallyPoints();
+                    displayMessage(points.toString() + "/" + max.toString(), false);
                     sentMessage = true;
                 }
-            } else {
-                displayMessage("Your inventory is empty.", false);
+            }
+
+            if (hintCommands.includes(action)) {
+                pushAction("HINT");
+                if (game[currentNode].hint != '') {
+                    displayMessage(game[currentNode].hint, false);
+                } else {
+                    displayMessage("There is no help here.", false);
+                }
                 sentMessage = true;
             }
-        }
 
-        for (let i = 0; i < cContainerWithdrawals.verbs.length; i++) {
-            //Check if withdrawal verb is present in action
-            let regexp1 = new RegExp(`\s*${cContainerWithdrawals.verbs[i]}\s*`);
-            if (action.match(regexp1)) {
-                //check if withdrawalable item is present in action
-                for (let j = 0; j < cContainerWithdrawals.items.length; j++) {
-                    for (let k = 0; k < cContainerWithdrawals.items[j].length; k++) {
-                        for (let l = 0; l < cContainerWithdrawals.items[j][k].length; l++) {
-                            let regexp2 = new RegExp(`\s*${cContainerWithdrawals.items[j][k][l].toUpperCase()}\s*`);
-                            if (action.match(regexp2)) {
-                                //Check if corresponding container is present in action
-                                let containerVariants = cContainerWithdrawals.containers[j];
-                                for (let m = 0; m < containerVariants.length; m++) {
-                                    let regexp3 = new RegExp(`\s*${containerVariants[m].toUpperCase()}\s*`);
-                                    if (action.match(regexp3)) {
-                                        //Action is a container withdrawal, check if requirements are satisfied
-                                        let reqs;
-                                        for (let q = 0; q < game[currentNode].containers.length; q++) {
-                                            if (game[currentNode].containers[q].name.toUpperCase().match(regexp3)) {
-                                                reqs = {
-                                                    "reqItemsNot": game[currentNode].containers[q].reqItemsNot,
-                                                    "reqContainersNot": game[currentNode].containers[q].reqContainersNot,
-                                                    "reqLocalNot": game[currentNode].containers[q].reqLocalNot,
-                                                    "reqGlobalNot": game[currentNode].containers[q].reqGlobalNot,
-                                                    "preActionNot": game[currentNode].containers[q].preActionNot,
-                                                    "locVisitsNot": game[currentNode].containers[q].locVisitsNot,
-                                                    "preNodeNot": game[currentNode].containers[q].preNodeNot,
-                                                    "itemEvosNot": game[currentNode].containers[q].itemEvosNot,
-                                                    "pastDesNot": game[currentNode].containers[q].pastDesNot,
-                                                    "reqFailsNot": game[currentNode].containers[q].reqFailsNot,
-                                                    "reqValidsNot": game[currentNode].containers[q].reqValidsNot,
-                                                    "reqAll": game[currentNode].containers[q].reqAll,
-                                                    "reqItems": game[currentNode].containers[q].reqItems,
-                                                    "reqContainers": game[currentNode].containers[q].reqContainers,
-                                                    "reqLocal": game[currentNode].containers[q].reqLocal,
-                                                    "reqGlobal": game[currentNode].containers[q].reqGlobal,
-                                                    "preAction": game[currentNode].containers[q].preAction,
-                                                    "locVisits": game[currentNode].containers[q].locVisits,
-                                                    "preNode": game[currentNode].containers[q].preNode,
-                                                    "itemEvos": game[currentNode].containers[q].itemEvos,
-                                                    "pastDes": game[currentNode].containers[q].pastDes,
-                                                    "reqFails": game[currentNode].containers[q].reqFails,
-                                                    "reqValids": game[currentNode].containers[q].reqValids
+            if (inventoryCommands.includes(action)) {
+                pushAction("INENTORY");
+                if (save.items.length > 0) {
+                    displayMessage("Inventory:", false);
+                    for (let i = 0; i < save.items.length; i++) {
+                        let name = save.items[i].name.split(/\s*,\s*/)[0];
+                        displayMessage(name, false);
+                        sentMessage = true;
+                    }
+                } else {
+                    displayMessage("Your inventory is empty.", false);
+                    sentMessage = true;
+                }
+            }
+
+            for (let i = 0; i < cContainerWithdrawals.verbs.length; i++) {
+                //Check if withdrawal verb is present in action
+                let regexp1 = new RegExp(`\s*${cContainerWithdrawals.verbs[i]}\s*`);
+                if (action.match(regexp1)) {
+                    //check if withdrawalable item is present in action
+                    for (let j = 0; j < cContainerWithdrawals.items.length; j++) {
+                        for (let k = 0; k < cContainerWithdrawals.items[j].length; k++) {
+                            for (let l = 0; l < cContainerWithdrawals.items[j][k].length; l++) {
+                                let regexp2 = new RegExp(`\s*${cContainerWithdrawals.items[j][k][l].toUpperCase()}\s*`);
+                                if (action.match(regexp2)) {
+                                    //Check if corresponding container is present in action
+                                    let containerVariants = cContainerWithdrawals.containers[j];
+                                    for (let m = 0; m < containerVariants.length; m++) {
+                                        let regexp3 = new RegExp(`\s*${containerVariants[m].toUpperCase()}\s*`);
+                                        if (action.match(regexp3)) {
+                                            //Action is a container withdrawal, check if requirements are satisfied
+                                            let reqs;
+                                            for (let q = 0; q < game[currentNode].containers.length; q++) {
+                                                if (game[currentNode].containers[q].name.toUpperCase().match(regexp3)) {
+                                                    reqs = {
+                                                        "reqItemsNot": game[currentNode].containers[q].reqItemsNot,
+                                                        "reqContainersNot": game[currentNode].containers[q].reqContainersNot,
+                                                        "reqLocalNot": game[currentNode].containers[q].reqLocalNot,
+                                                        "reqGlobalNot": game[currentNode].containers[q].reqGlobalNot,
+                                                        "preActionNot": game[currentNode].containers[q].preActionNot,
+                                                        "locVisitsNot": game[currentNode].containers[q].locVisitsNot,
+                                                        "preNodeNot": game[currentNode].containers[q].preNodeNot,
+                                                        "itemEvosNot": game[currentNode].containers[q].itemEvosNot,
+                                                        "pastDesNot": game[currentNode].containers[q].pastDesNot,
+                                                        "reqFailsNot": game[currentNode].containers[q].reqFailsNot,
+                                                        "reqValidsNot": game[currentNode].containers[q].reqValidsNot,
+                                                        "reqAll": game[currentNode].containers[q].reqAll,
+                                                        "reqItems": game[currentNode].containers[q].reqItems,
+                                                        "reqContainers": game[currentNode].containers[q].reqContainers,
+                                                        "reqLocal": game[currentNode].containers[q].reqLocal,
+                                                        "reqGlobal": game[currentNode].containers[q].reqGlobal,
+                                                        "preAction": game[currentNode].containers[q].preAction,
+                                                        "locVisits": game[currentNode].containers[q].locVisits,
+                                                        "preNode": game[currentNode].containers[q].preNode,
+                                                        "itemEvos": game[currentNode].containers[q].itemEvos,
+                                                        "pastDes": game[currentNode].containers[q].pastDes,
+                                                        "reqFails": game[currentNode].containers[q].reqFails,
+                                                        "reqValids": game[currentNode].containers[q].reqValids
+                                                    }
+                                                    break;
                                                 }
-                                                break;
+                                            }
+                                            if (checkRequirements(reqs)) {
+                                            //Remove item from container and store in inventory
+                                                for (let n = 0; n < save.nodes[currentNode].containers.length; n++) {
+                                                    if (save.nodes[currentNode].containers[n].name.includes(containerVariants[m])) {
+                                                        for (let p = 0; p < save.nodes[currentNode].containers[n].items.length; p++) {
+                                                            if (save.nodes[currentNode].containers[n].items[p].name.includes(cContainerWithdrawals.items[j][k][l])) {
+                                                                let item = JSON.parse(JSON.stringify(save.nodes[currentNode].containers[n].items[p]));
+                                                                save.nodes[currentNode].containers[n].items.splice(p,1);
+                                                                save.items.push(item);
+                                                                displayMessage("Done.", false);
+                                                                sentMessage = true;
+                                                            }
+                                                        }
+                                                    }
+                                                }
                                             }
                                         }
-                                        if (checkRequirements(reqs)) {
-                                        //Remove item from container and store in inventory
-                                            for (let n = 0; n < save.nodes[currentNode].containers.length; n++) {
-                                                if (save.nodes[currentNode].containers[n].name.includes(containerVariants[m])) {
-                                                    for (let p = 0; p < save.nodes[currentNode].containers[n].items.length; p++) {
-                                                        if (save.nodes[currentNode].containers[n].items[p].name.includes(cContainerWithdrawals.items[j][k][l])) {
-                                                            let item = JSON.parse(JSON.stringify(save.nodes[currentNode].containers[n].items[p]));
-                                                            save.nodes[currentNode].containers[n].items.splice(p,1);
-                                                            save.items.push(item);
-                                                            displayMessage("Done.", false);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            for (let i = 0; i < cContainerDeposits.verbs.length; i++) {
+                //Check if deposit verb is present in action
+                let regexp1 = new RegExp(`\s*${cContainerDeposits.verbs[i]}\s*`);
+                if (action.match(regexp1)) {
+                    //Check if depositable item is present in action
+                    for (let j = 0; j < cContainerDeposits.items.length; j++) {
+                        for (let k = 0; k < cContainerDeposits.items[j].length; k++) {
+                            let regexp2 = new RegExp(`\s*${cContainerDeposits.items[j][k].toUpperCase()}\s*`);
+                            if (action.match(regexp2)) {
+                                //Check if container is present in action
+                                for (let l = 0; l < cContainerDeposits.containers.length; l++) {
+                                    for (let m = 0; m < cContainerDeposits.containers[l].length; m++) {
+                                        let regexp3 = new RegExp(`\s*${cContainerDeposits.containers[l][m].toUpperCase()}\s*`);
+                                        if (action.match(regexp3)) {
+                                            //Action is a container deposit, check if requirements are satisfied
+                                            let reqs;
+                                            let thisContainer;
+                                            for (let q = 0; q < game[currentNode].containers.length; q++) {
+                                                if (game[currentNode].containers[q].name.toUpperCase().match(regexp3)) {
+                                                    thisContainer = game[currentNode].containers[q];
+                                                    reqs = {
+                                                        "reqItemsNot": thisContainer.reqItemsNot,
+                                                        "reqContainersNot": thisContainer.reqContainersNot,
+                                                        "reqLocalNot": thisContainer.reqLocalNot,
+                                                        "reqGlobalNot": thisContainer.reqGlobalNot,
+                                                        "preActionNot": thisContainer.preActionNot,
+                                                        "locVisitsNot": thisContainer.locVisitsNot,
+                                                        "preNodeNot": thisContainer.preNodeNot,
+                                                        "itemEvosNot": thisContainer.itemEvosNot,
+                                                        "pastDesNot": thisContainer.pastDesNot,
+                                                        "reqFailsNot": thisContainer.reqFailsNot,
+                                                        "reqValidsNot": thisContainer.reqValidsNot,
+                                                        "reqAll": thisContainer.reqAll,
+                                                        "reqItems": thisContainer.reqItems,
+                                                        "reqContainers": thisContainer.reqContainers,
+                                                        "reqLocal": thisContainer.reqLocal,
+                                                        "reqGlobal": thisContainer.reqGlobal,
+                                                        "preAction": thisContainer.preAction,
+                                                        "locVisits": thisContainer.locVisits,
+                                                        "preNode": thisContainer.preNode,
+                                                        "itemEvos": thisContainer.itemEvos,
+                                                        "pastDes": thisContainer.pastDes,
+                                                        "reqFails": thisContainer.reqFails,
+                                                        "reqValids": thisContainer.reqValids
+                                                    }
+                                                    break;
+                                                }
+                                            }
+                                            if (checkRequirements(reqs)) {
+                                            //Check if item is an illegal item, and if not, then
+                                            //remove item from inventory and store in container
+                                                for (let n = 0; n < save.items.length; n++) {
+                                                    let variants = save.items[n].name.toUpperCase().split(/\s*,\s*/);
+                                                    if (variants.includes(cContainerDeposits.items[j][k].toUpperCase())) {
+                                                        if (!thisContainer.illegal.toUpperCase().includes(variants[0])) {
+                                                            let item = JSON.parse(JSON.stringify(save.items[n]));
+                                                            save.items.splice(n,1);
+                                                            for (let p = 0; p < save.nodes[currentNode].containers.length; p++) {
+                                                                let saveVariants = save.nodes[currentNode].containers[p].name.split(/\s*,\s*/);
+                                                                if (saveVariants.includes(cContainerDeposits.containers[l][m])) {
+                                                                    save.nodes[currentNode].containers[p].items.push(item);
+                                                                    displayMessage("Done.", false);
+                                                                    sentMessage = true;
+                                                                }
+                                                            }
+                                                        } else {
+                                                            displayMessage("That does not go there.", false);
                                                             sentMessage = true;
                                                         }
                                                     }
@@ -1676,303 +1760,223 @@ function parseAction(input) {
                     }
                 }
             }
-        }
 
-        for (let i = 0; i < cContainerDeposits.verbs.length; i++) {
-            //Check if deposit verb is present in action
-            let regexp1 = new RegExp(`\s*${cContainerDeposits.verbs[i]}\s*`);
-            if (action.match(regexp1)) {
-                //Check if depositable item is present in action
-                for (let j = 0; j < cContainerDeposits.items.length; j++) {
-                    for (let k = 0; k < cContainerDeposits.items[j].length; k++) {
-                        let regexp2 = new RegExp(`\s*${cContainerDeposits.items[j][k].toUpperCase()}\s*`);
-                        if (action.match(regexp2)) {
-                            //Check if container is present in action
-                            for (let l = 0; l < cContainerDeposits.containers.length; l++) {
-                                for (let m = 0; m < cContainerDeposits.containers[l].length; m++) {
-                                    let regexp3 = new RegExp(`\s*${cContainerDeposits.containers[l][m].toUpperCase()}\s*`);
-                                    if (action.match(regexp3)) {
-                                        //Action is a container deposit, check if requirements are satisfied
-                                        let reqs;
-                                        let thisContainer;
-                                        for (let q = 0; q < game[currentNode].containers.length; q++) {
-                                            if (game[currentNode].containers[q].name.toUpperCase().match(regexp3)) {
-                                                thisContainer = game[currentNode].containers[q];
-                                                reqs = {
-                                                    "reqItemsNot": thisContainer.reqItemsNot,
-                                                    "reqContainersNot": thisContainer.reqContainersNot,
-                                                    "reqLocalNot": thisContainer.reqLocalNot,
-                                                    "reqGlobalNot": thisContainer.reqGlobalNot,
-                                                    "preActionNot": thisContainer.preActionNot,
-                                                    "locVisitsNot": thisContainer.locVisitsNot,
-                                                    "preNodeNot": thisContainer.preNodeNot,
-                                                    "itemEvosNot": thisContainer.itemEvosNot,
-                                                    "pastDesNot": thisContainer.pastDesNot,
-                                                    "reqFailsNot": thisContainer.reqFailsNot,
-                                                    "reqValidsNot": thisContainer.reqValidsNot,
-                                                    "reqAll": thisContainer.reqAll,
-                                                    "reqItems": thisContainer.reqItems,
-                                                    "reqContainers": thisContainer.reqContainers,
-                                                    "reqLocal": thisContainer.reqLocal,
-                                                    "reqGlobal": thisContainer.reqGlobal,
-                                                    "preAction": thisContainer.preAction,
-                                                    "locVisits": thisContainer.locVisits,
-                                                    "preNode": thisContainer.preNode,
-                                                    "itemEvos": thisContainer.itemEvos,
-                                                    "pastDes": thisContainer.pastDes,
-                                                    "reqFails": thisContainer.reqFails,
-                                                    "reqValids": thisContainer.reqValids
-                                                }
-                                                break;
-                                            }
-                                        }
-                                        if (checkRequirements(reqs)) {
-                                        //Check if item is an illegal item, and if not, then
-                                        //remove item from inventory and store in container
-                                            for (let n = 0; n < save.items.length; n++) {
-                                                let variants = save.items[n].name.toUpperCase().split(/\s*,\s*/);
-                                                if (variants.includes(cContainerDeposits.items[j][k].toUpperCase())) {
-                                                    if (!thisContainer.illegal.toUpperCase().includes(variants[0])) {
-                                                        let item = JSON.parse(JSON.stringify(save.items[n]));
-                                                        save.items.splice(n,1);
-                                                        for (let p = 0; p < save.nodes[currentNode].containers.length; p++) {
-                                                            let saveVariants = save.nodes[currentNode].containers[p].name.split(/\s*,\s*/);
-                                                            if (saveVariants.includes(cContainerDeposits.containers[l][m])) {
-                                                                save.nodes[currentNode].containers[p].items.push(item);
-                                                                displayMessage("Done.", false);
-                                                                sentMessage = true;
-                                                            }
-                                                        }
-                                                    } else {
-                                                        displayMessage("That does not go there.", false);
-                                                        sentMessage = true;
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
+            for (let i = 0; i < cNodeDirections.length; i++) {
+                for (let j = 0; j < cNodeDirections[i].alternatives.length; j++) {
+                    if (filterIgnorables(cNodeDirections[i].alternatives[j]) == action) {
+                        if (checkRequirements(cNodeDirections[i].requirements)) {
+                            parseNode(cNodeDirections[i].location);
+                            return;
+                        } else {
+                            displayMessage("Something is preventing you from going this way.", false);
+                            sentMessage = true;
                         }
-                    }
-                }
-            }
-        }
-
-        for (let i = 0; i < cNodeDirections.length; i++) {
-            for (let j = 0; j < cNodeDirections[i].alternatives.length; j++) {
-                if (filterIgnorables(cNodeDirections[i].alternatives[j]) == action) {
-                    if (checkRequirements(cNodeDirections[i].requirements)) {
-                        parseNode(cNodeDirections[i].location);
-                        return;
-                    } else {
-                        displayMessage("Something is preventing you from going this way.", false);
-                        sentMessage = true;
-                    }
-                    break;
-                }
-            }
-        }
-
-        if (cNodeItems.includes(action)) {
-            let actionItem;
-            for (let i = 0; i < takeCommands.length; i++) {
-                let regexp = new RegExp(`\s*${takeCommands[i]}\s*`);
-                if (action.match(regexp)) {
-                    actionItem = action.slice(action.match(regexp)[0].length + 1);
-                    break;
-                }
-            }
-            for (let i = 0; i < save.nodes[currentNode].items.length; i++) {
-                let checked = false;
-                let variants = save.nodes[currentNode].items[i].name.split(/\s*,\s*/);
-                for (let j = 0; j < variants.length; j++) {
-                    if (variants[j].toUpperCase() == actionItem) {
-                        let discoveredItem = JSON.parse(JSON.stringify(save.nodes[currentNode].items[i]));
-                        save.items.push(discoveredItem);
-                        save.nodes[currentNode].items.splice(i,1);
-                        displayMessage("Taken.", false);
-                        checked = true;
-                        sentMessage = true;
                         break;
                     }
                 }
-                if (checked) {
-                    break;
-                }
             }
-        }
 
-        if (cItemInspections.includes(action)) {
-            let actionItem;
-            let checked = false;
-            for (let i = 0; i < itemInspectCommands.length; i++) {
-                let regexp = new RegExp(`\s*${itemInspectCommands[i]}\s*`);
-                if (action.match(regexp)) {
-                    actionItem = action.slice(action.match(regexp)[0].length + 1);
-                    break;
+            if (cNodeItems.includes(action)) {
+                let actionItem;
+                for (let i = 0; i < takeCommands.length; i++) {
+                    let regexp = new RegExp(`\s*${takeCommands[i]}\s*`);
+                    if (action.match(regexp)) {
+                        actionItem = action.slice(action.match(regexp)[0].length + 1);
+                        break;
+                    }
                 }
-            }
-            let inspectableItems = JSON.parse(JSON.stringify(save.items.concat(save.nodes[currentNode].items)));
-
-            for (let i = 0; i < inspectableItems.length; i++) {
-                let variants = inspectableItems[i].name.split(/\s*,\s*/);
-                for (let j = 0; j < variants.length; j++) {
-                    if (variants[j].toUpperCase() == actionItem) {
-                        let reqs = {
-                            "reqItemsNot": inspectableItems[i].reqItemsNot,
-                            "reqContainersNot": inspectableItems[i].reqContainersNot,
-                            "reqLocalNot": inspectableItems[i].reqLocalNot,
-                            "reqGlobalNot": inspectableItems[i].reqGlobalNot,
-                            "preActionNot": inspectableItems[i].preActionNot,
-                            "locVisitsNot": inspectableItems[i].locVisitsNot,
-                            "preNodeNot": inspectableItems[i].preNodeNot,
-                            "itemEvosNot": inspectableItems[i].itemEvosNot,
-                            "pastDesNot": inspectableItems[i].pastDesNot,
-                            "reqFailsNot": inspectableItems[i].reqFailsNot,
-                            "reqValidsNot": inspectableItems[i].reqValidsNot,
-                            "reqAll": inspectableItems[i].reqAll,
-                            "reqItems": inspectableItems[i].reqItems,
-                            "reqContainers": inspectableItems[i].reqContainers,
-                            "reqLocal": inspectableItems[i].reqLocal,
-                            "reqGlobal": inspectableItems[i].reqGlobal,
-                            "preAction": inspectableItems[i].preAction,
-                            "locVisits": inspectableItems[i].locVisits,
-                            "preNode": inspectableItems[i].preNode,
-                            "itemEvos": inspectableItems[i].itemEvos,
-                            "pastDes": inspectableItems[i].pastDes,
-                            "reqFails": inspectableItems[i].reqFails,
-                            "reqValids": inspectableItems[i].reqValids
+                for (let i = 0; i < save.nodes[currentNode].items.length; i++) {
+                    let checked = false;
+                    let variants = save.nodes[currentNode].items[i].name.split(/\s*,\s*/);
+                    for (let j = 0; j < variants.length; j++) {
+                        if (variants[j].toUpperCase() == actionItem) {
+                            let discoveredItem = JSON.parse(JSON.stringify(save.nodes[currentNode].items[i]));
+                            save.items.push(discoveredItem);
+                            save.nodes[currentNode].items.splice(i,1);
+                            displayMessage("Taken.", false);
+                            checked = true;
+                            sentMessage = true;
+                            break;
                         }
-                        if (checkRequirements(reqs)) {
-                            if (inspectableItems[i].evos.length > 0) {
-                                let messageToDisplay;
-                                for (let k = 0; k < inspectableItems[i].evos.length; k++) {
-                                    let evo = inspectableItems[i].evos[k];
-                                    reqs = {
-                                        "reqItemsNot": evo.reqItemsNot,
-                                        "reqContainersNot": evo.reqContainersNot,
-                                        "reqLocalNot": evo.reqLocalNot,
-                                        "reqGlobalNot": evo.reqGlobalNot,
-                                        "preActionNot": evo.preActionNot,
-                                        "locVisitsNot": evo.locVisitsNot,
-                                        "preNodeNot": evo.preNodeNot,
-                                        "itemEvosNot": evo.itemEvosNot,
-                                        "pastDesNot": evo.pastDesNot,
-                                        "reqFailsNot": evo.reqFailsNot,
-                                        "reqValidsNot": evo.reqValidsNot,
-                                        "reqAll": evo.reqAll,
-                                        "reqItems": evo.reqItems,
-                                        "reqContainers": evo.reqContainers,
-                                        "reqLocal": evo.reqLocal,
-                                        "reqGlobal": evo.reqGlobal,
-                                        "preAction": evo.preAction,
-                                        "locVisits": evo.locVisits,
-                                        "preNode": evo.preNode,
-                                        "itemEvos": evo.itemEvos,
-                                        "pastDes": evo.pastDes,
-                                        "reqFails": evo.reqFails,
-                                        "reqValids": evo.reqValids
+                    }
+                    if (checked) {
+                        break;
+                    }
+                }
+            }
+
+            if (cItemInspections.includes(action)) {
+                let actionItem;
+                let checked = false;
+                for (let i = 0; i < itemInspectCommands.length; i++) {
+                    let regexp = new RegExp(`\s*${itemInspectCommands[i]}\s*`);
+                    if (action.match(regexp)) {
+                        actionItem = action.slice(action.match(regexp)[0].length + 1);
+                        break;
+                    }
+                }
+                let inspectableItems = JSON.parse(JSON.stringify(save.items.concat(save.nodes[currentNode].items)));
+
+                for (let i = 0; i < inspectableItems.length; i++) {
+                    let variants = inspectableItems[i].name.split(/\s*,\s*/);
+                    for (let j = 0; j < variants.length; j++) {
+                        if (variants[j].toUpperCase() == actionItem) {
+                            let reqs = {
+                                "reqItemsNot": inspectableItems[i].reqItemsNot,
+                                "reqContainersNot": inspectableItems[i].reqContainersNot,
+                                "reqLocalNot": inspectableItems[i].reqLocalNot,
+                                "reqGlobalNot": inspectableItems[i].reqGlobalNot,
+                                "preActionNot": inspectableItems[i].preActionNot,
+                                "locVisitsNot": inspectableItems[i].locVisitsNot,
+                                "preNodeNot": inspectableItems[i].preNodeNot,
+                                "itemEvosNot": inspectableItems[i].itemEvosNot,
+                                "pastDesNot": inspectableItems[i].pastDesNot,
+                                "reqFailsNot": inspectableItems[i].reqFailsNot,
+                                "reqValidsNot": inspectableItems[i].reqValidsNot,
+                                "reqAll": inspectableItems[i].reqAll,
+                                "reqItems": inspectableItems[i].reqItems,
+                                "reqContainers": inspectableItems[i].reqContainers,
+                                "reqLocal": inspectableItems[i].reqLocal,
+                                "reqGlobal": inspectableItems[i].reqGlobal,
+                                "preAction": inspectableItems[i].preAction,
+                                "locVisits": inspectableItems[i].locVisits,
+                                "preNode": inspectableItems[i].preNode,
+                                "itemEvos": inspectableItems[i].itemEvos,
+                                "pastDes": inspectableItems[i].pastDes,
+                                "reqFails": inspectableItems[i].reqFails,
+                                "reqValids": inspectableItems[i].reqValids
+                            }
+                            if (checkRequirements(reqs)) {
+                                if (inspectableItems[i].evos.length > 0) {
+                                    let messageToDisplay;
+                                    for (let k = 0; k < inspectableItems[i].evos.length; k++) {
+                                        let evo = inspectableItems[i].evos[k];
+                                        reqs = {
+                                            "reqItemsNot": evo.reqItemsNot,
+                                            "reqContainersNot": evo.reqContainersNot,
+                                            "reqLocalNot": evo.reqLocalNot,
+                                            "reqGlobalNot": evo.reqGlobalNot,
+                                            "preActionNot": evo.preActionNot,
+                                            "locVisitsNot": evo.locVisitsNot,
+                                            "preNodeNot": evo.preNodeNot,
+                                            "itemEvosNot": evo.itemEvosNot,
+                                            "pastDesNot": evo.pastDesNot,
+                                            "reqFailsNot": evo.reqFailsNot,
+                                            "reqValidsNot": evo.reqValidsNot,
+                                            "reqAll": evo.reqAll,
+                                            "reqItems": evo.reqItems,
+                                            "reqContainers": evo.reqContainers,
+                                            "reqLocal": evo.reqLocal,
+                                            "reqGlobal": evo.reqGlobal,
+                                            "preAction": evo.preAction,
+                                            "locVisits": evo.locVisits,
+                                            "preNode": evo.preNode,
+                                            "itemEvos": evo.itemEvos,
+                                            "pastDes": evo.pastDes,
+                                            "reqFails": evo.reqFails,
+                                            "reqValids": evo.reqValids
+                                        }
+                                        if (checkRequirements(reqs)) {
+                                            messageToDisplay = inspectableItems[i].evos[k].evoDes;
+                                        }
                                     }
-                                    if (checkRequirements(reqs)) {
-                                        messageToDisplay = inspectableItems[i].evos[k].evoDes;
+                                    if (messageToDisplay != undefined) {
+                                        displayMessage(messageToDisplay, false);
+                                        sentMessage = true;
+                                    } else {
+                                        displayMessage(inspectableItems[i].description, false);
+                                        sentMessage = true;
                                     }
-                                }
-                                if (messageToDisplay != undefined) {
-                                    displayMessage(messageToDisplay, false);
-                                    sentMessage = true;
                                 } else {
                                     displayMessage(inspectableItems[i].description, false);
                                     sentMessage = true;
                                 }
-                            } else {
-                                displayMessage(inspectableItems[i].description, false);
-                                sentMessage = true;
                             }
+                            checked = true;
                         }
-                        checked = true;
                     }
-                }
-                if (checked) {
-                    break;
-                }
-            }
-        }
-
-        if (cPlayerItems.includes(action)) {
-            let actionItem;
-            let checked = false;
-            for (let i = 0; i < dropCommands.length; i++) {
-                let regexp = new RegExp(`\s*${dropCommands[i]}\s*`);
-                if (action.match(regexp)) {
-                    actionItem = action.slice(action.match(regexp)[0].length + 1);
-                    break;
-                }
-            }
-            for (let i = 0; i < save.items.length; i++) {
-                let variants = save.items[i].name.split(/\s*,\s*/);
-                for (let j = 0; j < variants.length; j++) {
-                    if (variants[j].toUpperCase() == actionItem) {
-                        let existingItem = JSON.parse(JSON.stringify(save.items[i]));
-                        save.nodes[currentNode].items.push(existingItem);
-                        save.items.splice(i,1);
-                        displayMessage("Dropped.", false);
-                        checked = true;
-                        sentMessage = true;
+                    if (checked) {
                         break;
                     }
                 }
-                if (checked) {
-                    break;
-                }
             }
-        }
 
-        if (!sentMessage) {
-            let message
-            badAction += 1;
-            increaseFails(currentNode);
-            if (game[currentNode].actions.evos.length == 0 && game[currentNode].actions.invalid == "") {
-                message = "This did nothing.";
+            if (cPlayerItems.includes(action)) {
+                let actionItem;
+                let checked = false;
+                for (let i = 0; i < dropCommands.length; i++) {
+                    let regexp = new RegExp(`\s*${dropCommands[i]}\s*`);
+                    if (action.match(regexp)) {
+                        actionItem = action.slice(action.match(regexp)[0].length + 1);
+                        break;
+                    }
+                }
+                for (let i = 0; i < save.items.length; i++) {
+                    let variants = save.items[i].name.split(/\s*,\s*/);
+                    for (let j = 0; j < variants.length; j++) {
+                        if (variants[j].toUpperCase() == actionItem) {
+                            let existingItem = JSON.parse(JSON.stringify(save.items[i]));
+                            save.nodes[currentNode].items.push(existingItem);
+                            save.items.splice(i,1);
+                            displayMessage("Dropped.", false);
+                            checked = true;
+                            sentMessage = true;
+                            break;
+                        }
+                    }
+                    if (checked) {
+                        break;
+                    }
+                }
+            }
+
+            if (!sentMessage) {
+                let message
+                badAction += 1;
+                increaseFails(currentNode);
+                if (game[currentNode].actions.evos.length == 0 && game[currentNode].actions.invalid == "") {
+                    message = "This did nothing.";
+                } else {
+                    message = game[currentNode].actions.invalid;
+                }
+                for (let i = 0; i < game[currentNode].actions.evos.length; i++) {
+                    let evo = game[currentNode].actions.evos[i];
+                    let reqs = {
+                        "reqItemsNot": evo.reqItemsNot,
+                        "reqContainersNot": evo.reqContainersNot,
+                        "reqLocalNot": evo.reqLocalNot,
+                        "reqGlobalNot": evo.reqGlobalNot,
+                        "preActionNot": evo.preActionNot,
+                        "locVisitsNot": evo.locVisitsNot,
+                        "preNodeNot": evo.preNodeNot,
+                        "itemEvosNot": evo.itemEvosNot,
+                        "pastDesNot": evo.pastDesNot,
+                        "reqFailsNot": evo.reqFailsNot,
+                        "reqValidsNot": evo.reqValidsNot,
+                        "reqAll": evo.reqAll,
+                        "reqItems": evo.reqItems,
+                        "reqContainers": evo.reqContainers,
+                        "reqLocal": evo.reqLocal,
+                        "reqGlobal": evo.reqGlobal,
+                        "preAction": evo.preAction,
+                        "locVisits": evo.locVisits,
+                        "preNode": evo.preNode,
+                        "itemEvos": evo.itemEvos,
+                        "pastDes": evo.pastDes,
+                        "reqFails": evo.reqFails,
+                        "reqValids": evo.reqValids
+                    }
+                    if (checkRequirements(reqs)) {
+                        message = game[currentNode].actions.evos[i].evoDes;
+                    }
+                }
+                displayMessage(message, false);
             } else {
-                message = game[currentNode].actions.invalid;
+                badAction = 0;
+                increaseValids(currentNode);
             }
-            for (let i = 0; i < game[currentNode].actions.evos.length; i++) {
-                let evo = game[currentNode].actions.evos[i];
-                let reqs = {
-                    "reqItemsNot": evo.reqItemsNot,
-                    "reqContainersNot": evo.reqContainersNot,
-                    "reqLocalNot": evo.reqLocalNot,
-                    "reqGlobalNot": evo.reqGlobalNot,
-                    "preActionNot": evo.preActionNot,
-                    "locVisitsNot": evo.locVisitsNot,
-                    "preNodeNot": evo.preNodeNot,
-                    "itemEvosNot": evo.itemEvosNot,
-                    "pastDesNot": evo.pastDesNot,
-                    "reqFailsNot": evo.reqFailsNot,
-                    "reqValidsNot": evo.reqValidsNot,
-                    "reqAll": evo.reqAll,
-                    "reqItems": evo.reqItems,
-                    "reqContainers": evo.reqContainers,
-                    "reqLocal": evo.reqLocal,
-                    "reqGlobal": evo.reqGlobal,
-                    "preAction": evo.preAction,
-                    "locVisits": evo.locVisits,
-                    "preNode": evo.preNode,
-                    "itemEvos": evo.itemEvos,
-                    "pastDes": evo.pastDes,
-                    "reqFails": evo.reqFails,
-                    "reqValids": evo.reqValids
-                }
-                if (checkRequirements(reqs)) {
-                    message = game[currentNode].actions.evos[i].evoDes;
-                }
-            }
-            displayMessage(message, false);
-        } else {
-            badAction = 0;
-            increaseValids(currentNode);
         }
+        
         handleHint();
         nodeReload();
     }
