@@ -7,6 +7,7 @@ var gameStyle;
 var gameStatus;
 var gameRating;
 var gameAuthor;
+var IFID;
 var globalActions;
 var initItems;
 var customDeposits;
@@ -54,6 +55,7 @@ async function saveGame() {
   gameFile['gameStatus'] = $("#gameStatus").val();
   gameFile['gameRating'] = $("#gameRating").val();
   gameFile['gameAuthor'] = $("#gameAuthor").val();
+  gameFile['IFID'] = generateIFID();
   gameFile['gameTitle'] = gameTitle;
   gameFile['globalActions'] = globalActions;
   gameFile['initItems'] = initItems;
@@ -76,6 +78,7 @@ async function loadGame() {
     gameStatus = loadData['gameStatus'];
     gameRating = loadData['gameRating'];
     gameAuthor = loadData['gameAuthor'];
+    IFID = loadData['IFID'];
     globalActions = loadData['globalActions'];
     initItems = loadData['initItems'];
     customDeposits = loadData['customDeposits'];
@@ -98,6 +101,15 @@ async function loadGame() {
     $('#gameRating').val(gameRating);
     $('#gameAuthor').val(gameAuthor);
   });
+}
+
+function generateIFID() {
+  if (!IFID) {
+    let uuid = crypto.randomUUID();
+    return `UUID://${uuid}//`;
+  } else {
+    return IFID;
+  }
 }
 
 async function deleteNode() {
@@ -1141,6 +1153,7 @@ export {
   gameTitle,
   gameStyle,
   gameAuthor,
+  IFID,
   globalActions,
   initItems,
   customDeposits,

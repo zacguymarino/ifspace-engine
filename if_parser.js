@@ -1,7 +1,8 @@
 import {game, 
     gameTitle, 
     gameStyle, 
-    gameAuthor, 
+    gameAuthor,
+    IFID,
     globalActions, 
     initItems, 
     customDeposits, 
@@ -137,6 +138,9 @@ function gameInit() {
     }
     $('#outputSim').empty();
     $('#outputSim').append(`<h1>${gameTitle}</h1>`);
+    if (IFID) {
+        $('#outputSim').append(`<h6>IFID: ${IFID}</h6>`);
+    }
     if (gameAuthor.length > 0) {
         $('#outputSim').append(`<h6>Created by: ${gameAuthor}</h6>`);
     }
