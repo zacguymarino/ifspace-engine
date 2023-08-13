@@ -226,4 +226,8 @@ $(function () {
     }
     dom.showHideNotBoxes(baseId, status);
   });
+
+  $(document).on("change", "#gameStyle", function(event) {
+    dom.changeStyle(event.currentTarget.value);
+  })
 });

@@ -1214,6 +1214,91 @@ function addEvo(listId, itemNumber) {
   $(`#${listId}`).append(html);
 }
 
+function changeStyle(style) {
+  switch(style) {
+    case "classic":
+      //Node tools
+      $("#descriptionsBlockBtn").css("visibility", "visible");
+      $("#itemsBlockBtn").css("visibility", "visible");
+      $("#containersBlockBtn").css("visibility", "visible");
+      $("#actionsBlockBtn").css("visibility", "visible");
+      $("#winBlockBtn").css("visibility", "visible");
+      $("#loseBlockBtn").css("visibility", "visible");
+      $("#hintBlockBtn").css("visibility", "visible");
+      //Globals
+      $("#globalActionsOpen").css("visibility", "visible");
+      $("#initItemsOpen").css("visibility", "visible");
+      $("#conDepOpen").css("visibility", "visible");
+      $("#conWitOpen").css("visibility", "visible");
+      $("#takesOpen").css("visibility", "visible");
+      $("#dropsOpen").css("visibility", "visible");
+      $("#ignorablesOpen").css("visibility", "visible");
+      $("#looksOpen").css("visibility", "visible");
+      $("#examinesOpen").css("visibility", "visible");
+      //Visibility
+      $("#visibility").css("visibility", "visible");
+      $("#visibilityLabel").css("visibility", "visible");
+      break;
+    case "modern":
+      //Node tools
+      $("#descriptionsBlockBtn").css("visibility", "visible");
+      $("#itemsBlockBtn").css("visibility", "hidden");
+      $("#containersBlockBtn").css("visibility", "hidden");
+      $("#actionsBlockBtn").css("visibility", "visible");
+      $("#winBlockBtn").css("visibility", "visible");
+      $("#loseBlockBtn").css("visibility", "visible");
+      $("#hintBlockBtn").css("visibility", "hidden");
+      $("#itemsBlock").css("display", "none");
+      $("#containersBlock").css("display", "none");
+      $("#hintBlock").css("display", "none");
+      //Globals
+      $("#globalActionsOpen").css("visibility", "visible");
+      $("#initItemsOpen").css("visibility", "hidden");
+      $("#conDepOpen").css("visibility", "hidden");
+      $("#conWitOpen").css("visibility", "hidden");
+      $("#takesOpen").css("visibility", "hidden");
+      $("#dropsOpen").css("visibility", "hidden");
+      $("#ignorablesOpen").css("visibility", "hidden");
+      $("#looksOpen").css("visibility", "hidden");
+      $("#examinesOpen").css("visibility", "hidden");
+      //Visibility
+      $("#visibility").css("visibility", "hidden");
+      $("#visibilityLabel").css("visibility", "hidden");
+
+      break;
+    case "gamebook":
+      //Node tools
+      $("#descriptionsBlockBtn").css("visibility", "visible");
+      $("#itemsBlockBtn").css("visibility", "hidden");
+      $("#containersBlockBtn").css("visibility", "hidden");
+      $("#actionsBlockBtn").css("visibility", "hidden");
+      $("#winBlockBtn").css("visibility", "visible");
+      $("#loseBlockBtn").css("visibility", "visible");
+      $("#hintBlockBtn").css("visibility", "hidden");
+      $("#itemsBlock").css("display", "none");
+      $("#containersBlock").css("display", "none");
+      $("#actionsBlock").css("display", "none");
+      $("#hintBlock").css("display", "none");
+      //Globals
+      $("#globalActionsOpen").css("visibility", "hidden");
+      $("#initItemsOpen").css("visibility", "hidden");
+      $("#conDepOpen").css("visibility", "hidden");
+      $("#conWitOpen").css("visibility", "hidden");
+      $("#takesOpen").css("visibility", "hidden");
+      $("#dropsOpen").css("visibility", "hidden");
+      $("#ignorablesOpen").css("visibility", "hidden");
+      $("#looksOpen").css("visibility", "hidden");
+      $("#examinesOpen").css("visibility", "hidden");
+      //Visibility
+      $("#visibility").css("visibility", "hidden");
+      $("#visibilityLabel").css("visibility", "hidden");
+
+      break;
+    default:
+      break;
+  }
+}
+
 function getRequirements(baseId) {
   let divStart = `<div class='requirements'>`;
   let reqLabel = `<label class='tooltip'>
@@ -1375,5 +1460,6 @@ export {
   addSimInput,
   addGlobalAction,
   addInitItem,
-  showHideNotBoxes
+  showHideNotBoxes,
+  changeStyle
 };

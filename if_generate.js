@@ -1,4 +1,4 @@
-import { loadDomFromNode, loadDomGlobalActions, loadDomInitItems, loadDomCustomCommands } from "./if_dom.js";
+import { loadDomFromNode, loadDomGlobalActions, loadDomInitItems, loadDomCustomCommands, changeStyle } from "./if_dom.js";
 import { createMapFromGame } from "./if_nodemap.js";
 
 var game = {};
@@ -100,6 +100,9 @@ async function loadGame() {
     $('#gameStatus').val(gameStatus);
     $('#gameRating').val(gameRating);
     $('#gameAuthor').val(gameAuthor);
+
+    //Change dom based on game style
+    changeStyle(gameStyle);
   });
 }
 
