@@ -25,11 +25,32 @@
                 <li>Utilizes: Node Tools Header, Directions, Descriptions, Win, Lose</li>
             </ul>
         </ol>
+        <details>
+            <summary class="boldAccordion">HTML Markup in Textareas</summary>
+            <span>It is never necessary, however if you would like to add bold, underline, italic, or line break
+                functionality to a textarea (description text boxes), you can do so with these simple markup tags:
+                <ul>
+                    <li>Bold: &lt;b&gt;Your bold text here&lt;/b&gt;</li>
+                    <li>Underline: &lt;u&gt;Your underlined text here&lt;/u&gt;</li>
+                    <li>Italic: &lt;i&gt;Your italicized text here&lt;/i&gt;</li>
+                    <li>Line break: &lt;br&gt;</li>
+                    <ul>
+                        <li>The line break is particularly useful for fromatting dialogue.</li>
+                    </ul>
+                </ul>
+                Until Javascript and HTML5 can agree on a universal contentEditable feature across
+                all browsers, this markup is the best that ifspace can do without risking the use of 
+                deprecated features like execCommand.  Beyond this list of tags, any script and html tags 
+                are stripped from the text upon saving the game.
+            </span>
+        </details>
         <h2><u>Layout</u></h2>
         <h3>Node Map</h3>
         <p>- Left hand side of the page, consisting of the grid space</p>
         <h3>Node Tools</h3>
         <p>- Right hand side of the page, consisting of the various tabs and options</p>
+        <h3>Global Setings</h3>
+        <p>- Box below the Node Map, consists of settings which apply to all nodes and/or at the start of a game</p>
         <h3>Game Sim</h3>
         <p>- Expandable lower section of the page (upon clicking 'Test Game'), consisting of the mock game play area</p>
         <h2><u>Functions</u></h2>
@@ -333,12 +354,23 @@
         <ul>
             <li>Leave the hint field empty if this node should have no hints.</li>
         </ul>
-        <h4>Requirements</h4>
+        <h4>Requirements Blocks</h4>
         <p>The requirements section exists for many of the features in the IF-Space Engine.  They are a powerful tool for making logical changes
         across these features.  In general, a particular setting or feature that has requirements attached to it will only become available for
         use during gameplay if those reuirements are satisified, otherwise this feature will be absent from the game until those requirements are
         met.</p>
         <ul>
+            <li>Req All Checkbox</li>
+            <ul>
+                <li>If checked, all of the following requirement settings must be met - otherwise only one or more must be met</li>
+            </ul>
+            <li>Nots Checkbox</li>
+            <ul>
+                <li>If checked, displays a 'not' checkbox for each of the following requirement settings</li>
+                <ul>
+                    <li>If a 'not' checkbox is checked, the corresponding requirement setting must NOT be true in order for the requirement setting to be met</li>
+                </ul>
+            </ul>
             <li>Items Requirement</li>
             <ul>
                 <li>A comma separated list of items needed in the player's inventory</li>
@@ -364,6 +396,19 @@
                 <li>A singular action which is required to have been the most recent successfully called action</li>
                 <li>The first name in the action's list of potential names must be the name entered in the "Previous Action Requirement".</li>
             </ul>
+            <li>Node Visits Requirement</li>
+            <ul>
+                <li>A comma separated list of nodes and the required number visits to each</li>
+                <li>This is in the form of the x,y,z coordinates of the node, followed by the number of visits</li>
+                <ul>
+                    <li>Form: [x,y,z,#]  E.g. [1,1,1,2],[2,1,0,3]</li>
+                </ul>
+            </ul>
+            <li>Previous Node Requirement</li>
+            <ul>
+                <li>The node which is required to have been the previously visited node (where the player came from)</li>
+                <li>In the form of x, y, and z coordinates (e.g. 0,0,0)</li>
+            </ul>
             <li>Item Evos Requirement</li>
             <ul>
                 <li>A comma separate list of brackets which contain a singular required item and a number representing that item's required
@@ -373,6 +418,24 @@
                     <li>This example would require that the player has in their inventory a key with a first stage evolution as well as a
                     gemstone with its second stage evolution</li>
                 </ul>
+            </ul>
+            <li>Past Descriptions Requirement</li>
+            <ul>
+                <li>A comma separated list of node description evolutions whose requirements must have been met at least once</li>
+                <li>In the form of the node coordinates where the description resides followed by the required evolution stage</li>
+                <ul>
+                    <li>E.g. [0,0,0,2],[0,1,0,3]</li>
+                </ul>
+            </ul>
+            <li>Failed Inputs Requirement</li>
+            <ul>
+                <li>The number of required failed inputs to have taken place in the node which the requirement resides</li>
+                <li>If consecutive is checked, the fails must be consecutive - otherwise it is the total</li>
+            </ul>
+            <li>Valid Inputs Requirement</li>
+            <ul>
+                <li>The number of required valid inputs to have taken place in the node which the requirement resides</li>
+                <li>If consecutive is checked, the valids must be consecutive - otherwise it is the total</li>
             </ul>
         </ul>
         <h4>Node Tools Footer</h4>
@@ -408,6 +471,25 @@
                 <li>For saving the current game</li>
             </ul>
         </ul>
+        <h3>Global Settings</h3>
+        <h4>Global Actions</h4>
+        <p>Actions which can be defined for every node simultaneously</p>
+        <h4>Initial Items</h4>
+        <p>Items which begin in the player's inventory at the start of a game</p>
+        <h4>Deposits</h4>
+        <p>Default and custom commands for depositing an item into a container</p>
+        <h4>Withdrawals</h4>
+        <p>Default and custom commands for withdrawaling an item from a container</p>
+        <h4>Takes</h4>
+        <p>Default and custom commands for taking adding an item to the inventory</p>
+        <h4>Drops</h4>
+        <p>Default and custom commands for removing an item from the inventory</p>
+        <h4>Ignorables</h4>
+        <p>Default and custom words which are ignored by the parser (in game and in game creation)</p>
+        <h4>Looks</h4>
+        <p>Default and custom commads for prompting the parser to output the current node's description</p>
+        <h4>Examines</h4>
+        <p>Default and custom commands for examining an item</p>
         <h2><u>Game Sim</u></h2>
         <h4>Test Game Button</h4>
         <ul>
