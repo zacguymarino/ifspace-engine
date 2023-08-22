@@ -1,4 +1,4 @@
-import { saveGame, loadGame, deleteNode, startGameSim } from "./if_generate.js";
+import { saveGame, loadGame, deleteNode, startGameSim, saveGlobalActions, saveInitItems } from "./if_generate.js";
 import * as dom from "./if_dom.js";
 import { nodeMap, resizeCanvas, zoom, draw } from "./if_nodemap.js";
 import { gameInit, parseAction, previousInput } from "./if_parser.js";
@@ -63,10 +63,12 @@ $(function () {
   /////////////////////////////////
   $(document).on("click", "#globalActionsOpen", function () {
     $("#globalActionsDisplay").css("visibility", "visible");
+    dom.handleGlobalCheckboxes("actions");
   })
 
   $(document).on("click", "#initItemsOpen", function () {
     $("#initItemsDisplay").css("visibility", "visible");
+    dom.handleGlobalCheckboxes("items");
   })
 
   $(document).on("click", "#conDepOpen", function () {
@@ -106,7 +108,7 @@ $(function () {
   });
 
   $(document).on("click", ".addInitEvoItems", function (event) {
-    let itemIndex = $(event.currentTarget.parentElement).index();
+    let itemIndex = $(event.currentTarget.parentElement).index() + 1;
     let baseId = $(event.currentTarget.parentElement).attr("id");
     let listId = `${baseId}_EvoList`;
     dom.addInitEvo(listId, itemIndex);
@@ -126,8 +128,15 @@ $(function () {
   });
 
   $(document).on('click', '.popupClose', function(event) {
-    if ($(event.currentTarget.parentElement).is(':visible')){
-        $(event.currentTarget.parentElement).css("visibility", "hidden");
+    let hideCheckboxes = ["initItemsDisplay", "globalActionsDisplay"];
+    let parent = event.currentTarget.parentElement;
+    if ($(parent).is(':visible')){
+      if (hideCheckboxes.includes(parent.id)) {
+        $(parent).find(".notBox").css("visibility", "hidden");
+        saveGlobalActions();
+        saveInitItems();
+      }
+      $(parent).css("visibility", "hidden");
     }
   });
 

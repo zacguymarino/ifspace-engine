@@ -1,5 +1,5 @@
 import { currentNode } from "./if_nodemap.js";
-import { gameStyle, customDeposits, customWithdrawals, customTakes, customDrops, customIgnorables, customLooks, customExamines } from "./if_generate.js";
+import { gameStyle, customDeposits, customWithdrawals, customTakes, customDrops, customIgnorables, customLooks, customExamines, globalActions, initItems } from "./if_generate.js";
 import { containerDeposits, containerWithdrawals, takeCommands, dropCommands, ignorables, lookCommands, itemInspectCommands } from "./if_parser.js";
 
 function loadDefaultCommands() {
@@ -83,6 +83,28 @@ function loadDomInitItems(initItems) {
     for (let j = 0; j < items[i].evos.length; j++) {
       addInitEvo(`${baseId}_EvoList`, i+1);
       let baseEvoId = `initEvoItems_${i + 1}_${j + 1}`;
+
+      if (items[i].evos[j].reqNot == "true") {
+        $(`#${baseEvoId}_reqNot`).prop("checked", true);
+        $(`.${baseEvoId}_notBox`).css("visibility", "visible");
+      } else {
+        $(`#${baseEvoId}_reqNot`).prop("checked", false);
+        $(`.${baseEvoId}_notBox`).css("visibility", "hidden");
+      }
+      (items[i].evos[j].reqAll == "true") ? $(`#${baseEvoId}_reqAll`).prop("checked", true) : $(`#${baseEvoId}_reqAll`).prop("checked", false);
+      (items[i].evos[j].reqItemsNot == "true") ? $(`#${baseEvoId}_itemsNot`).prop("checked", true) : $(`#${baseEvoId}_itemsNot`).prop("checked", false);
+      (items[i].evos[j].reqContainersNot == "true") ? $(`#${baseEvoId}_containersNot`).prop("checked", true) : $(`#${baseEvoId}_containersNot`).prop("checked", false);
+      (items[i].evos[j].reqLocalNot == "true") ? $(`#${baseEvoId}_localNot`).prop("checked", true) : $(`#${baseEvoId}_localNot`).prop("checked", false);
+      (items[i].evos[j].reqGlobalNot == "true") ? $(`#${baseEvoId}_globalNot`).prop("checked", true) : $(`#${baseEvoId}_globalNot`).prop("checked", false);
+      (items[i].evos[j].preActionNot == "true") ? $(`#${baseEvoId}_preActionNot`).prop("checked", true) : $(`#${baseEvoId}_preActionNot`).prop("checked", false);
+      (items[i].evos[j].locVisitsNot == "true") ? $(`#${baseEvoId}_visitsNot`).prop("checked", true) : $(`#${baseEvoId}_visitsNot`).prop("checked", false);
+      (items[i].evos[j].preNodeNot == "true") ? $(`#${baseEvoId}_preNodeNot`).prop("checked", true) : $(`#${baseEvoId}_preNodeNot`).prop("checked", false);
+      (items[i].evos[j].itemEvosNot == "true") ? $(`#${baseEvoId}_evosNot`).prop("checked", true) : $(`#${baseEvoId}_evosNot`).prop("checked", false);
+      (items[i].evos[j].pastDesNot == "true") ? $(`#${baseEvoId}_pastDesNot`).prop("checked", true) : $(`#${baseEvoId}_pastDesNot`).prop("checked", false);
+      (items[i].evos[j].reqChanceNot == "true") ? $(`#${baseEvoId}_reqChanceNot`).prop("checked", true) : $(`#${baseEvoId}_reqChanceNot`).prop("checked", false);
+      (items[i].evos[j].reqFailsNot == "true") ? $(`#${baseEvoId}_reqFailsNot`).prop("checked", true) : $(`#${baseEvoId}_reqFailsNot`).prop("checked", false);
+      (items[i].evos[j].reqValidsNot == "true") ? $(`#${baseEvoId}_reqValidsNot`).prop("checked", true) : $(`#${baseEvoId}_reqValidsNot`).prop("checked", false);
+
       $(`#${baseEvoId}_Items`).val(items[i].evos[j].reqItems);
       $(`#${baseEvoId}_Containers`).val(items[i].evos[j].reqContainers);
       $(`#${baseEvoId}_Local`).val(items[i].evos[j].reqLocal);
@@ -92,6 +114,7 @@ function loadDomInitItems(initItems) {
       $(`#${baseEvoId}_preNode`).val(items[i].evos[j].preNode);
       $(`#${baseEvoId}_Evos`).val(items[i].evos[j].itemEvos);
       $(`#${baseEvoId}_pastDes`).val(items[i].evos[j].pastDes);
+      $(`#${baseEvoId}_reqChance`).val(items[i].evos[j].reqChance);
       if (items[i].evos[j].hasOwnProperty("reqFails")) {
         if (items[i].evos[j].reqFails["consecutive"] == "true") {
           $(`#${baseEvoId}_reqFailsCheck`).prop("checked", true);
@@ -121,6 +144,28 @@ function loadDomGlobalActions(globalActions) {
   for (let i = 0; i < actions.length; i++) {
     addGlobalAction();
     let baseId = `global_action_${i + 1}`;
+
+    if (actions[i].reqNot == "true") {
+      $(`#${baseId}_reqNot`).prop("checked", true);
+      $(`.${baseId}_notBox`).css("visibility", "visible");
+    } else {
+      $(`#${baseId}_reqNot`).prop("checked", false);
+      $(`.${baseId}_notBox`).css("visibility", "hidden");
+    }
+    (actions[i].reqAll == "true") ? $(`#${baseId}_reqAll`).prop("checked", true) : $(`#${baseId}_reqAll`).prop("checked", false);
+    (actions[i].reqItemsNot == "true") ? $(`#${baseId}_itemsNot`).prop("checked", true) : $(`#${baseId}_itemsNot`).prop("checked", false);
+    (actions[i].reqContainersNot == "true") ? $(`#${baseId}_containersNot`).prop("checked", true) : $(`#${baseId}_containersNot`).prop("checked", false);
+    (actions[i].reqLocalNot == "true") ? $(`#${baseId}_localNot`).prop("checked", true) : $(`#${baseId}_localNot`).prop("checked", false);
+    (actions[i].reqGlobalNot == "true") ? $(`#${baseId}_globalNot`).prop("checked", true) : $(`#${baseId}_globalNot`).prop("checked", false);
+    (actions[i].preActionNot == "true") ? $(`#${baseId}_preActionNot`).prop("checked", true) : $(`#${baseId}_preActionNot`).prop("checked", false);
+    (actions[i].locVisitsNot == "true") ? $(`#${baseId}_visitsNot`).prop("checked", true) : $(`#${baseId}_visitsNot`).prop("checked", false);
+    (actions[i].preNodeNot == "true") ? $(`#${baseId}_preNodeNot`).prop("checked", true) : $(`#${baseId}_preNodeNot`).prop("checked", false);
+    (actions[i].itemEvosNot == "true") ? $(`#${baseId}_evosNot`).prop("checked", true) : $(`#${baseId}_evosNot`).prop("checked", false);
+    (actions[i].pastDesNot == "true") ? $(`#${baseId}_pastDesNot`).prop("checked", true) : $(`#${baseId}_pastDesNot`).prop("checked", false);
+    (actions[i].reqChanceNot == "true") ? $(`#${baseId}_reqChanceNot`).prop("checked", true) : $(`#${baseId}_reqChanceNot`).prop("checked", false);
+    (actions[i].reqFailsNot == "true") ? $(`#${baseId}_reqFailsNot`).prop("checked", true) : $(`#${baseId}_reqFailsNot`).prop("checked", false);
+    (actions[i].reqValidsNot == "true") ? $(`#${baseId}_reqValidsNot`).prop("checked", true) : $(`#${baseId}_reqValidsNot`).prop("checked", false);
+
     $(`#${baseId}_Actions`).val(actions[i].actions);
     $(`#${baseId}_Max`).val(actions[i].max);
     $(`#${baseId}_Costs`).val(actions[i].costs);
@@ -138,6 +183,7 @@ function loadDomGlobalActions(globalActions) {
     $(`#${baseId}_preNode`).val(actions[i].preNode);
     $(`#${baseId}_Evos`).val(actions[i].itemEvos);
     $(`#${baseId}_pastDes`).val(actions[i].pastDes);
+    $(`#${baseId}_reqChance`).val(actions[i].reqChance);
     if (actions[i].hasOwnProperty("reqFails")) {
       if (actions[i].reqFails["consecutive"] == "true") {
         $(`#${baseId}_reqFailsCheck`).prop("checked", true);
@@ -224,6 +270,7 @@ function loadDomFromNode(node) {
     (nodeDirections[i].preNodeNot == "true") ? $(`#${checkbox}_preNodeNot`).prop("checked", true) : $(`#${checkbox}_preNodeNot`).prop("checked", false);
     (nodeDirections[i].itemEvosNot == "true") ? $(`#${checkbox}_evosNot`).prop("checked", true) : $(`#${checkbox}_evosNot`).prop("checked", false);
     (nodeDirections[i].pastDesNot == "true") ? $(`#${checkbox}_pastDesNot`).prop("checked", true) : $(`#${checkbox}_pastDesNot`).prop("checked", false);
+    (nodeDirections[i].reqChanceNot == "true") ? $(`#${checkbox}_reqChanceNot`).prop("checked", true) : $(`#${checkbox}_reqChanceNot`).prop("checked", false);
     (nodeDirections[i].reqFailsNot == "true") ? $(`#${checkbox}_reqFailsNot`).prop("checked", true) : $(`#${checkbox}_reqFailsNot`).prop("checked", false);
     (nodeDirections[i].reqValidsNot == "true") ? $(`#${checkbox}_reqValidsNot`).prop("checked", true) : $(`#${checkbox}_reqValidsNot`).prop("checked", false);
 
@@ -236,6 +283,7 @@ function loadDomFromNode(node) {
     $(`#${checkbox}_preNode`).val(nodeDirections[i].preNode);
     $(`#${checkbox}_Evos`).val(nodeDirections[i].itemEvos);
     $(`#${checkbox}_pastDes`).val(nodeDirections[i].pastDes);
+    $(`#${checkbox}_reqChance`).val(nodeDirections[i].reqChance);
     if (nodeDirections[i].hasOwnProperty("reqFails")){
       (nodeDirections[i].reqFails["consecutive"] == "true") ? $(`#${checkbox}_reqFailsCheck`).prop("checked", true) : $(`#${checkbox}_reqFailsCheck`).prop("checked", false);
       $(`#${checkbox}_reqFails`).val(nodeDirections[i].reqFails["reqFails"]);
@@ -270,6 +318,7 @@ function loadDomFromNode(node) {
       (descriptions.evos[i].preNodeNot == "true") ? $(`#${baseId}_preNodeNot`).prop("checked", true) : $(`#${baseId}_preNodeNot`).prop("checked", false);
       (descriptions.evos[i].itemEvosNot == "true") ? $(`#${baseId}_evosNot`).prop("checked", true) : $(`#${baseId}_evosNot`).prop("checked", false);
       (descriptions.evos[i].pastDesNot == "true") ? $(`#${baseId}_pastDesNot`).prop("checked", true) : $(`#${baseId}_pastDesNot`).prop("checked", false);
+      (descriptions.evos[i].reqChanceNot == "true") ? $(`#${baseId}_reqChanceNot`).prop("checked", true) : $(`#${baseId}_reqChanceNot`).prop("checked", false);
       (descriptions.evos[i].reqFailsNot == "true") ? $(`#${baseId}_reqFailsNot`).prop("checked", true) : $(`#${baseId}_reqFailsNot`).prop("checked", false);
       (descriptions.evos[i].reqValidsNot == "true") ? $(`#${baseId}_reqValidsNot`).prop("checked", true) : $(`#${baseId}_reqValidsNot`).prop("checked", false);
   
@@ -282,6 +331,7 @@ function loadDomFromNode(node) {
       $(`#${baseId}_preNode`).val(descriptions.evos[i].preNode);
       $(`#${baseId}_Evos`).val(descriptions.evos[i].itemEvos);
       $(`#${baseId}_pastDes`).val(descriptions.evos[i].pastDes);
+      $(`#${baseId}_reqChance`).val(descriptions.evos[i].reqChance);
       if (descriptions.evos[i].hasOwnProperty("reqFails")) {
         (descriptions.evos[i].reqFails["consecutive"] == "true") ? $(`#${baseId}_reqFailsCheck`).prop("checked", true) : $(`#${baseId}_reqFailsCheck`).prop("checked", false);
         $(`#${baseId}_reqFails`).val(descriptions.evos[i].reqFails["reqFails"]);
@@ -320,6 +370,7 @@ function loadDomFromNode(node) {
     (items[i].preNodeNot == "true") ? $(`#${baseId}_preNodeNot`).prop("checked", true) : $(`#${baseId}_preNodeNot`).prop("checked", false);
     (items[i].itemEvosNot == "true") ? $(`#${baseId}_evosNot`).prop("checked", true) : $(`#${baseId}_evosNot`).prop("checked", false);
     (items[i].pastDesNot == "true") ? $(`#${baseId}_pastDesNot`).prop("checked", true) : $(`#${baseId}_pastDesNot`).prop("checked", false);
+    (items[i].reqChanceNot == "true") ? $(`#${baseId}_reqChanceNot`).prop("checked", true) : $(`#${baseId}_reqChanceNot`).prop("checked", false);
     (items[i].reqFailsNot == "true") ? $(`#${baseId}_reqFailsNot`).prop("checked", true) : $(`#${baseId}_reqFailsNot`).prop("checked", false);
     (items[i].reqValidsNot == "true") ? $(`#${baseId}_reqValidsNot`).prop("checked", true) : $(`#${baseId}_reqValidsNot`).prop("checked", false);
 
@@ -332,6 +383,7 @@ function loadDomFromNode(node) {
     $(`#${baseId}_preNode`).val(items[i].preNode);
     $(`#${baseId}_EvoList`).val(items[i].itemEvos);
     $(`#${baseId}_pastDes`).val(items[i].pastDes);
+    $(`#${baseId}_reqChance`).val(items[i].reqChance);
     if (items[i].hasOwnProperty("reqFails")) {
       (items[i].reqFails["consecutive"] == "true") ? $(`#${baseId}_reqFailsCheck`).prop("checked", true) : $(`#${baseId}_reqFailsCheck`).prop("checked", false);
       $(`#${baseId}_reqFails`).val(items[i].reqFails["reqFails"]);
@@ -363,6 +415,7 @@ function loadDomFromNode(node) {
       (items[i].evos[j].preNodeNot == "true") ? $(`#${baseEvoId}_preNodeNot`).prop("checked", true) : $(`#${baseEvoId}_preNodeNot`).prop("checked", false);
       (items[i].evos[j].itemEvosNot == "true") ? $(`#${baseEvoId}_evosNot`).prop("checked", true) : $(`#${baseEvoId}_evosNot`).prop("checked", false);
       (items[i].evos[j].pastDesNot == "true") ? $(`#${baseEvoId}_pastDesNot`).prop("checked", true) : $(`#${baseEvoId}_pastDesNot`).prop("checked", false);
+      (items[i].evos[j].reqChanceNot == "true") ? $(`#${baseEvoId}_reqChanceNot`).prop("checked", true) : $(`#${baseEvoId}_reqChanceNot`).prop("checked", false);
       (items[i].evos[j].reqFailsNot == "true") ? $(`#${baseEvoId}_reqFailsNot`).prop("checked", true) : $(`#${baseEvoId}_reqFailsNot`).prop("checked", false);
       (items[i].evos[j].reqValidsNot == "true") ? $(`#${baseEvoId}_reqValidsNot`).prop("checked", true) : $(`#${baseEvoId}_reqValidsNot`).prop("checked", false);
   
@@ -375,6 +428,7 @@ function loadDomFromNode(node) {
       $(`#${baseEvoId}_preNode`).val(items[i].evos[j].preNode);
       $(`#${baseEvoId}_Evos`).val(items[i].evos[j].itemEvos);
       $(`#${baseEvoId}_pastDes`).val(items[i].evos[j].pastDes);
+      $(`#${baseEvoId}_reqChance`).val(items[i].evos[j].reqChance);
       if (items[i].evos[j].hasOwnProperty("reqFails")) {
         (items[i].evos[j].reqFails["consecutive"] == "true") ? $(`#${baseEvoId}_reqFailsCheck`).prop("checked", true) : $(`#${baseEvoId}_reqFailsCheck`).prop("checked", false);
         $(`#${baseEvoId}_reqFails`).val(items[i].evos[j].reqFails["reqFails"]);
@@ -415,6 +469,7 @@ function loadDomFromNode(node) {
     (containers[i].preNodeNot == "true") ? $(`#${baseId}_preNodeNot`).prop("checked", true) : $(`#${baseId}_preNodeNot`).prop("checked", false);
     (containers[i].itemEvosNot == "true") ? $(`#${baseId}_evosNot`).prop("checked", true) : $(`#${baseId}_evosNot`).prop("checked", false);
     (containers[i].pastDesNot == "true") ? $(`#${baseId}_pastDesNot`).prop("checked", true) : $(`#${baseId}_pastDesNot`).prop("checked", false);
+    (containers[i].reqChanceNot == "true") ? $(`#${baseId}_reqChanceNot`).prop("checked", true) : $(`#${baseId}_reqChanceNot`).prop("checked", false);
     (containers[i].reqFailsNot == "true") ? $(`#${baseId}_reqFailsNot`).prop("checked", true) : $(`#${baseId}_reqFailsNot`).prop("checked", false);
     (containers[i].reqValidsNot == "true") ? $(`#${baseId}_reqValidsNot`).prop("checked", true) : $(`#${baseId}_reqValidsNot`).prop("checked", false);
 
@@ -427,6 +482,7 @@ function loadDomFromNode(node) {
     $(`#${baseId}_preNode`).val(containers[i].preNode);
     $(`#${baseId}_Evos`).val(containers[i].itemEvos);
     $(`#${baseId}_pastDes`).val(containers[i].pastDes);
+    $(`#${baseId}_reqChance`).val(containers[i].reqChance);
     if (containers[i].hasOwnProperty("reqFails")) {
       (containers[i].reqFails["consecutive"] == "true") ? $(`#${baseId}_reqFailsCheck`).prop("checked", true) : $(`#${baseId}_reqFailsCheck`).prop("checked", false);
       $(`#${baseId}_reqFails`).val(containers[i].reqFails["reqFails"]);
@@ -462,6 +518,7 @@ function loadDomFromNode(node) {
       (actions.evos[i].preNodeNot == "true") ? $(`#${baseId}_preNodeNot`).prop("checked", true) : $(`#${baseId}_preNodeNot`).prop("checked", false);
       (actions.evos[i].itemEvosNot == "true") ? $(`#${baseId}_evosNot`).prop("checked", true) : $(`#${baseId}_evosNot`).prop("checked", false);
       (actions.evos[i].pastDesNot == "true") ? $(`#${baseId}_pastDesNot`).prop("checked", true) : $(`#${baseId}_pastDesNot`).prop("checked", false);
+      (actions.evos[i].reqChanceNot == "true") ? $(`#${baseId}_reqChanceNot`).prop("checked", true) : $(`#${baseId}_reqChanceNot`).prop("checked", false);
       (actions.evos[i].reqFailsNot == "true") ? $(`#${baseId}_reqFailsNot`).prop("checked", true) : $(`#${baseId}_reqFailsNot`).prop("checked", false);
       (actions.evos[i].reqValidsNot == "true") ? $(`#${baseId}_reqValidsNot`).prop("checked", true) : $(`#${baseId}_reqValidsNot`).prop("checked", false);
   
@@ -474,6 +531,7 @@ function loadDomFromNode(node) {
       $(`#${baseId}_preNode`).val(actions.evos[i].preNode);
       $(`#${baseId}_Evos`).val(actions.evos[i].itemEvos);
       $(`#${baseId}_pastDes`).val(actions.evos[i].pastDes);
+      $(`#${baseId}_reqChance`).val(actions.evos[i].reqChance);
       if (actions.evos[i].hasOwnProperty("reqFails")) {
         (actions.evos[i].reqFails["consecutive"] == "true") ? $(`#${baseId}_reqFailsCheck`).prop("checked", true) : $(`#${baseId}_reqFailsCheck`).prop("checked", false);
         $(`#${baseId}_reqFails`).val(actions.evos[i].reqFails["reqFails"]);
@@ -517,6 +575,7 @@ function loadDomFromNode(node) {
       (actions.actions[i].preNodeNot == "true") ? $(`#${baseId}_preNodeNot`).prop("checked", true) : $(`#${baseId}_preNodeNot`).prop("checked", false);
       (actions.actions[i].itemEvosNot == "true") ? $(`#${baseId}_evosNot`).prop("checked", true) : $(`#${baseId}_evosNot`).prop("checked", false);
       (actions.actions[i].pastDesNot == "true") ? $(`#${baseId}_pastDesNot`).prop("checked", true) : $(`#${baseId}_pastDesNot`).prop("checked", false);
+      (actions.actions[i].reqChanceNot == "true") ? $(`#${baseId}_reqChanceNot`).prop("checked", true) : $(`#${baseId}_reqChanceNot`).prop("checked", false);
       (actions.actions[i].reqFailsNot == "true") ? $(`#${baseId}_reqFailsNot`).prop("checked", true) : $(`#${baseId}_reqFailsNot`).prop("checked", false);
       (actions.actions[i].reqValidsNot == "true") ? $(`#${baseId}_reqValidsNot`).prop("checked", true) : $(`#${baseId}_reqValidsNot`).prop("checked", false);
   
@@ -529,6 +588,7 @@ function loadDomFromNode(node) {
       $(`#${baseId}_preNode`).val(actions.actions[i].preNode);
       $(`#${baseId}_Evos`).val(actions.actions[i].itemEvos);
       $(`#${baseId}_pastDes`).val(actions.actions[i].pastDes);
+      $(`#${baseId}_reqChance`).val(actions.actions[i].reqChance);
       if (actions.actions[i].hasOwnProperty("reqFails")) {
         (actions.actions[i].reqFails["consecutive"] == "true") ? $(`#${baseId}_reqFailsCheck`).prop("checked", true) : $(`#${baseId}_reqFailsCheck`).prop("checked", false);
         $(`#${baseId}_reqFails`).val(actions.actions[i].reqFails["reqFails"]);
@@ -560,6 +620,7 @@ function loadDomFromNode(node) {
   (win.preNodeNot == "true") ? $(`#win_preNodeNot`).prop("checked", true) : $(`#win_preNodeNot`).prop("checked", false);
   (win.itemEvosNot == "true") ? $(`#win_evosNot`).prop("checked", true) : $(`#win_evosNot`).prop("checked", false);
   (win.pastDesNot == "true") ? $(`#win_pastDesNot`).prop("checked", true) : $(`#win_pastDesNot`).prop("checked", false);
+  (win.reqChanceNot == "true") ? $(`#win_reqChanceNot`).prop("checked", true) : $(`#win_reqChanceNot`).prop("checked", false);
   (win.reqFailsNot == "true") ? $(`#win_reqFailsNot`).prop("checked", true) : $(`#win_reqFailsNot`).prop("checked", false);
   (win.reqValidsNot == "true") ? $(`#win_reqValidsNot`).prop("checked", true) : $(`#win_reqValidsNot`).prop("checked", false);
 
@@ -572,6 +633,7 @@ function loadDomFromNode(node) {
   $("#win_preNode").val(win.preNode);
   $("#win_Evos").val(win.itemEvos);
   $("#win_pastDes").val(win.pastDes);
+  $("#win_reqChance").val(win.reqChance);
   if (win.hasOwnProperty("reqFails")) {
     (win.reqFails["consecutive"] == "true") ? $(`#win_reqFailsCheck`).prop("checked", true) : $(`#win_reqFailsCheck`).prop("checked", false);
     $(`#win_reqFails`).val(win.reqFails["reqFails"]);
@@ -602,6 +664,7 @@ function loadDomFromNode(node) {
   (lose.preNodeNot == "true") ? $(`#lose_preNodeNot`).prop("checked", true) : $(`#lose_preNodeNot`).prop("checked", false);
   (lose.itemEvosNot == "true") ? $(`#lose_evosNot`).prop("checked", true) : $(`#lose_evosNot`).prop("checked", false);
   (lose.pastDesNot == "true") ? $(`#lose_pastDesNot`).prop("checked", true) : $(`#lose_pastDesNot`).prop("checked", false);
+  (lose.reqChanceNot == "true") ? $(`#lose_reqChanceNot`).prop("checked", true) : $(`#lose_reqChanceNot`).prop("checked", false);
   (lose.reqFailsNot == "true") ? $(`#lose_reqFailsNot`).prop("checked", true) : $(`#lose_reqFailsNot`).prop("checked", false);
   (lose.reqValidsNot == "true") ? $(`#lose_reqValidsNot`).prop("checked", true) : $(`#lose_reqValidsNot`).prop("checked", false);
 
@@ -615,6 +678,7 @@ function loadDomFromNode(node) {
   $("#lose_preNode").val(lose.preNode);
   $("#lose_Evos").val(lose.itemEvos);
   $("#lose_pastDes").val(lose.pastDes);
+  $("#lose_reqChance").val(lose.reqChance);
   if (lose.hasOwnProperty("reqFails")) {
     (lose.reqFails["consecutive"] == "true") ? $(`#lose_reqFailsCheck`).prop("checked", true) : $(`#lose_reqFailsCheck`).prop("checked", false);
     $(`#lose_reqFails`).val(lose.reqFails["reqFails"]);
@@ -1134,7 +1198,7 @@ function addInitEvo(listId, itemNumber) {
   let length = $(`#${listId}`).children().length;
   let evoId;
   if (length >= 1) {
-    let lastId = +$(`#${listId}`).children().last().attr("id").split("_")[1] - (itemNumber-1);
+    let lastId = +$(`#${listId}`).children().last().attr("id").split("_")[2];
     evoId = `initEvoItems_${itemNumber}_${lastId + 1}`;
   } else {
     evoId = `initEvoItems_${itemNumber}_1`;
@@ -1299,6 +1363,19 @@ function changeStyle(style) {
   }
 }
 
+function handleGlobalCheckboxes(popup) {
+  switch(popup) {
+    case "actions":
+      loadDomGlobalActions(globalActions);
+      break;
+    case "items":
+      loadDomInitItems(initItems);
+      break;
+    default:
+      break;
+  }
+}
+
 function getRequirements(baseId) {
   let divStart = `<div class='requirements'>`;
   let reqLabel = `<label class='tooltip'>
@@ -1328,7 +1405,7 @@ function getRequirements(baseId) {
                     </label>
                     <div class="reqLine">
                     <input id='${baseId}_Items' type='text'>
-                    <input class='${baseId}_notBox' style="visibility: hidden;" type='checkbox' id='${baseId}_itemsNot'/>
+                    <input class='${baseId}_notBox notBox' style="visibility: hidden;" type='checkbox' id='${baseId}_itemsNot'/>
                     </div>`;
   let reqContainers = `<label class='tooltip'>
                         Containers
@@ -1336,7 +1413,7 @@ function getRequirements(baseId) {
                         </label>
                         <div class="reqLine">
                         <input id='${baseId}_Containers' type='text'>
-                        <input class='${baseId}_notBox' style="visibility: hidden;" type='checkbox' id='${baseId}_containersNot'/>
+                        <input class='${baseId}_notBox notBox' style="visibility: hidden;" type='checkbox' id='${baseId}_containersNot'/>
                         </div>`;
   let reqLocal = `<label class='tooltip'>
                     Local Actions
@@ -1344,7 +1421,7 @@ function getRequirements(baseId) {
                     </label>
                     <div class="reqLine">
                     <input id='${baseId}_Local' type='text'>
-                    <input class='${baseId}_notBox' style="visibility: hidden;" type='checkbox' id='${baseId}_localNot'/>
+                    <input class='${baseId}_notBox notBox' style="visibility: hidden;" type='checkbox' id='${baseId}_localNot'/>
                     </div>`;
   let reqGlobal = `<label class='tooltip'>
                     Global Actions
@@ -1352,7 +1429,7 @@ function getRequirements(baseId) {
                     </label>
                     <div class="reqLine">
                     <input id='${baseId}_Global' type='text'>
-                    <input class='${baseId}_notBox' style="visibility: hidden;" type='checkbox' id='${baseId}_globalNot'/>
+                    <input class='${baseId}_notBox notBox' style="visibility: hidden;" type='checkbox' id='${baseId}_globalNot'/>
                     </div>`;
   let preAction = `<label class='tooltip'>
                     Previous Action
@@ -1360,7 +1437,7 @@ function getRequirements(baseId) {
                     </label>
                     <div class="reqLine">
                     <input id='${baseId}_preAction' type='text'>
-                    <input class='${baseId}_notBox' style="visibility: hidden;" type='checkbox' id='${baseId}_preActionNot'/>
+                    <input class='${baseId}_notBox notBox' style="visibility: hidden;" type='checkbox' id='${baseId}_preActionNot'/>
                     </div>`;
   let reqVisits = `<label class='tooltip'>
                     Node Visits
@@ -1368,7 +1445,7 @@ function getRequirements(baseId) {
                     </label>
                     <div class="reqLine">
                     <input id='${baseId}_Visits' type='text'>
-                    <input class='${baseId}_notBox' style="visibility: hidden;" type='checkbox' id='${baseId}_visitsNot'/>
+                    <input class='${baseId}_notBox notBox' style="visibility: hidden;" type='checkbox' id='${baseId}_visitsNot'/>
                     </div>`;
   let preNode = `<label class='tooltip'>
                     Previous Node
@@ -1376,7 +1453,7 @@ function getRequirements(baseId) {
                     </label>
                     <div class="reqLine">
                     <input id='${baseId}_preNode' type='text'>
-                    <input class='${baseId}_notBox' style="visibility: hidden;" type='checkbox' id='${baseId}_preNodeNot'/>
+                    <input class='${baseId}_notBox notBox' style="visibility: hidden;" type='checkbox' id='${baseId}_preNodeNot'/>
                     </div>`;
   let reqEvos = `<label class='tooltip'>
                     Item Evos
@@ -1384,7 +1461,7 @@ function getRequirements(baseId) {
                     </label>
                     <div class="reqLine">
                     <input id ='${baseId}_Evos' type='text'>
-                    <input class='${baseId}_notBox' style="visibility: hidden;" type='checkbox' id='${baseId}_evosNot'/>
+                    <input class='${baseId}_notBox notBox' style="visibility: hidden;" type='checkbox' id='${baseId}_evosNot'/>
                     </div>`;
   let reqPastDes = `<label class='tooltip'>
                       Past Descriptions
@@ -1392,7 +1469,7 @@ function getRequirements(baseId) {
                       </label>
                       <div class="reqLine">
                       <input id ='${baseId}_pastDes' type='text'>
-                      <input class='${baseId}_notBox' style="visibility: hidden;" type='checkbox' id='${baseId}_pastDesNot'/>
+                      <input class='${baseId}_notBox notBox' style="visibility: hidden;" type='checkbox' id='${baseId}_pastDesNot'/>
                       </div>`;
   let reqFails = `<label class='tooltip'>
                       Failed Inputs
@@ -1400,7 +1477,7 @@ function getRequirements(baseId) {
                       </label>
                       <div class="reqLine">
                       <input id ='${baseId}_reqFails' type='text'>
-                      <input class='${baseId}_notBox' style="visibility: hidden;" type='checkbox' id='${baseId}_reqFailsNot'/>
+                      <input class='${baseId}_notBox notBox' style="visibility: hidden;" type='checkbox' id='${baseId}_reqFailsNot'/>
                       </div>
                       <div style="display: flex;">&nbsp;&nbsp;&nbsp;&nbsp;Consecutive:&nbsp;&nbsp;&nbsp;<input type='checkbox' id='${baseId}_reqFailsCheck'/></div>`;
   let reqValids = `<label class='tooltip'>
@@ -1409,9 +1486,17 @@ function getRequirements(baseId) {
                       </label>
                       <div class="reqLine">
                       <input id ='${baseId}_reqValids' type='text'>
-                      <input class='${baseId}_notBox' style="visibility: hidden;" type='checkbox' id='${baseId}_reqValidsNot'/>
+                      <input class='${baseId}_notBox notBox' style="visibility: hidden;" type='checkbox' id='${baseId}_reqValidsNot'/>
                       </div>
                       <div style="display: flex;">&nbsp;&nbsp;&nbsp;&nbsp;Consecutive:&nbsp;&nbsp;&nbsp;<input type='checkbox' id='${baseId}_reqValidsCheck'/></div>`;
+  let reqChance = `<label class='tooltip'>
+                  Percent Chance
+                  <span class='tooltiptext'>The percent chance that this requirement is met [integer from 1 to 100]</span>
+                  </label>
+                  <div class="reqLine">
+                  <input id ='${baseId}_reqChance' type='text'>
+                  <input class='${baseId}_notBox notBox' style="visibility: hidden;" type='checkbox' id='${baseId}_reqChanceNot'/>
+                  </div>`;
   let divEnd = `</div>`;
 
   let html =
@@ -1429,6 +1514,7 @@ function getRequirements(baseId) {
     reqPastDes +
     reqFails +
     reqValids +
+    reqChance +
     divEnd;
   return html;
 }
@@ -1461,5 +1547,6 @@ export {
   addGlobalAction,
   addInitItem,
   showHideNotBoxes,
-  changeStyle
+  changeStyle,
+  handleGlobalCheckboxes
 };

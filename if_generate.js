@@ -274,6 +274,7 @@ function saveInitItems() {
       let preNodeNot = $(`#${baseId}_preNodeNot`).is(":checked").toString();
       let itemEvosNot = $(`#${baseId}_evosNot`).is(":checked").toString();
       let pastDesNot = $(`#${baseId}_pastDesNot`).is(":checked").toString();
+      let reqChanceNot = $(`#${baseId}_reqChanceNot`).is(":checked").toString();
       let reqFailsNot = $(`#${baseId}_reqFailsNot`).is(":checked").toString();
       let reqValidsNot = $(`#${baseId}_reqValidsNot`).is(":checked").toString();
       let reqItems = $(`#${baseId}_Items`).val();
@@ -285,6 +286,7 @@ function saveInitItems() {
       let preNode = $(`#${baseId}_preNode`).val();
       let itemEvos = $(`#${baseId}_Evos`).val();
       let pastDes = $(`#${baseId}_pastDes`).val();
+      let reqChance = $(`#${baseId}_reqChance`).val();
       let reqFails;
       if ($(`#${baseId}_reqFailsCheck`).is(":checked")) {
         reqFails = {"reqFails": $(`#${baseId}_reqFails`).val(), "consecutive": "true"};
@@ -319,6 +321,8 @@ function saveInitItems() {
         itemEvosNot: itemEvosNot,
         pastDes: pastDes,
         pastDesNot: pastDesNot,
+        reqChance: reqChance,
+        reqChanceNot: reqChanceNot,
         reqFails: reqFails,
         reqFailsNot: reqFailsNot,
         reqValids: reqValids,
@@ -357,6 +361,7 @@ function saveGlobalActions() {
     let preNodeNot = $(`#${baseId}_preNodeNot`).is(":checked").toString();
     let itemEvosNot = $(`#${baseId}_evosNot`).is(":checked").toString();
     let pastDesNot = $(`#${baseId}_pastDesNot`).is(":checked").toString();
+    let reqChanceNot = $(`#${baseId}_reqChanceNot`).is(":checked").toString();
     let reqFailsNot = $(`#${baseId}_reqFailsNot`).is(":checked").toString();
     let reqValidsNot = $(`#${baseId}_reqValidsNot`).is(":checked").toString();
     let reqItems = $(`#${baseId}_Items`).val();
@@ -368,6 +373,7 @@ function saveGlobalActions() {
     let preNode = $(`#${baseId}_preNode`).val();
     let itemEvos = $(`#${baseId}_Evos`).val();
     let pastDes = $(`#${baseId}_pastDes`).val();
+    let reqChance = $(`#${baseId}_reqChance`).val();
     let reqFails;
     if ($(`#${baseId}_reqFailsCheck`).is(":checked")) {
       reqFails = {"reqFails": $(`#${baseId}_reqFails`).val(), "consecutive": "true"};
@@ -409,6 +415,8 @@ function saveGlobalActions() {
       itemEvosNot: itemEvosNot,
       pastDes: pastDes,
       pastDesNot: pastDesNot,
+      reqChance: reqChance,
+      reqChanceNot: reqChanceNot,
       reqFails: reqFails,
       reqFailsNot: reqFailsNot,
       reqValids: reqValids,
@@ -468,6 +476,7 @@ function generateNode() {
       let preNodeNot = $(`#${direction}_preNodeNot`).is(":checked").toString();
       let itemEvosNot = $(`#${direction}_evosNot`).is(":checked").toString();
       let pastDesNot = $(`#${direction}_pastDesNot`).is(":checked").toString();
+      let reqChanceNot = $(`#${direction}_reqChanceNot`).is(":checked").toString();
       let reqFailsNot = $(`#${direction}_reqFailsNot`).is(":checked").toString();
       let reqValidsNot = $(`#${direction}_reqValidsNot`).is(":checked").toString();
       let reqItems = $(`#${direction}_Items`).val();
@@ -479,6 +488,7 @@ function generateNode() {
       let preNode = $(`#${direction}_preNode`).val();
       let itemEvos = $(`#${direction}_Evos`).val();
       let pastDes = $(`#${direction}_pastDes`).val();
+      let reqChance = $(`#${direction}_reqChance`).val();
       
       let reqFails;
       if ($(`#${direction}_reqFailsCheck`).is(":checked")) {
@@ -524,6 +534,8 @@ function generateNode() {
         itemEvosNot: itemEvosNot,
         pastDes: pastDes,
         pastDesNot: pastDesNot,
+        reqChance: reqChance,
+        reqChanceNot: reqChanceNot,
         reqFails: reqFails,
         reqFailsNot: reqFailsNot,
         reqValids: reqValids,
@@ -557,6 +569,7 @@ function generateNode() {
       let preNodeNot = $(`#${baseId}_preNodeNot`).is(":checked").toString();
       let itemEvosNot = $(`#${baseId}_evosNot`).is(":checked").toString();
       let pastDesNot = $(`#${baseId}_pastDesNot`).is(":checked").toString();
+      let reqChanceNot = $(`#${baseId}_reqChanceNot`).is(":checked").toString();
       let reqFailsNot = $(`#${baseId}_reqFailsNot`).is(":checked").toString();
       let reqValidsNot = $(`#${baseId}_reqValidsNot`).is(":checked").toString();
       let reqItems = $(`#${baseId}_Items`).val();
@@ -568,6 +581,7 @@ function generateNode() {
       let preNode = $(`#${baseId}_preNode`).val();
       let itemEvos = $(`#${baseId}_Evos`).val();
       let pastDes = $(`#${baseId}_pastDes`).val();
+      let reqChance = $(`#${baseId}_reqChance`).val();
       let reqFails;
       if ($(`#${baseId}_reqFailsCheck`).is(":checked")) {
         reqFails = {"reqFails": $(`#${baseId}_reqFails`).val(),
@@ -607,6 +621,8 @@ function generateNode() {
         itemEvosNot: itemEvosNot,
         pastDes: pastDes,
         pastDesNot: pastDesNot,
+        reqChance: reqChance,
+        reqChanceNot: reqChanceNot,
         reqFails: reqFails,
         reqFailsNot: reqFailsNot,
         reqValids: reqValids,
@@ -638,6 +654,7 @@ function generateNode() {
     let preNodeNot = $(`#${itemId}_preNodeNot`).is(":checked").toString();
     let itemEvosNot = $(`#${itemId}_evosNot`).is(":checked").toString();
     let pastDesNot = $(`#${itemId}_pastDesNot`).is(":checked").toString();
+    let reqChanceNot = $(`#${itemId}_reqChanceNot`).is(":checked").toString();
     let reqFailsNot = $(`#${itemId}_reqFailsNot`).is(":checked").toString();
     let reqValidsNot = $(`#${itemId}_reqValidsNot`).is(":checked").toString();
     let reqItems = $(`#${itemId}_Items`).val();
@@ -649,6 +666,7 @@ function generateNode() {
     let preNode = $(`#${itemId}_preNode`).val();
     let itemEvos = $(`#${itemId}_Evos`).val();
     let pastDes = $(`#${itemId}_pastDes`).val();
+    let reqChance = $(`#${itemId}_reqChance`).val();
     let reqFails;
     if ($(`#${itemId}_reqFailsCheck`).is(":checked")) {
       reqFails = {"reqFails": $(`#${itemId}_reqFails`).val(), "consecutive": "true"};
@@ -685,6 +703,8 @@ function generateNode() {
       itemEvosNot: itemEvosNot,
       pastDes: pastDes,
       pastDesNot: pastDesNot,
+      reqChance: reqChance,
+      reqChanceNot: reqChanceNot,
       reqFails: reqFails,
       reqFailsNot: reqFailsNot,
       reqValids: reqValids,
@@ -706,6 +726,7 @@ function generateNode() {
       let preNodeNot = $(`#${baseId}_preNodeNot`).is(":checked").toString();
       let itemEvosNot = $(`#${baseId}_evosNot`).is(":checked").toString();
       let pastDesNot = $(`#${baseId}_pastDesNot`).is(":checked").toString();
+      let reqChanceNot = $(`#${baseId}_reqChanceNot`).is(":checked").toString();
       let reqFailsNot = $(`#${baseId}_reqFailsNot`).is(":checked").toString();
       let reqValidsNot = $(`#${baseId}_reqValidsNot`).is(":checked").toString();
       let reqItems = $(`#${baseId}_Items`).val();
@@ -717,6 +738,7 @@ function generateNode() {
       let preNode = $(`#${baseId}_preNode`).val();
       let itemEvos = $(`#${baseId}_Evos`).val();
       let pastDes = $(`#${baseId}_pastDes`).val();
+      let reqChance = $(`#${baseId}_reqChance`).val();
       let reqFails;
       if ($(`#${baseId}_reqFailsCheck`).is(":checked")) {
         reqFails = {"reqFails": $(`#${baseId}_reqFails`).val(), "consecutive": "true"};
@@ -751,6 +773,8 @@ function generateNode() {
         itemEvosNot: itemEvosNot,
         pastDes: pastDes,
         pastDesNot: pastDesNot,
+        reqChance: reqChance,
+        reqChanceNot: reqChanceNot,
         reqFails: reqFails,
         reqFailsNot: reqFailsNot,
         reqValids: reqValids,
@@ -785,6 +809,7 @@ function generateNode() {
     let preNodeNot = $(`#${containerId}_preNodeNot`).is(":checked").toString();
     let itemEvosNot = $(`#${containerId}_evosNot`).is(":checked").toString();
     let pastDesNot = $(`#${containerId}_pastDesNot`).is(":checked").toString();
+    let reqChanceNot = $(`#${containerId}_reqChanceNot`).is(":checked").toString();
     let reqFailsNot = $(`#${containerId}_reqFailsNot`).is(":checked").toString();
     let reqValidsNot = $(`#${containerId}_reqValidsNot`).is(":checked").toString();
     let reqItems = $(`#${containerId}_Items`).val();
@@ -796,6 +821,7 @@ function generateNode() {
     let preNode = $(`#${containerId}_preNode`).val();
     let itemEvos = $(`#${containerId}_Evos`).val();
     let pastDes = $(`#${containerId}_pastDes`).val();
+    let reqChance = $(`#${containerId}_reqChance`).val();
     let reqFails;
     if ($(`#${containerId}_reqFailsCheck`).is(":checked")) {
       reqFails = {"reqFails": $(`#${containerId}_reqFails`).val(), "consecutive": "true"};
@@ -835,6 +861,8 @@ function generateNode() {
       itemEvosNot: itemEvosNot,
       pastDes: pastDes,
       pastDesNot: pastDesNot,
+      reqChance: reqChance,
+      reqChanceNot: reqChanceNot,
       reqFails: reqFails,
       reqFailsNot: reqFailsNot,
       reqValids: reqValids,
@@ -874,6 +902,7 @@ function generateNode() {
     let preNodeNot = $(`#${baseId}_preNodeNot`).is(":checked").toString();
     let itemEvosNot = $(`#${baseId}_evosNot`).is(":checked").toString();
     let pastDesNot = $(`#${baseId}_pastDesNot`).is(":checked").toString();
+    let reqChanceNot = $(`#${baseId}_reqChanceNot`).is(":checked").toString();
     let reqFailsNot = $(`#${baseId}_reqFailsNot`).is(":checked").toString();
     let reqValidsNot =$(`#${baseId}_reqValidsNot`).is(":checked").toString();
     let reqItems = $(`#${baseId}_Items`).val();
@@ -885,6 +914,7 @@ function generateNode() {
     let preNode = $(`#${baseId}_preNode`).val();
     let itemEvos = $(`#${baseId}_Evos`).val();
     let pastDes = $(`#${baseId}_pastDes`).val();
+    let reqChance = $(`#${baseId}_reqChance`).val();
     let reqFails;
     if ($(`#${baseId}_reqFailsCheck`).is(":checked")) {
       reqFails = {"reqFails": $(`#${baseId}_reqFails`).val(), "consecutive": "true"};
@@ -927,6 +957,8 @@ function generateNode() {
       itemEvosNot: itemEvosNot,
       pastDes: pastDes,
       pastDesNot: pastDesNot,
+      reqChance: reqChance,
+      reqChanceNot: reqChanceNot,
       reqFails: reqFails,
       reqFailsNot: reqFailsNot,
       reqValids: reqValids,
@@ -950,6 +982,7 @@ function generateNode() {
       let preNodeNot = $(`#${baseId}_preNodeNot`).is(":checked").toString();
       let itemEvosNot = $(`#${baseId}_evosNot`).is(":checked").toString();
       let pastDesNot = $(`#${baseId}_pastDesNot`).is(":checked").toString();
+      let reqChanceNot = $(`#${baseId}_reqChanceNot`).is(":checked").toString();
       let reqFailsNot = $(`#${baseId}_reqFailsNot`).is(":checked").toString();
       let reqValidsNot = $(`#${baseId}_reqValidsNot`).is(":checked").toString();
       let reqItems = $(`#${baseId}_Items`).val();
@@ -961,6 +994,7 @@ function generateNode() {
       let preNode = $(`#${baseId}_preNode`).val();
       let itemEvos = $(`#${baseId}_Evos`).val();
       let pastDes = $(`#${baseId}_pastDes`).val();
+      let reqChance = $(`#${baseId}_reqChance`).val();
       let reqFails;
       if ($(`#${baseId}_reqFailsCheck`).is(":checked")) {
         reqFails = {"reqFails": $(`#${baseId}_reqFails`).val(),
@@ -1000,6 +1034,8 @@ function generateNode() {
         itemEvosNot: itemEvosNot,
         pastDes: pastDes,
         pastDesNot: pastDesNot,
+        reqChance: reqChance,
+        reqChanceNot: reqChanceNot,
         reqFails: reqFails,
         reqFailsNot: reqFailsNot,
         reqValids: reqValids,
@@ -1027,6 +1063,7 @@ function generateNode() {
   let winPreNodeNot = $("#win_preNodeNot").is(":checked").toString();
   let winItemEvosNot = $("#win_evosNot").is(":checked").toString();
   let winPastDesNot = $("#win_pastDesNot").is(":checked").toString();
+  let winReqChanceNot = $(`#win_reqChanceNot`).is(":checked").toString();
   let winReqFailsNot = $("#win_reqFailsNot").is(":checked").toString();
   let winReqValidsNot = $("#win_reqValidsNot").is(":checked").toString();
   let winReqItems = $("#win_Items").val();
@@ -1038,6 +1075,7 @@ function generateNode() {
   let winPreNode = $("#win_preNode").val();
   let winItemEvos = $("#win_Evos").val();
   let winPastDes = $("#win_pastDes").val();
+  let winReqChance = $(`#win_reqChance`).val();
   let winReqFails;
   if ($("#win_reqFailsCheck").is(":checked")) {
     winReqFails = {"reqFails": $("#win_reqFails").val(), "consecutive": "true"};
@@ -1072,6 +1110,8 @@ function generateNode() {
     itemEvosNot: winItemEvosNot,
     pastDes: winPastDes,
     pastDesNot: winPastDesNot,
+    reqChance: winReqChance,
+    reqChanceNot: winReqChanceNot,
     reqFails: winReqFails,
     reqFailsNot: winReqFailsNot,
     reqValids: winReqValids,
@@ -1092,6 +1132,7 @@ function generateNode() {
   let losePreNodeNot = $("#lose_preNodeNot").is(":checked").toString();
   let loseItemEvosNot = $("#lose_evosNot").is(":checked").toString();
   let losePastDesNot = $("#lose_pastDesNot").is(":checked").toString();
+  let loseReqChanceNot = $(`#lose_reqChanceNot`).is(":checked").toString();
   let loseReqFailsNot = $("#lose_reqFailsNot").is(":checked").toString();
   let loseReqValidsNot = $("#lose_reqValidsNot").is(":checked").toString();
   let loseReqItems = $("#lose_Items").val();
@@ -1103,6 +1144,7 @@ function generateNode() {
   let losePreNode = $("#lose_preNode").val();
   let loseItemEvos = $("#lose_Evos").val();
   let losePastDes = $("#lose_pastDes").val();
+  let loseReqChance = $(`#lose_reqChance`).val();
   let loseReqFails;
   if ($("#lose_reqFailsCheck").is(":checked")) {
     loseReqFails = {"reqFails": $("#lose_reqFails").val(), "consecutive": "true"};
@@ -1137,6 +1179,8 @@ function generateNode() {
     itemEvosNot: loseItemEvosNot,
     pastDes: losePastDes,
     pastDesNot: losePastDesNot,
+    reqChance: loseReqChance,
+    reqChanceNot: loseReqChanceNot,
     reqFails: loseReqFails,
     reqFailsNot: loseReqFailsNot,
     reqValids: loseReqValids,
@@ -1172,5 +1216,7 @@ export {
   saveGame,
   loadGame,
   deleteNode,
-  startGameSim
+  startGameSim,
+  saveGlobalActions,
+  saveInitItems
 };

@@ -129,6 +129,9 @@ function gameInit() {
     currentNode = "0,0,0";
     badAction = 0;
     save = {
+        "html": '',
+        "currentNode": currentNode,
+        "previousNode": previousNode,
         "items": [],
         "actions": [],
         "nodes": {}
@@ -205,6 +208,7 @@ function getActions() {
                 "preNodeNot": game[currentNode].actions.actions[i].preNodeNot,
                 "itemEvosNot": game[currentNode].actions.actions[i].itemEvosNot,
                 "pastDesNot": game[currentNode].actions.actions[i].pastDesNot,
+                "reqChanceNot": game[currentNode].actions.actions[i].reqChanceNot,
                 "reqFailsNot": game[currentNode].actions.actions[i].reqFailsNot,
                 "reqValidsNot": game[currentNode].actions.actions[i].reqValidsNot,
                 "reqAll": game[currentNode].actions.actions[i].reqAll,
@@ -217,6 +221,7 @@ function getActions() {
                 "preNode": game[currentNode].actions.actions[i].preNode,
                 "itemEvos": game[currentNode].actions.actions[i].itemEvos,
                 "pastDes": game[currentNode].actions.actions[i].pastDes,
+                "reqChance": game[currentNode].actions.actions[i].reqChance,
                 "reqFails": game[currentNode].actions.actions[i].reqFails,
                 "reqValids": game[currentNode].actions.actions[i].reqValids,
             }
@@ -241,6 +246,7 @@ function getActions() {
                 "preNodeNot": globalActions[i].preNodeNot,
                 "itemEvosNot": globalActions[i].itemEvosNot,
                 "pastDesNot": globalActions[i].pastDesNot,
+                "reqChanceNot": globalActions[i].reqChanceNot,
                 "reqFailsNot": globalActions[i].reqFailsNot,
                 "reqValidsNot": globalActions[i].reqValidsNot,
                 "reqAll": globalActions[i].reqAll,
@@ -253,6 +259,7 @@ function getActions() {
                 "preNode": globalActions[i].preNode,
                 "itemEvos": globalActions[i].itemEvos,
                 "pastDes": globalActions[i].pastDes,
+                "reqChance": globalActions[i].reqChance,
                 "reqFails": globalActions[i].reqFails,
                 "reqValids": globalActions[i].reqValids
             }
@@ -361,6 +368,7 @@ function getDiscoveredItemsActions(location) {
             "preNodeNot": items[i].preNodeNot,
             "itemEvosNot": items[i].itemEvosNot,
             "pastDesNot": items[i].pastDesNot,
+            "reqChanceNot": items[i].reqChanceNot,
             "reqFailsNot": items[i].reqFailsNot,
             "reqValidsNot": items[i].reqValidsNot,
             "reqAll": items[i].reqAll,
@@ -373,6 +381,7 @@ function getDiscoveredItemsActions(location) {
             "preNode": (originNode) ? items[i].preNode: '',
             "itemEvos": items[i].itemEvos,
             "pastDes": items[i].pastDes,
+            "reqChance": items[i].reqChance,
             "reqFails": items[i].reqFails,
             "reqValids": items[i].reqValids
         }
@@ -439,6 +448,7 @@ function getDirectionsActions (location) {
             "preNodeNot": game[location].directions[i].preNodeNot,
             "itemEvosNot": game[location].directions[i].itemEvosNot,
             "pastDesNot": game[location].directions[i].pastDesNot,
+            "reqChanceNot": game[location].directions[i].reqChanceNot,
             "reqFailsNot": game[location].directions[i].reqFailsNot,
             "reqValidsNot": game[location].directions[i].reqValidsNot,
             "reqAll": game[location].directions[i].reqAll,
@@ -451,6 +461,7 @@ function getDirectionsActions (location) {
             "preNode": game[location].directions[i].preNode,
             "itemEvos": game[location].directions[i].itemEvos,
             "pastDes": game[location].directions[i].pastDes,
+            "reqChance": game[location].directions[i].reqChance,
             "reqFails": game[location].directions[i].reqFails,
             "reqValids": game[location].directions[i].reqValids
         };
@@ -588,6 +599,7 @@ function getDescription (location) {
             "preNodeNot": thisEvo.preNodeNot,
             "itemEvosNot": thisEvo.itemEvosNot,
             "pastDesNot": thisEvo.pastDesNot,
+            "reqChanceNot": thisEvo.reqChanceNot,
             "reqFailsNot": thisEvo.reqFailsNot,
             "reqValidsNot": thisEvo.reqValidsNot,
             "reqAll": thisEvo.reqAll,
@@ -600,6 +612,7 @@ function getDescription (location) {
             "preNode": thisEvo.preNode,
             "itemEvos": thisEvo.itemEvos,
             "pastDes": thisEvo.pastDes,
+            "reqChance": thisEvo.reqChance,
             "reqFails": thisEvo.reqFails,
             "reqValids": thisEvo.reqValids
         }
@@ -662,6 +675,7 @@ function checkRequirements(reqs) {
     let preNodeNot = !reqs.preNodeNot ? "false" : reqs.preNodeNot;
     let itemEvosNot = !reqs.itemEvosNot ? "false" : reqs.itemEvosNot;
     let pastDesNot = !reqs.pastDesNot ? "false" : reqs.pastDesNot;
+    let reqChanceNot = !reqs.reqChanceNot ? "false" : reqs.reqChanceNot;
     let reqFailsNot = !reqs.reqFailsNot ? "false" : reqs.reqFailsNot;
     let reqValidsNot = !reqs.reqValidsNot ? "false" : reqs.reqValidsNot;
     let reqItems = !reqs['reqItems'] ? [] : reqs['reqItems'].split(/\s*,\s*/);
@@ -673,6 +687,7 @@ function checkRequirements(reqs) {
     let preNode = !reqs['preNode'] ? '' : reqs['preNode'];
     let itemEvos = !reqs['itemEvos'] ? [] : reqs['itemEvos'].split(/\]\s*,\s*/);
     let pastDes = !reqs['pastDes'] ? [] : reqs['pastDes'].match(/\[(?:[^,]*,){3}[^,]*\]/g);
+    let reqChance = !reqs['reqChance'] ? '' : reqs['reqChance'];
     let reqFails = !reqs['reqFails'] ? {"reqFails": "", "consecutive": "false"} : reqs['reqFails'];
     let reqValids = !reqs['reqValids'] ? {"reqValids": "", "consecutive": "false"} : reqs['reqValids'];
     //Check for container fulfillment requirements
@@ -914,6 +929,7 @@ function checkRequirements(reqs) {
                                 "preNodeNot": save["items"][k].evos[l].preNodeNot,
                                 "itemEvosNot": save["items"][k].evos[l].itemEvosNot,
                                 "pastDesNot": save["items"][k].evos[l].pastDesNot,
+                                "reqChanceNot": save["items"][k].evos[l].reqChanceNot,
                                 "reqFailsNot": save["items"][k].evos[l].reqFailsNot,
                                 "reqValidsNot": save["items"][k].evos[l].reqValidsNot,
                                 "reqAll": save["items"][k].evos[l].reqAll,
@@ -924,7 +940,11 @@ function checkRequirements(reqs) {
                                 "preAction": save["items"][k].evos[l].preAction,
                                 "locVisits": save["items"][k].evos[l].locVisits,
                                 "preNode": save["items"][k].evos[l].preNode,
-                                "itemEvos": save["items"][k].evos[l].itemEvos
+                                "itemEvos": save["items"][k].evos[l].itemEvos,
+                                "pastDes": save["items"][k].evos[l].pastDes,
+                                "reqChance": save["items"][k].evos[l].reqChance,
+                                "reqFails": save["items"][k].evos[l].reqFails,
+                                "reqValids": save["items"][k].evos[l].reqValids
                             }
                             if (checkRequirements(reqs)) {
                                 evoIndex = checkIndex;
@@ -1027,6 +1047,30 @@ function checkRequirements(reqs) {
             }
         }
     }
+
+    //check reqChance
+    if (reqChance != '') {
+        let percent = +reqChance;
+        let randomNumber = Math.floor(Math.random() * 100) + 1;
+        if (randomNumber > percent && reqAll == "true") {
+            if (reqChanceNot != "true") {
+                return false;
+            }
+        } else if (randomNumber > percent && reqAll != "true") {
+            if (reqChanceNot == "true") {
+                return true;
+            }
+        } else if (randomNumber <= percent && reqAll != "true") {
+            if (reqChanceNot != "true") {
+                return true;
+            }
+        } else if (randomNumber <= percent && reqAll == "true") {
+            if (reqChanceNot == "true") {
+                return false;
+            }
+        }
+    }
+
     //check reqFails
     if (+reqFails["reqFails"] != 0) {
         let quantity = +reqFails["reqFails"];
@@ -1146,6 +1190,7 @@ function checkWin() {
         "preNodeNot": win.preNodeNot,
         "itemEvosNot": win.itemEvosNot,
         "pastDesNot": win.pastDesNot,
+        "reqChanceNot": win.reqChanceNot,
         "reqFailsNot": win.reqFailsNot,
         "reqValidsNot": win.reqValidsNot,
         "reqAll": win.reqAll,
@@ -1158,6 +1203,7 @@ function checkWin() {
         "preNode": win.preNode,
         "itemEvos": win.itemEvos,
         "pastDes": win.pastDes,
+        "reqChance": win.reqChance,
         "reqFails": win.reqFails,
         "reqValids": win.reqValids
     }
@@ -1184,6 +1230,7 @@ function checkLose() {
         "preNodeNot": lose.preNodeNot,
         "itemEvosNot": lose.itemEvosNot,
         "pastDesNot": lose.pastDesNot,
+        "reqChanceNot": lose.reqChanceNot,
         "reqFailsNot": lose.reqFailsNot,
         "reqValidsNot": lose.reqValidsNot,
         "reqAll": lose.reqAll,
@@ -1196,6 +1243,7 @@ function checkLose() {
         "preNode": lose.preNode,
         "itemEvos": lose.itemEvos,
         "pastDes": lose.pastDes,
+        "reqChance": lose.reqChance,
         "reqFails": lose.reqFails,
         "reqValids": lose.reqValids
     }
@@ -1233,6 +1281,7 @@ function displayItems() {
                 "preNodeNot": save.nodes[currentNode].items[i].preNodeNot,
                 "itemEvosNot": save.nodes[currentNode].items[i].itemEvosNot,
                 "pastDesNot": save.nodes[currentNode].items[i].pastDesNot,
+                "reqChanceNot": save.nodes[currentNode].items[i].reqChanceNot,
                 "reqFailsNot": save.nodes[currentNode].items[i].reqFailsNot,
                 "reqValidsNot": save.nodes[currentNode].items[i].reqValidsNot,
                 "reqAll": save.nodes[currentNode].items[i].reqAll,
@@ -1245,6 +1294,7 @@ function displayItems() {
                 "preNode": save.nodes[currentNode].items[i].preNode,
                 "itemEvos": save.nodes[currentNode].items[i].itemEvos,
                 "pastDes": save.nodes[currentNode].items[i].pastDes,
+                "reqChance": save.nodes[currentNode].items[i].reqChance,
                 "reqFails": save.nodes[currentNode].items[i].reqFails,
                 "reqValids": save.nodes[currentNode].items[i].reqValids
             }
@@ -1411,7 +1461,9 @@ function nodeReload() {
 
 function parseNode(location) {
     previousNode = `${currentNode}`;
+    save["previousNode"] = previousNode;
     currentNode = location;
+    save["currentNode"] = currentNode;
     addNodeToSave(currentNode);
     addVisit(currentNode);
     nodeReload();
@@ -1469,6 +1521,7 @@ function parseAction(input) {
                                 "preNodeNot": actionObject.preNodeNot,
                                 "itemEvosNot": actionObject.itemEvosNot,
                                 "pastDesNot": actionObject.pastDesNot,
+                                "reqChanceNot": actionObject.reqChanceNot,
                                 "reqFailsNot": actionObject.reqFailsNot,
                                 "reqValidsNot": actionObject.reqValidsNot,
                                 "reqAll": actionObject.reqAll,
@@ -1481,6 +1534,7 @@ function parseAction(input) {
                                 "preNode": actionObject.preNode,
                                 "itemEvos": actionObject.itemEvos,
                                 "pastDes": actionObject.pastDes,
+                                "reqChance": actionObject.reqChance,
                                 "reqFails": actionObject.reqFails,
                                 "reqValids": actionObject.reqValids
                             }
@@ -1641,6 +1695,7 @@ function parseAction(input) {
                                                         "preNodeNot": game[currentNode].containers[q].preNodeNot,
                                                         "itemEvosNot": game[currentNode].containers[q].itemEvosNot,
                                                         "pastDesNot": game[currentNode].containers[q].pastDesNot,
+                                                        "reqChanceNot": game[currentNode].containers[q].reqChanceNot,
                                                         "reqFailsNot": game[currentNode].containers[q].reqFailsNot,
                                                         "reqValidsNot": game[currentNode].containers[q].reqValidsNot,
                                                         "reqAll": game[currentNode].containers[q].reqAll,
@@ -1653,6 +1708,7 @@ function parseAction(input) {
                                                         "preNode": game[currentNode].containers[q].preNode,
                                                         "itemEvos": game[currentNode].containers[q].itemEvos,
                                                         "pastDes": game[currentNode].containers[q].pastDes,
+                                                        "reqChance": game[currentNode].containers[q].reqChance,
                                                         "reqFails": game[currentNode].containers[q].reqFails,
                                                         "reqValids": game[currentNode].containers[q].reqValids
                                                     }
@@ -1714,6 +1770,7 @@ function parseAction(input) {
                                                         "preNodeNot": thisContainer.preNodeNot,
                                                         "itemEvosNot": thisContainer.itemEvosNot,
                                                         "pastDesNot": thisContainer.pastDesNot,
+                                                        "reqChanceNot": thisContainer.reqChanceNot,
                                                         "reqFailsNot": thisContainer.reqFailsNot,
                                                         "reqValidsNot": thisContainer.reqValidsNot,
                                                         "reqAll": thisContainer.reqAll,
@@ -1726,6 +1783,7 @@ function parseAction(input) {
                                                         "preNode": thisContainer.preNode,
                                                         "itemEvos": thisContainer.itemEvos,
                                                         "pastDes": thisContainer.pastDes,
+                                                        "reqChance": thisContainer.reqChance,
                                                         "reqFails": thisContainer.reqFails,
                                                         "reqValids": thisContainer.reqValids
                                                     }
@@ -1835,6 +1893,7 @@ function parseAction(input) {
                                 "preNodeNot": inspectableItems[i].preNodeNot,
                                 "itemEvosNot": inspectableItems[i].itemEvosNot,
                                 "pastDesNot": inspectableItems[i].pastDesNot,
+                                "reqChanceNot": inspectableItems[i].reqChanceNot,
                                 "reqFailsNot": inspectableItems[i].reqFailsNot,
                                 "reqValidsNot": inspectableItems[i].reqValidsNot,
                                 "reqAll": inspectableItems[i].reqAll,
@@ -1847,6 +1906,7 @@ function parseAction(input) {
                                 "preNode": inspectableItems[i].preNode,
                                 "itemEvos": inspectableItems[i].itemEvos,
                                 "pastDes": inspectableItems[i].pastDes,
+                                "reqChance": inspectableItems[i].reqChance,
                                 "reqFails": inspectableItems[i].reqFails,
                                 "reqValids": inspectableItems[i].reqValids
                             }
@@ -1865,6 +1925,7 @@ function parseAction(input) {
                                             "preNodeNot": evo.preNodeNot,
                                             "itemEvosNot": evo.itemEvosNot,
                                             "pastDesNot": evo.pastDesNot,
+                                            "reqChanceNot": evo.reqChanceNot,
                                             "reqFailsNot": evo.reqFailsNot,
                                             "reqValidsNot": evo.reqValidsNot,
                                             "reqAll": evo.reqAll,
@@ -1877,6 +1938,7 @@ function parseAction(input) {
                                             "preNode": evo.preNode,
                                             "itemEvos": evo.itemEvos,
                                             "pastDes": evo.pastDes,
+                                            "reqChance": evo.reqChance,
                                             "reqFails": evo.reqFails,
                                             "reqValids": evo.reqValids
                                         }
@@ -1955,6 +2017,7 @@ function parseAction(input) {
                         "preNodeNot": evo.preNodeNot,
                         "itemEvosNot": evo.itemEvosNot,
                         "pastDesNot": evo.pastDesNot,
+                        "reqChanceNot": evo.reqChanceNot,
                         "reqFailsNot": evo.reqFailsNot,
                         "reqValidsNot": evo.reqValidsNot,
                         "reqAll": evo.reqAll,
@@ -1967,6 +2030,7 @@ function parseAction(input) {
                         "preNode": evo.preNode,
                         "itemEvos": evo.itemEvos,
                         "pastDes": evo.pastDes,
+                        "reqChance": evo.reqChance,
                         "reqFails": evo.reqFails,
                         "reqValids": evo.reqValids
                     }
