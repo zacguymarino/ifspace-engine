@@ -140,7 +140,7 @@ function gameInit() {
         save.items.push(initItems[i]);
     }
     $('#outputSim').empty();
-    $('#outputSim').append(`<h1>${gameTitle}</h1>`);
+    $('#outputSim').append(`<h1 class="scrollTo">${gameTitle}</h1>`);
     if (IFID) {
         $('#outputSim').append(`<h6>IFID: ${IFID}</h6>`);
     }
@@ -190,7 +190,7 @@ function displayMessage(message, input) {
     if ($(".scrollTo").length == 0) {
         $('#outputSim')[0].lastElementChild.scrollIntoView(true);
     } else {
-        $('.scrollTo').last()[0].scrollIntoView(true);
+        $('.scrollTo').first()[0].scrollIntoView(true);
     }
 }
 
@@ -1476,6 +1476,9 @@ function parseNode(location) {
 
 function parseAction(input) {
     if (playing) {
+        //Reset scrolls
+        $('#outputSim').find(".scrollTo").removeClass("scrollTo");
+
         let action = input.toUpperCase();
         let sentMessage = false;
 
