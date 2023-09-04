@@ -29,6 +29,7 @@
                 <div class="globalStuff">
                     <button class="globalButton" id="globalActionsOpen">Global Actions</button>
                     <button class="globalButton" id="initItemsOpen">Initial Items</button>
+                    <button class="globalButton" id="monitorsOpen">Monitors</button>
                     <button class="globalButton" id="conDepOpen">Deposits</button>
                     <button class="globalButton" id="conWitOpen">Withdrawals</button>
                     <button class="globalButton" id="takesOpen">Takes</button>
@@ -36,6 +37,8 @@
                     <button class="globalButton" id="ignorablesOpen">Ignorables</button>
                     <button class="globalButton" id="looksOpen">Looks</button>
                     <button class="globalButton" id="examinesOpen">Examines</button>
+                    <button class="globalButton" id="winOpen">Win</button>
+                    <button class="globalButton" id="loseOpen">Lose</button>
                 </div>
             </div>
             <div class="pure-u-7-12">
@@ -299,6 +302,17 @@
             </div>
             <button class="popupClose">Close</button>
         </div>
+        <div class="popupScreen" id="monitorsDisplay" style="visibility: hidden">
+            <div class="popupContent">
+                <label class="tooltip">
+                    <h1 class="popupTitle">Monitors</h1>
+                    <span class="popuptooltiptext">Custom values which can be monitored and updated based on gameplay events</span>
+                </label>
+                <button id="addMonitor">Add Monitor</button>
+                <div id="monitorList" class="container"></div>
+            </div>
+            <button class="popupClose">Close</button>
+        </div>
         <div class="popupScreen popupBlockElements" id="conDepDisplay" style="visibility: hidden">
             <div class="popupContent">
                 <label class='tooltip'>
@@ -443,6 +457,28 @@
                     <span class='popuptooltiptext'>Comma separated examine words (e.g. checkout, view)</span>
                 </label>
                 <input class="customDefaultActions" id='customExamines' type='text'>
+            </div>
+            <button class="popupClose">Close</button>
+        </div>
+        <div class="popupScreen" id="globalWinDisplay" style="visibility: hidden">
+            <div class="popupContent" id="globalWinContent">
+                <label class="tooltip">
+                    <h1 class="popupTitle">Global Wins</h1>
+                    <span class="popuptooltiptext">The requirements and output for winning the game in various cases</span>
+                </label>
+                <button id="addGlobalWin">Add Global Win</button>
+                <div id="globalWinList" class="container"></div>
+            </div>
+            <button class="popupClose">Close</button>
+        </div>
+        <div class="popupScreen" id="globalLoseDisplay" style="visibility: hidden">
+            <div class="popupContent" id="globalLoseContent">
+                <label class="tooltip">
+                    <h1 class="popupTitle">Global Lose</h1>
+                    <span class="popuptooltiptext">The requirements and output for losing the game in various cases</span>
+                </label>
+                <button id="addGlobalLose">Add Global Lose</button>
+                <div id="globalLoseList" class="container"></div>
             </div>
             <button class="popupClose">Close</button>
         </div>

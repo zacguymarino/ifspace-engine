@@ -1,5 +1,5 @@
 import { currentNode } from "./if_nodemap.js";
-import { gameStyle, customDeposits, customWithdrawals, customTakes, customDrops, customIgnorables, customLooks, customExamines, globalActions, initItems } from "./if_generate.js";
+import { gameStyle, customDeposits, customWithdrawals, customTakes, customDrops, customIgnorables, customLooks, customExamines, globalActions, initItems, monitors, globalWin, globalLose } from "./if_generate.js";
 import { containerDeposits, containerWithdrawals, takeCommands, dropCommands, ignorables, lookCommands, itemInspectCommands } from "./if_parser.js";
 
 function loadDefaultCommands() {
@@ -104,6 +104,7 @@ function loadDomInitItems(initItems) {
       (items[i].evos[j].reqChanceNot == "true") ? $(`#${baseEvoId}_reqChanceNot`).prop("checked", true) : $(`#${baseEvoId}_reqChanceNot`).prop("checked", false);
       (items[i].evos[j].reqFailsNot == "true") ? $(`#${baseEvoId}_reqFailsNot`).prop("checked", true) : $(`#${baseEvoId}_reqFailsNot`).prop("checked", false);
       (items[i].evos[j].reqValidsNot == "true") ? $(`#${baseEvoId}_reqValidsNot`).prop("checked", true) : $(`#${baseEvoId}_reqValidsNot`).prop("checked", false);
+      (items[i].evos[j].reqMonitorsNot == "true") ? $(`#${baseEvoId}_reqMonitorsNot`).prop("checked", true) : $(`#${baseEvoId}_reqMonitorsNot`).prop("checked", false);
 
       $(`#${baseEvoId}_Items`).val(items[i].evos[j].reqItems);
       $(`#${baseEvoId}_Containers`).val(items[i].evos[j].reqContainers);
@@ -131,6 +132,12 @@ function loadDomInitItems(initItems) {
           $(`#${baseEvoId}_reqValidsCheck`).prop("checked", false);
         }
         $(`#${baseEvoId}_reqValids`).val(items[i].evos[j].reqValids["reqValids"]);
+      }
+
+      if (items[i].evos[j].hasOwnProperty("reqMonitors")) {
+        $(`#${baseEvoId}_reqMonitors`).val(items[i].evos[j].reqMonitors["reqMonitors"]);
+        (items[i].evos[j].reqMonitors["lessThan"] == "true") ? $(`#${baseEvoId}_reqMonitorsLessThan`).prop("checked", true) : $(`#${baseEvoId}_reqMonitorsLessThan`).prop("checked", false);
+        (items[i].evos[j].reqMonitors["greaterThan"] == "true") ? $(`#${baseEvoId}_reqMonitorsGreaterThan`).prop("checked", true) : $(`#${baseEvoId}_reqMonitorsGreaterThan`).prop("checked", false);
       }
 
       $(`#${baseEvoId}_Des`).val(items[i].evos[j].evoDes);
@@ -165,6 +172,7 @@ function loadDomGlobalActions(globalActions) {
     (actions[i].reqChanceNot == "true") ? $(`#${baseId}_reqChanceNot`).prop("checked", true) : $(`#${baseId}_reqChanceNot`).prop("checked", false);
     (actions[i].reqFailsNot == "true") ? $(`#${baseId}_reqFailsNot`).prop("checked", true) : $(`#${baseId}_reqFailsNot`).prop("checked", false);
     (actions[i].reqValidsNot == "true") ? $(`#${baseId}_reqValidsNot`).prop("checked", true) : $(`#${baseId}_reqValidsNot`).prop("checked", false);
+    (actions[i].reqMonitorsNot == "true") ? $(`#${baseId}_reqMonitorsNot`).prop("checked", true) : $(`#${baseId}_reqMonitorsNot`).prop("checked", false);
 
     $(`#${baseId}_Actions`).val(actions[i].actions);
     $(`#${baseId}_Max`).val(actions[i].max);
@@ -200,6 +208,222 @@ function loadDomGlobalActions(globalActions) {
         $(`#${baseId}_reqValidsCheck`).prop("checked", false);
       }
       $(`#${baseId}_reqValids`).val(actions[i].reqValids["reqValids"]);
+    }
+
+    if (actions[i].hasOwnProperty("reqMonitors")) {
+      $(`#${baseId}_reqMonitors`).val(actions[i].reqMonitors["reqMonitors"]);
+      (actions[i].reqMonitors["lessThan"] == "true") ? $(`#${baseId}_reqMonitorsLessThan`).prop("checked", true) : $(`#${baseId}_reqMonitorsLessThan`).prop("checked", false);
+      (actions[i].reqMonitors["greaterThan"] == "true") ? $(`#${baseId}_reqMonitorsGreaterThan`).prop("checked", true) : $(`#${baseId}_reqMonitorsGreaterThan`).prop("checked", false);
+    }
+  }
+}
+
+function loadDomGlobalWin(globalWin) {
+  $("#globalWinList").empty();
+  for (let i = 0; i < globalWin.length; i++) {
+    addGlobalWin();
+    let baseId = `global_win_${i + 1}`;
+    if (globalWin[i].reqNot == "true") {
+      $(`#${baseId}_reqNot`).prop("checked", true);
+      $(`.${baseId}_notBox`).css("visibility", "visible");
+    } else {
+      $(`#${baseId}_reqNot`).prop("checked", false);
+      $(`.${baseId}_notBox`).css("visibility", "hidden");
+    }
+    (globalWin[i].reqAll == "true") ? $(`#${baseId}_reqAll`).prop("checked", true) : $(`#${baseId}_reqAll`).prop("checked", false);
+    (globalWin[i].reqItemsNot == "true") ? $(`#${baseId}_itemsNot`).prop("checked", true) : $(`#${baseId}_itemsNot`).prop("checked", false);
+    (globalWin[i].reqContainersNot == "true") ? $(`#${baseId}_containersNot`).prop("checked", true) : $(`#${baseId}_containersNot`).prop("checked", false);
+    (globalWin[i].reqLocalNot == "true") ? $(`#${baseId}_localNot`).prop("checked", true) : $(`#${baseId}_localNot`).prop("checked", false);
+    (globalWin[i].reqGlobalNot == "true") ? $(`#${baseId}_globalNot`).prop("checked", true) : $(`#${baseId}_globalNot`).prop("checked", false);
+    (globalWin[i].preActionNot == "true") ? $(`#${baseId}_preActionNot`).prop("checked", true) : $(`#${baseId}_preActionNot`).prop("checked", false);
+    (globalWin[i].locVisitsNot == "true") ? $(`#${baseId}_visitsNot`).prop("checked", true) : $(`#${baseId}_visitsNot`).prop("checked", false);
+    (globalWin[i].preNodeNot == "true") ? $(`#${baseId}_preNodeNot`).prop("checked", true) : $(`#${baseId}_preNodeNot`).prop("checked", false);
+    (globalWin[i].itemEvosNot == "true") ? $(`#${baseId}_evosNot`).prop("checked", true) : $(`#${baseId}_evosNot`).prop("checked", false);
+    (globalWin[i].pastDesNot == "true") ? $(`#${baseId}_pastDesNot`).prop("checked", true) : $(`#${baseId}_pastDesNot`).prop("checked", false);
+    (globalWin[i].reqChanceNot == "true") ? $(`#${baseId}_reqChanceNot`).prop("checked", true) : $(`#${baseId}_reqChanceNot`).prop("checked", false);
+    (globalWin[i].reqFailsNot == "true") ? $(`#${baseId}_reqFailsNot`).prop("checked", true) : $(`#${baseId}_reqFailsNot`).prop("checked", false);
+    (globalWin[i].reqValidsNot == "true") ? $(`#${baseId}_reqValidsNot`).prop("checked", true) : $(`#${baseId}_reqValidsNot`).prop("checked", false);
+    (globalWin[i].reqMonitorsNot == "true") ? $(`#${baseId}_reqMonitorsNot`).prop("checked", true) : $(`#${baseId}_reqMonitorsNot`).prop("checked", false);
+
+    $(`#${baseId}_globalWinDes`).val(globalWin[i].description);
+    $(`#${baseId}_Items`).val(globalWin[i].reqItems);
+    $(`#${baseId}_Containers`).val(globalWin[i].reqContainers);
+    $(`#${baseId}_Local`).val(globalWin[i].reqLocal);
+    $(`#${baseId}_Global`).val(globalWin[i].reqGlobal);
+    $(`#${baseId}_preAction`).val(globalWin[i].preAction);
+    $(`#${baseId}_Visits`).val(globalWin[i].locVisits);
+    $(`#${baseId}_preNode`).val(globalWin[i].preNode);
+    $(`#${baseId}_Evos`).val(globalWin[i].itemEvos);
+    $(`#${baseId}_pastDes`).val(globalWin[i].pastDes);
+    $(`#${baseId}_reqChance`).val(globalWin[i].reqChance);
+    if (globalWin[i].hasOwnProperty("reqFails")) {
+      if (globalWin[i].reqFails["consecutive"] == "true") {
+        $(`#${baseId}_reqFailsCheck`).prop("checked", true);
+      } else {
+        $(`#${baseId}_reqFailsCheck`).prop("checked", false);
+      }
+      $(`#${baseId}_reqFails`).val(globalWin[i].reqFails["reqFails"]);
+    }
+
+    if (globalWin[i].hasOwnProperty("reqValids")) {
+      if (globalWin[i].reqValids["consecutive"] == "true") {
+        $(`#${baseId}_reqValidsCheck`).prop("checked", true);
+      } else {
+        $(`#${baseId}_reqValidsCheck`).prop("checked", false);
+      }
+      $(`#${baseId}_reqValids`).val(globalWin[i].reqValids["reqValids"]);
+    }
+
+    if (globalWin[i].hasOwnProperty("reqMonitors")) {
+      $(`#${baseId}_reqMonitors`).val(globalWin[i].reqMonitors["reqMonitors"]);
+      (globalWin[i].reqMonitors["lessThan"] == "true") ? $(`#${baseId}_reqMonitorsLessThan`).prop("checked", true) : $(`#${baseId}_reqMonitorsLessThan`).prop("checked", false);
+      (globalWin[i].reqMonitors["greaterThan"] == "true") ? $(`#${baseId}_reqMonitorsGreaterThan`).prop("checked", true) : $(`#${baseId}_reqMonitorsGreaterThan`).prop("checked", false);
+    }
+  }
+}
+
+function loadDomGlobalLose(globalLose) {
+  $("#globalLoseList").empty();
+  for (let i = 0; i < globalLose.length; i++) {
+    addGlobalLose();
+    let baseId = `global_lose_${i + 1}`;
+
+    if (globalLose[i].reqNot == "true") {
+      $(`#${baseId}_reqNot`).prop("checked", true);
+      $(`.${baseId}_notBox`).css("visibility", "visible");
+    } else {
+      $(`#${baseId}_reqNot`).prop("checked", false);
+      $(`.${baseId}_notBox`).css("visibility", "hidden");
+    }
+    (globalLose[i].reqAll == "true") ? $(`#${baseId}_reqAll`).prop("checked", true) : $(`#${baseId}_reqAll`).prop("checked", false);
+    (globalLose[i].reqItemsNot == "true") ? $(`#${baseId}_itemsNot`).prop("checked", true) : $(`#${baseId}_itemsNot`).prop("checked", false);
+    (globalLose[i].reqContainersNot == "true") ? $(`#${baseId}_containersNot`).prop("checked", true) : $(`#${baseId}_containersNot`).prop("checked", false);
+    (globalLose[i].reqLocalNot == "true") ? $(`#${baseId}_localNot`).prop("checked", true) : $(`#${baseId}_localNot`).prop("checked", false);
+    (globalLose[i].reqGlobalNot == "true") ? $(`#${baseId}_globalNot`).prop("checked", true) : $(`#${baseId}_globalNot`).prop("checked", false);
+    (globalLose[i].preActionNot == "true") ? $(`#${baseId}_preActionNot`).prop("checked", true) : $(`#${baseId}_preActionNot`).prop("checked", false);
+    (globalLose[i].locVisitsNot == "true") ? $(`#${baseId}_visitsNot`).prop("checked", true) : $(`#${baseId}_visitsNot`).prop("checked", false);
+    (globalLose[i].preNodeNot == "true") ? $(`#${baseId}_preNodeNot`).prop("checked", true) : $(`#${baseId}_preNodeNot`).prop("checked", false);
+    (globalLose[i].itemEvosNot == "true") ? $(`#${baseId}_evosNot`).prop("checked", true) : $(`#${baseId}_evosNot`).prop("checked", false);
+    (globalLose[i].pastDesNot == "true") ? $(`#${baseId}_pastDesNot`).prop("checked", true) : $(`#${baseId}_pastDesNot`).prop("checked", false);
+    (globalLose[i].reqChanceNot == "true") ? $(`#${baseId}_reqChanceNot`).prop("checked", true) : $(`#${baseId}_reqChanceNot`).prop("checked", false);
+    (globalLose[i].reqFailsNot == "true") ? $(`#${baseId}_reqFailsNot`).prop("checked", true) : $(`#${baseId}_reqFailsNot`).prop("checked", false);
+    (globalLose[i].reqValidsNot == "true") ? $(`#${baseId}_reqValidsNot`).prop("checked", true) : $(`#${baseId}_reqValidsNot`).prop("checked", false);
+    (globalLose[i].reqMonitorsNot == "true") ? $(`#${baseId}_reqMonitorsNot`).prop("checked", true) : $(`#${baseId}_reqMonitorsNot`).prop("checked", false);
+
+    $(`#${baseId}_globalLoseDes`).val(globalLose[i].description);
+    $(`#${baseId}_Items`).val(globalLose[i].reqItems);
+    $(`#${baseId}_Containers`).val(globalLose[i].reqContainers);
+    $(`#${baseId}_Local`).val(globalLose[i].reqLocal);
+    $(`#${baseId}_Global`).val(globalLose[i].reqGlobal);
+    $(`#${baseId}_preAction`).val(globalLose[i].preAction);
+    $(`#${baseId}_Visits`).val(globalLose[i].locVisits);
+    $(`#${baseId}_preNode`).val(globalLose[i].preNode);
+    $(`#${baseId}_Evos`).val(globalLose[i].itemEvos);
+    $(`#${baseId}_pastDes`).val(globalLose[i].pastDes);
+    $(`#${baseId}_reqChance`).val(globalLose[i].reqChance);
+    if (globalLose[i].hasOwnProperty("reqFails")) {
+      if (globalLose[i].reqFails["consecutive"] == "true") {
+        $(`#${baseId}_reqFailsCheck`).prop("checked", true);
+      } else {
+        $(`#${baseId}_reqFailsCheck`).prop("checked", false);
+      }
+      $(`#${baseId}_reqFails`).val(globalLose[i].reqFails["reqFails"]);
+    }
+
+    if (globalLose[i].hasOwnProperty("reqValids")) {
+      if (globalLose[i].reqValids["consecutive"] == "true") {
+        $(`#${baseId}_reqValidsCheck`).prop("checked", true);
+      } else {
+        $(`#${baseId}_reqValidsCheck`).prop("checked", false);
+      }
+      $(`#${baseId}_reqValids`).val(globalLose[i].reqValids["reqValids"]);
+    }
+
+    if (globalLose[i].hasOwnProperty("reqMonitors")) {
+      $(`#${baseId}_reqMonitors`).val(globalLose[i].reqMonitors["reqMonitors"]);
+      (globalLose[i].reqMonitors["lessThan"] == "true") ? $(`#${baseId}_reqMonitorsLessThan`).prop("checked", true) : $(`#${baseId}_reqMonitorsLessThan`).prop("checked", false);
+      (globalLose[i].reqMonitors["greaterThan"] == "true") ? $(`#${baseId}_reqMonitorsGreaterThan`).prop("checked", true) : $(`#${baseId}_reqMonitorsGreaterThan`).prop("checked", false);
+    }
+  }
+}
+
+function loadDomMonitors(monitors) {
+  $("#monitorList").empty();
+  for (let i = 0; i < monitors.length; i++) {
+    addMonitor();
+    let baseId = `monitor_${i + 1}`;
+
+    if (monitors[i].reqNot == "true") {
+      $(`#${baseId}_reqNot`).prop("checked", true);
+      $(`.${baseId}_notBox`).css("visibility", "visible");
+    } else {
+      $(`#${baseId}_reqNot`).prop("checked", false);
+      $(`.${baseId}_notBox`).css("visibility", "hidden");
+    }
+    (monitors[i].reqAll == "true") ? $(`#${baseId}_reqAll`).prop("checked", true) : $(`#${baseId}_reqAll`).prop("checked", false);
+    (monitors[i].reqItemsNot == "true") ? $(`#${baseId}_itemsNot`).prop("checked", true) : $(`#${baseId}_itemsNot`).prop("checked", false);
+    (monitors[i].reqContainersNot == "true") ? $(`#${baseId}_containersNot`).prop("checked", true) : $(`#${baseId}_containersNot`).prop("checked", false);
+    (monitors[i].reqLocalNot == "true") ? $(`#${baseId}_localNot`).prop("checked", true) : $(`#${baseId}_localNot`).prop("checked", false);
+    (monitors[i].reqGlobalNot == "true") ? $(`#${baseId}_globalNot`).prop("checked", true) : $(`#${baseId}_globalNot`).prop("checked", false);
+    (monitors[i].preActionNot == "true") ? $(`#${baseId}_preActionNot`).prop("checked", true) : $(`#${baseId}_preActionNot`).prop("checked", false);
+    (monitors[i].locVisitsNot == "true") ? $(`#${baseId}_visitsNot`).prop("checked", true) : $(`#${baseId}_visitsNot`).prop("checked", false);
+    (monitors[i].preNodeNot == "true") ? $(`#${baseId}_preNodeNot`).prop("checked", true) : $(`#${baseId}_preNodeNot`).prop("checked", false);
+    (monitors[i].itemEvosNot == "true") ? $(`#${baseId}_evosNot`).prop("checked", true) : $(`#${baseId}_evosNot`).prop("checked", false);
+    (monitors[i].pastDesNot == "true") ? $(`#${baseId}_pastDesNot`).prop("checked", true) : $(`#${baseId}_pastDesNot`).prop("checked", false);
+    (monitors[i].reqChanceNot == "true") ? $(`#${baseId}_reqChanceNot`).prop("checked", true) : $(`#${baseId}_reqChanceNot`).prop("checked", false);
+    (monitors[i].reqFailsNot == "true") ? $(`#${baseId}_reqFailsNot`).prop("checked", true) : $(`#${baseId}_reqFailsNot`).prop("checked", false);
+    (monitors[i].reqValidsNot == "true") ? $(`#${baseId}_reqValidsNot`).prop("checked", true) : $(`#${baseId}_reqValidsNot`).prop("checked", false);
+    (monitors[i].reqMonitorsNot == "true") ? $(`#${baseId}_reqMonitorsNot`).prop("checked", true) : $(`#${baseId}_reqMonitorsNot`).prop("checked", false);
+
+    $(`#${baseId}_Monitor`).val(monitors[i].monitor);
+    $(`#${baseId}_Initial`).val(monitors[i].initial);
+    if (monitors[i].onStart == "true") {
+      $(`#${baseId}_onStart`).prop("checked", true);
+    } else {
+      $(`#${baseId}_onStart`).prop("checked", false);
+    }
+    if (monitors[i].display == "true") {
+      $(`#${baseId}_Display`).prop("checked", true);
+    } else {
+      $(`#${baseId}_Display`).prop("checked", false);
+    }
+    $(`#${baseId}_addSubtract`).val(monitors[i].addSubtract);
+    $(`#${baseId}_Multiply`).val(monitors[i].multiply);
+    $(`#${baseId}_Divide`).val(monitors[i].divide);
+    $(`#${baseId}_Reset`).val(monitors[i].reset);
+    $(`#${baseId}_Zero`).val(monitors[i].zero);
+    $(`#${baseId}_Items`).val(monitors[i].reqItems);
+    $(`#${baseId}_Containers`).val(monitors[i].reqContainers);
+    $(`#${baseId}_Local`).val(monitors[i].reqLocal);
+    $(`#${baseId}_Global`).val(monitors[i].reqGlobal);
+    $(`#${baseId}_preAction`).val(monitors[i].preAction);
+    $(`#${baseId}_Visits`).val(monitors[i].locVisits);
+    $(`#${baseId}_preNode`).val(monitors[i].preNode);
+    $(`#${baseId}_Evos`).val(monitors[i].itemEvos);
+    $(`#${baseId}_pastDes`).val(monitors[i].pastDes);
+    $(`#${baseId}_reqChance`).val(monitors[i].reqChance);
+    if (monitors[i].hasOwnProperty("reqFails")) {
+      if (monitors[i].reqFails["consecutive"] == "true") {
+        $(`#${baseId}_reqFailsCheck`).prop("checked", true);
+      } else {
+        $(`#${baseId}_reqFailsCheck`).prop("checked", false);
+      }
+      $(`#${baseId}_reqFails`).val(monitors[i].reqFails["reqFails"]);
+    }
+
+    if (monitors[i].hasOwnProperty("reqValids")) {
+      if (monitors[i].reqValids["consecutive"] == "true") {
+        $(`#${baseId}_reqValidsCheck`).prop("checked", true);
+      } else {
+        $(`#${baseId}_reqValidsCheck`).prop("checked", false);
+      }
+      $(`#${baseId}_reqValids`).val(monitors[i].reqValids["reqValids"]);
+    }
+
+    if (monitors[i].hasOwnProperty("reqMonitors")) {
+      $(`#${baseId}_reqMonitors`).val(monitors[i].reqMonitors["reqMonitors"]);
+      (monitors[i].reqMonitors["lessThan"] == "true") ? $(`#${baseId}_reqMonitorsLessThan`).prop("checked", true) : $(`#${baseId}_reqMonitorsLessThan`).prop("checked", false);
+      (monitors[i].reqMonitors["greaterThan"] == "true") ? $(`#${baseId}_reqMonitorsGreaterThan`).prop("checked", true) : $(`#${baseId}_reqMonitorsGreaterThan`).prop("checked", false);
     }
   }
 }
@@ -273,6 +497,7 @@ function loadDomFromNode(node) {
     (nodeDirections[i].reqChanceNot == "true") ? $(`#${checkbox}_reqChanceNot`).prop("checked", true) : $(`#${checkbox}_reqChanceNot`).prop("checked", false);
     (nodeDirections[i].reqFailsNot == "true") ? $(`#${checkbox}_reqFailsNot`).prop("checked", true) : $(`#${checkbox}_reqFailsNot`).prop("checked", false);
     (nodeDirections[i].reqValidsNot == "true") ? $(`#${checkbox}_reqValidsNot`).prop("checked", true) : $(`#${checkbox}_reqValidsNot`).prop("checked", false);
+    (nodeDirections[i].reqMonitorsNot == "true") ? $(`#${checkbox}_reqMonitorsNot`).prop("checked", true) : $(`#${checkbox}_reqMonitorsNot`).prop("checked", false);
 
     $(`#${checkbox}_Items`).val(nodeDirections[i].reqItems);
     $(`#${checkbox}_Containers`).val(nodeDirections[i].reqContainers);
@@ -291,6 +516,12 @@ function loadDomFromNode(node) {
     if (nodeDirections[i].hasOwnProperty("reqValids")) {
       (nodeDirections[i].reqValids["consecutive"] == "true") ? $(`#${checkbox}_reqValidsCheck`).prop("checked", true) : $(`#${checkbox}_reqValidsCheck`).prop("checked", false);
       $(`#${checkbox}_reqValids`).val(nodeDirections[i].reqValids["reqValids"]);
+    }
+
+    if (nodeDirections[i].hasOwnProperty("reqMonitors")) {
+      $(`#${checkbox}_reqMonitors`).val(nodeDirections[i].reqMonitors["reqMonitors"]);
+      (nodeDirections[i].reqMonitors["lessThan"] == "true") ? $(`#${checkbox}_reqMonitorsLessThan`).prop("checked", true) : $(`#${checkbox}_reqMonitorsLessThan`).prop("checked", false);
+      (nodeDirections[i].reqMonitors["greaterThan"] == "true") ? $(`#${checkbox}_reqMonitorsGreaterThan`).prop("checked", true) : $(`#${checkbox}_reqMonitorsGreaterThan`).prop("checked", false);
     }
   }
 
@@ -321,6 +552,7 @@ function loadDomFromNode(node) {
       (descriptions.evos[i].reqChanceNot == "true") ? $(`#${baseId}_reqChanceNot`).prop("checked", true) : $(`#${baseId}_reqChanceNot`).prop("checked", false);
       (descriptions.evos[i].reqFailsNot == "true") ? $(`#${baseId}_reqFailsNot`).prop("checked", true) : $(`#${baseId}_reqFailsNot`).prop("checked", false);
       (descriptions.evos[i].reqValidsNot == "true") ? $(`#${baseId}_reqValidsNot`).prop("checked", true) : $(`#${baseId}_reqValidsNot`).prop("checked", false);
+      (descriptions.evos[i].reqMonitorsNot == "true") ? $(`#${baseId}_reqMonitorsNot`).prop("checked", true) : $(`#${baseId}_reqMonitorsNot`).prop("checked", false);
   
       $(`#${baseId}_Items`).val(descriptions.evos[i].reqItems);
       $(`#${baseId}_Containers`).val(descriptions.evos[i].reqContainers);
@@ -340,6 +572,12 @@ function loadDomFromNode(node) {
       if (descriptions.evos[i].hasOwnProperty("reqValids")) {
         (descriptions.evos[i].reqValids["consecutive"] == "true") ? $(`#${baseId}_reqValidsCheck`).prop("checked", true) : $(`#${baseId}_reqValidsCheck`).prop("checked", false);
         $(`#${baseId}_reqValids`).val(descriptions.evos[i].reqValids["reqValids"]);
+      }
+
+      if (descriptions.evos[i].hasOwnProperty("reqMonitors")) {
+        $(`#${baseId}_reqMonitors`).val(descriptions.evos[i].reqMonitors["reqMonitors"]);
+        (descriptions.evos[i].reqMonitors["lessThan"] == "true") ? $(`#${baseId}_reqMonitorsLessThan`).prop("checked", true) : $(`#${baseId}_reqMonitorsLessThan`).prop("checked", false);
+        (descriptions.evos[i].reqMonitors["greaterThan"] == "true") ? $(`#${baseId}_reqMonitorsGreaterThan`).prop("checked", true) : $(`#${baseId}_reqMonitorsGreaterThan`).prop("checked", false);
       }
 
       $(`#${baseId}_Des`).val(descriptions.evos[i].evoDes);
@@ -373,6 +611,7 @@ function loadDomFromNode(node) {
     (items[i].reqChanceNot == "true") ? $(`#${baseId}_reqChanceNot`).prop("checked", true) : $(`#${baseId}_reqChanceNot`).prop("checked", false);
     (items[i].reqFailsNot == "true") ? $(`#${baseId}_reqFailsNot`).prop("checked", true) : $(`#${baseId}_reqFailsNot`).prop("checked", false);
     (items[i].reqValidsNot == "true") ? $(`#${baseId}_reqValidsNot`).prop("checked", true) : $(`#${baseId}_reqValidsNot`).prop("checked", false);
+    (items[i].reqMonitorsNot == "true") ? $(`#${baseId}_reqMonitorsNot`).prop("checked", true) : $(`#${baseId}_reqMonitorsNot`).prop("checked", false);
 
     $(`#${baseId}_Items`).val(items[i].reqItems);
     $(`#${baseId}_Containers`).val(items[i].reqContainers);
@@ -392,6 +631,12 @@ function loadDomFromNode(node) {
     if (items[i].hasOwnProperty("reqValids")) {
       (items[i].reqValids["consecutive"] == "true") ? $(`#${baseId}_reqValidsCheck`).prop("checked", true) : $(`#${baseId}_reqValidsCheck`).prop("checked", false);
       $(`#${baseId}_reqValids`).val(items[i].reqValids["reqValids"]);
+    }
+
+    if (items[i].hasOwnProperty("reqMonitors")) {
+      $(`#${baseId}_reqMonitors`).val(items[i].reqMonitors["reqMonitors"]);
+      (items[i].reqMonitors["lessThan"] == "true") ? $(`#${baseId}_reqMonitorsLessThan`).prop("checked", true) : $(`#${baseId}_reqMonitorsLessThan`).prop("checked", false);
+      (items[i].reqMonitors["greaterThan"] == "true") ? $(`#${baseId}_reqMonitorsGreaterThan`).prop("checked", true) : $(`#${baseId}_reqMonitorsGreaterThan`).prop("checked", false);
     }
 
     for (let j = 0; j < items[i].evos.length; j++) {
@@ -418,6 +663,7 @@ function loadDomFromNode(node) {
       (items[i].evos[j].reqChanceNot == "true") ? $(`#${baseEvoId}_reqChanceNot`).prop("checked", true) : $(`#${baseEvoId}_reqChanceNot`).prop("checked", false);
       (items[i].evos[j].reqFailsNot == "true") ? $(`#${baseEvoId}_reqFailsNot`).prop("checked", true) : $(`#${baseEvoId}_reqFailsNot`).prop("checked", false);
       (items[i].evos[j].reqValidsNot == "true") ? $(`#${baseEvoId}_reqValidsNot`).prop("checked", true) : $(`#${baseEvoId}_reqValidsNot`).prop("checked", false);
+      (items[i].evos[j].reqMonitorsNot == "true") ? $(`#${baseEvoId}_reqMonitorsNot`).prop("checked", true) : $(`#${baseEvoId}_reqMonitorsNot`).prop("checked", false);
   
       $(`#${baseEvoId}_Items`).val(items[i].evos[j].reqItems);
       $(`#${baseEvoId}_Containers`).val(items[i].evos[j].reqContainers);
@@ -437,6 +683,12 @@ function loadDomFromNode(node) {
       if (items[i].evos[j].hasOwnProperty("reqValids")) {
         (items[i].evos[j].reqValids["consecutive"] == "true") ? $(`#${baseEvoId}_reqValidsCheck`).prop("checked", true) : $(`#${baseEvoId}_reqValidsCheck`).prop("checked", false);
         $(`#${baseEvoId}_reqValids`).val(items[i].evos[j].reqValids["reqValids"]);
+      }
+
+      if (items[i].evos[j].hasOwnProperty("reqMonitors")) {
+        $(`#${baseEvoId}_reqMonitors`).val(items[i].evos[j].reqMonitors["reqMonitors"]);
+        (items[i].evos[j].reqMonitors["lessThan"] == "true") ? $(`#${baseEvoId}_reqMonitorsLessThan`).prop("checked", true) : $(`#${baseEvoId}_reqMonitorsLessThan`).prop("checked", false);
+        (items[i].evos[j].reqMonitors["greaterThan"] == "true") ? $(`#${baseEvoId}_reqMonitorsGreaterThan`).prop("checked", true) : $(`#${baseEvoId}_reqMonitorsGreaterThan`).prop("checked", false);
       }
 
       $(`#${baseEvoId}_Des`).val(items[i].evos[j].evoDes);
@@ -472,6 +724,7 @@ function loadDomFromNode(node) {
     (containers[i].reqChanceNot == "true") ? $(`#${baseId}_reqChanceNot`).prop("checked", true) : $(`#${baseId}_reqChanceNot`).prop("checked", false);
     (containers[i].reqFailsNot == "true") ? $(`#${baseId}_reqFailsNot`).prop("checked", true) : $(`#${baseId}_reqFailsNot`).prop("checked", false);
     (containers[i].reqValidsNot == "true") ? $(`#${baseId}_reqValidsNot`).prop("checked", true) : $(`#${baseId}_reqValidsNot`).prop("checked", false);
+    (containers[i].reqMonitorsNot == "true") ? $(`#${baseId}_reqMonitorsNot`).prop("checked", true) : $(`#${baseId}_reqMonitorsNot`).prop("checked", false);
 
     $(`#${baseId}_Items`).val(containers[i].reqItems);
     $(`#${baseId}_Containers`).val(containers[i].reqContainers);
@@ -491,6 +744,12 @@ function loadDomFromNode(node) {
     if (containers[i].hasOwnProperty("reqValids")) {
       (containers[i].reqValids["consecutive"] == "true") ? $(`#${baseId}_reqValidsCheck`).prop("checked", true) : $(`#${baseId}_reqValidsCheck`).prop("checked", false);
       $(`#${baseId}_reqValids`).val(containers[i].reqValids["reqValids"]);
+    }
+
+    if (containers[i].hasOwnProperty("reqMonitors")) {
+      $(`#${baseId}_reqMonitors`).val(containers[i].reqMonitors["reqMonitors"]);
+      (containers[i].reqMonitors["lessThan"] == "true") ? $(`#${baseId}_reqMonitorsLessThan`).prop("checked", true) : $(`#${baseId}_reqMonitorsLessThan`).prop("checked", false);
+      (containers[i].reqMonitors["greaterThan"] == "true") ? $(`#${baseId}_reqMonitorsGreaterThan`).prop("checked", true) : $(`#${baseId}_reqMonitorsGreaterThan`).prop("checked", false);
     }
   }
 
@@ -521,6 +780,7 @@ function loadDomFromNode(node) {
       (actions.evos[i].reqChanceNot == "true") ? $(`#${baseId}_reqChanceNot`).prop("checked", true) : $(`#${baseId}_reqChanceNot`).prop("checked", false);
       (actions.evos[i].reqFailsNot == "true") ? $(`#${baseId}_reqFailsNot`).prop("checked", true) : $(`#${baseId}_reqFailsNot`).prop("checked", false);
       (actions.evos[i].reqValidsNot == "true") ? $(`#${baseId}_reqValidsNot`).prop("checked", true) : $(`#${baseId}_reqValidsNot`).prop("checked", false);
+      (actions.evos[i].reqMonitorsNot == "true") ? $(`#${baseId}_reqMonitorsNot`).prop("checked", true) : $(`#${baseId}_reqMonitorsNot`).prop("checked", false);
   
       $(`#${baseId}_Items`).val(actions.evos[i].reqItems);
       $(`#${baseId}_Containers`).val(actions.evos[i].reqContainers);
@@ -540,6 +800,12 @@ function loadDomFromNode(node) {
       if (actions.evos[i].hasOwnProperty("reqValids")) {
         (actions.evos[i].reqValids["consecutive"] == "true") ? $(`#${baseId}_reqValidsCheck`).prop("checked", true) : $(`#${baseId}_reqValidsCheck`).prop("checked", false);
         $(`#${baseId}_reqValids`).val(actions.evos[i].reqValids["reqValids"]);
+      }
+
+      if (actions.evos[i].hasOwnProperty("reqMonitors")) {
+        $(`#${baseId}_reqMonitors`).val(actions.evos[i].reqMonitors["reqMonitors"]);
+        (actions.evos[i].reqMonitors["lessThan"] == "true") ? $(`#${baseId}_reqMonitorsLessThan`).prop("checked", true) : $(`#${baseId}_reqMonitorsLessThan`).prop("checked", false);
+        (actions.evos[i].reqMonitors["greaterThan"] == "true") ? $(`#${baseId}_reqMonitorsGreaterThan`).prop("checked", true) : $(`#${baseId}_reqMonitorsGreaterThan`).prop("checked", false);
       }
 
       $(`#${baseId}_Des`).val(actions.evos[i].evoDes);
@@ -578,6 +844,7 @@ function loadDomFromNode(node) {
       (actions.actions[i].reqChanceNot == "true") ? $(`#${baseId}_reqChanceNot`).prop("checked", true) : $(`#${baseId}_reqChanceNot`).prop("checked", false);
       (actions.actions[i].reqFailsNot == "true") ? $(`#${baseId}_reqFailsNot`).prop("checked", true) : $(`#${baseId}_reqFailsNot`).prop("checked", false);
       (actions.actions[i].reqValidsNot == "true") ? $(`#${baseId}_reqValidsNot`).prop("checked", true) : $(`#${baseId}_reqValidsNot`).prop("checked", false);
+      (actions.actions[i].reqMonitorsNot == "true") ? $(`#${baseId}_reqMonitorsNot`).prop("checked", true) : $(`#${baseId}_reqMonitorsNot`).prop("checked", false);
   
       $(`#${baseId}_Items`).val(actions.actions[i].reqItems);
       $(`#${baseId}_Containers`).val(actions.actions[i].reqContainers);
@@ -597,6 +864,12 @@ function loadDomFromNode(node) {
       if (actions.actions[i].hasOwnProperty("reqValids")) {
         (actions.actions[i].reqValids["consecutive"] == "true") ? $(`#${baseId}_reqValidsCheck`).prop("checked", true) : $(`#${baseId}_reqValidsCheck`).prop("checked", false);
         $(`#${baseId}_reqValids`).val(actions.actions[i].reqValids["reqValids"]);
+      }
+
+      if (actions.actions[i].hasOwnProperty("reqMonitors")) {
+        $(`#${baseId}_reqMonitors`).val(actions.actions[i].reqMonitors["reqMonitors"]);
+        (actions.actions[i].reqMonitors["lessThan"] == "true") ? $(`#${baseId}_reqMonitorsLessThan`).prop("checked", true) : $(`#${baseId}_reqMonitorsLessThan`).prop("checked", false);
+        (actions.actions[i].reqMonitors["greaterThan"] == "true") ? $(`#${baseId}_reqMonitorsGreaterThan`).prop("checked", true) : $(`#${baseId}_reqMonitorsGreaterThan`).prop("checked", false);
       }
     }
   }
@@ -623,6 +896,7 @@ function loadDomFromNode(node) {
   (win.reqChanceNot == "true") ? $(`#win_reqChanceNot`).prop("checked", true) : $(`#win_reqChanceNot`).prop("checked", false);
   (win.reqFailsNot == "true") ? $(`#win_reqFailsNot`).prop("checked", true) : $(`#win_reqFailsNot`).prop("checked", false);
   (win.reqValidsNot == "true") ? $(`#win_reqValidsNot`).prop("checked", true) : $(`#win_reqValidsNot`).prop("checked", false);
+  (win.reqMonitorsNot == "true") ? $(`#win_reqMonitorsNot`).prop("checked", true) : $(`#win_reqMonitorsNot`).prop("checked", false);
 
   $("#win_Items").val(win.reqItems);
   $("#win_Containers").val(win.reqContainers);
@@ -642,6 +916,12 @@ function loadDomFromNode(node) {
   if (win.hasOwnProperty("reqValids")) {
     (win.reqValids["consecutive"] == "true") ? $(`#win_reqValidsCheck`).prop("checked", true) : $(`#win_reqValidsCheck`).prop("checked", false);
     $(`#win_reqValids`).val(win.reqValids["reqValids"]);
+  }
+
+  if (win.hasOwnProperty("reqMonitors")) {
+    $(`#win_reqMonitors`).val(win.reqMonitors["reqMonitors"]);
+    (win.reqMonitors["lessThan"] == "true") ? $(`#win_reqMonitorsLessThan`).prop("checked", true) : $(`#win_reqMonitorsLessThan`).prop("checked", false);
+    (win.reqMonitors["greaterThan"] == "true") ? $(`#win_reqMonitorsGreaterThan`).prop("checked", true) : $(`#win_reqMonitorsGreaterThan`).prop("checked", false);
   }
 
   $("#loseDes").val(lose.description);
@@ -667,7 +947,7 @@ function loadDomFromNode(node) {
   (lose.reqChanceNot == "true") ? $(`#lose_reqChanceNot`).prop("checked", true) : $(`#lose_reqChanceNot`).prop("checked", false);
   (lose.reqFailsNot == "true") ? $(`#lose_reqFailsNot`).prop("checked", true) : $(`#lose_reqFailsNot`).prop("checked", false);
   (lose.reqValidsNot == "true") ? $(`#lose_reqValidsNot`).prop("checked", true) : $(`#lose_reqValidsNot`).prop("checked", false);
-
+  (lose.reqMonitorsNot == "true") ? $(`#lose_reqMonitorsNot`).prop("checked", true) : $(`#lose_reqMonitorsNot`).prop("checked", false);
 
   $("#lose_Items").val(lose.reqItems);
   $("#lose_Containers").val(lose.reqContainers);
@@ -687,6 +967,12 @@ function loadDomFromNode(node) {
   if (lose.hasOwnProperty("reqValids")) {
     (lose.reqValids["consecutive"] == "true") ? $(`#lose_reqValidsCheck`).prop("checked", true) : $(`#lose_reqValidsCheck`).prop("checked", false);
     $(`#lose_reqValids`).val(lose.reqValids["reqValids"]);
+  }
+
+  if (lose.hasOwnProperty("reqMonitors")) {
+    $(`#lose_reqMonitors`).val(lose.reqMonitors["reqMonitors"]);
+    (lose.reqMonitors["lessThan"] == "true") ? $(`#lose_reqMonitorsLessThan`).prop("checked", true) : $(`#lose_reqMonitorsLessThan`).prop("checked", false);
+    (lose.reqMonitors["greaterThan"] == "true") ? $(`#lose_reqMonitorsGreaterThan`).prop("checked", true) : $(`#lose_reqMonitorsGreaterThan`).prop("checked", false);
   }
 
   $("#hint").val(hint);
@@ -891,6 +1177,68 @@ function addContainer() {
   $("#containerList").append(html);
 }
 
+function addGlobalWin() {
+  let length = $("#globalWinList").children().length;
+  let winId;
+  if (length >= 1) {
+    let lastId = +$("#globalWinList").children().last().attr("id").split("_")[2];
+    winId = `global_win_${lastId + 1}`;
+  } else {
+    winId = "global_win_1";
+  }
+
+  let newDivStart = `<div class='popupBlockElements' id='${winId}'>`;
+  let newDivEnd = "</div>";
+  let rmvButton = `<button class='removeObject'>Remove Win</button>`;
+  let desLabel = `<label class="tooltip">
+                    <h3>Global Win Description</h3>
+                    <span class="popuptooltiptext">Text displayed after the
+                        player meets the win requirements and wins the
+                        game</span>
+                  </label>`;
+  let description = `<textarea id="${winId}_globalWinDes" rows="5" cols='28'></textarea>`;
+  let requirements = getRequirements(winId);
+  let html = 
+    newDivStart +
+    rmvButton +
+    desLabel +
+    description +
+    requirements +
+    newDivEnd;
+  $("#globalWinList").append(html);
+}
+
+function addGlobalLose() {
+  let length = $("#globalLoseList").children().length;
+  let loseId;
+  if (length >= 1) {
+    let lastId = +$("#globalLoseList").children().last().attr("id").split("_")[2];
+    loseId = `global_lose_${lastId + 1}`;
+  } else {
+    loseId = "global_lose_1";
+  }
+
+  let newDivStart = `<div class='popupBlockElements' id='${loseId}'>`;
+  let newDivEnd = "</div>";
+  let rmvButton = `<button class='removeObject'>Remove Lose</button>`;
+  let desLabel = `<label class="tooltip">
+                    <h3>Global Lose Description</h3>
+                    <span class="popuptooltiptext">Text displayed after the
+                        player meets the lose requirements and loses the
+                        game</span>
+                  </label>`;
+  let description = `<textarea id="${loseId}_globalLoseDes" rows="5" cols='28'></textarea>`;
+  let requirements = getRequirements(loseId);
+  let html = 
+    newDivStart +
+    rmvButton +
+    desLabel +
+    description +
+    requirements +
+    newDivEnd;
+  $("#globalLoseList").append(html);
+}
+
 function addInitItem() {
   let length = $("#initItemList").children().length;
   let itemId;
@@ -1018,6 +1366,91 @@ function addGlobalAction() {
     newDivEnd;
 
   $("#globalActionList").append(html);
+}
+
+function addMonitor() {
+  let length = $("#monitorList").children().length;
+  let monitorId;
+  if (length >= 1) {
+    let lastId = +$("#monitorList").children().last().attr("id").split("_")[1];
+    monitorId = `monitor_${lastId + 1}`;
+  } else {
+    monitorId = "monitor_1";
+  }
+  let newDivStart = `<div class='popupBlockElements' id='${monitorId}'>`;
+  let newDivEnd = "</div>";
+  let rmvButton = `<button class='removeObject'>Remove Monitor</button>`;
+  let monitorLabel = `<label class='tooltip'>
+                        Monitor
+                        <span class='popuptooltiptext'>Name of monitor (e.g. healthbar, ammo, hits, etc.)</span>
+                        </label>`;
+  let monitor = `<input type='text' id='${monitorId}_Monitor'>`;
+  let initialLabel = `<label class='tooltip'>
+                      Initial Value
+                      <span class='popuptooltiptext'>Initial number value for this monitor</span>
+                      </label>`;
+  let initial = `<input type='text' id='${monitorId}_Initial'>`;
+  let onStartLabel = `<label class='tooltip '>
+                      Display on Start:
+                      <span class='popuptooltiptext'>If checked, this monitor and its value will be displayed at the beginning of the game</span>
+                      </label>`;
+  let onStart = `<input type='checkbox' id='${monitorId}_onStart'/>`;
+  let displayLabel = `<label class='tooltip '>
+                      Display on Change:
+                      <span class='popuptooltiptext'>If checked, this monitor and its value will be displayed to the player when it changes</span>
+                      </label>`;
+  let display = `<input type='checkbox' id='${monitorId}_Display'/>`;
+  let addSubtractLabel = `<label class='tooltip'>
+                          Add/Subtract Actions
+                          <span class='popuptooltiptext'>Comma separated list of actions and their corresponding incrementors for the action passing and failing [for adding to or subtracting from the monitor in the form of [action, pass incrementor, fail incrementor]] (e.g. [shoot, 0, -1], [eat, 1, 0])</span>
+                          </label>`;
+  let addSubtract = `<input type='text' id='${monitorId}_addSubtract'>`;
+  let multiplyLabel = `<label class='tooltip'>
+                            Multiply Actions
+                            <span class='popuptooltiptext'>Comma separated list of actions and their corresponding factors for the action passing and failing [for multiplying the monitor in the form of [action, pass factor, fail factor]] (e.g. [reverse, -1, 1], [doubledown, 2, 1])</span>
+                            </label>`;
+  let multiply = `<input type='text' id='${monitorId}_Multiply'>`;
+  let divideLabel = `<label class='tooltip'>
+                      Divide Actions
+                      <span class='popuptooltiptext'>Comma separated list of actions and their corresponding factors for the action passing and failing [for dividing the monitor in the form of [action, pass factor, fail factor]] (e.g. [split, 2, 1], [deal cards, 4, 1])</span>
+                      </label>`;
+  let divide = `<input type='text' id='${monitorId}_Divide'>`;
+  let resetLabel = `<label class='tooltip'>
+                    Reset Actions
+                    <span class='popuptooltiptext'>Comma separated list of actions which reset this monitor to its initial value if the action is valid (e.g. refill, reset, restock, heal)</span>
+                    </label>`;
+  let reset = `<input type='text' id='${monitorId}_Reset'>`;
+  let zeroLabel = `<label class='tooltip'>
+                    Zero Actions
+                    <span class='popuptooltiptext'>Comma separated list of actions which set this monitor to a value of 0 if the action is valid (e.g. dump bucket, release balloons)</span>
+                    </label>`;
+  let zero = `<input type='text' id='${monitorId}_Zero'>`;
+  let requirements = getRequirements(monitorId);
+  let html = 
+    newDivStart +
+    rmvButton +
+    monitorLabel +
+    monitor +
+    initialLabel +
+    initial +
+    onStartLabel +
+    onStart +
+    displayLabel +
+    display +
+    addSubtractLabel +
+    addSubtract +
+    multiplyLabel +
+    multiply +
+    divideLabel +
+    divide +
+    resetLabel +
+    reset +
+    zeroLabel +
+    zero +
+    requirements +
+    newDivEnd;
+
+    $("#monitorList").append(html);
 }
 
 function addAction() {
@@ -1371,6 +1804,15 @@ function handleGlobalCheckboxes(popup) {
     case "items":
       loadDomInitItems(initItems);
       break;
+    case "monitors":
+      loadDomMonitors(monitors);
+      break;
+    case "win":
+      loadDomGlobalWin(globalWin);
+      break;
+    case "lose":
+      loadDomGlobalLose(globalLose);
+      break;
     default:
       break;
   }
@@ -1379,9 +1821,10 @@ function handleGlobalCheckboxes(popup) {
 function getRequirements(baseId) {
   let divStart = `<div class='requirements'>`;
   let reqLabel = `<label class='tooltip'>
-                    <b>Requirements</b>
+                    <span style="display: flex;"><b>Requirements</b> <button class='showHideReqs'>&#9660;</button></span>
                     <span class='tooltiptext'>The current node setting will only exist/apply if the following conditions are met</span>
                     </label>`;
+  let reqsBlockStart = `<div class="thisBlock" style="display: none;">`;
   let reqAllAndNot = `<div style="display: flex;">
                     <div>
                     <label class='pure-checkbox tooltip'>
@@ -1497,11 +1940,23 @@ function getRequirements(baseId) {
                   <input id ='${baseId}_reqChance' type='text'>
                   <input class='${baseId}_notBox notBox' style="visibility: hidden;" type='checkbox' id='${baseId}_reqChanceNot'/>
                   </div>`;
+  let reqMonitor = `<label class='tooltip'>
+                    Monitor Values
+                    <span class='tooltiptext'>Comma separated list of monitors and their required value (in form of [monitor, value]) (e.g. [health, 0], [thirst, 0])</span>
+                    </label>
+                    <div class="reqLine">
+                    <input id ='${baseId}_reqMonitors' type='text'>
+                    <input class='${baseId}_notBox notBox' style="visibility: hidden;" type='checkbox' id='${baseId}_reqMonitorsNot'/>
+                    </div>
+                    <div style="display: flex;">&nbsp;&nbsp;&nbsp;&nbsp;Include less than:&nbsp;&nbsp;&nbsp;<input type='checkbox' id='${baseId}_reqMonitorsLessThan'/></div>
+                    <div style="display: flex;">&nbsp;&nbsp;&nbsp;&nbsp;Include greater than:&nbsp;&nbsp;&nbsp;<input type='checkbox' id='${baseId}_reqMonitorsGreaterThan'/></div>`;
+  let reqsBlockEnd = `</div>`;
   let divEnd = `</div>`;
 
   let html =
     divStart +
     reqLabel +
+    reqsBlockStart +
     reqAllAndNot +
     reqItems +
     reqContainers +
@@ -1515,6 +1970,8 @@ function getRequirements(baseId) {
     reqFails +
     reqValids +
     reqChance +
+    reqMonitor +
+    reqsBlockEnd +
     divEnd;
   return html;
 }
@@ -1546,6 +2003,12 @@ export {
   addSimInput,
   addGlobalAction,
   addInitItem,
+  addMonitor,
+  addGlobalWin,
+  addGlobalLose,
+  loadDomMonitors,
+  loadDomGlobalWin,
+  loadDomGlobalLose,
   showHideNotBoxes,
   changeStyle,
   handleGlobalCheckboxes

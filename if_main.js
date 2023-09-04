@@ -1,4 +1,4 @@
-import { saveGame, loadGame, deleteNode, startGameSim, saveGlobalActions, saveInitItems } from "./if_generate.js";
+import { saveGame, loadGame, deleteNode, startGameSim, saveGlobalActions, saveInitItems, saveMonitors, saveGlobalWin, saveGlobalLose } from "./if_generate.js";
 import * as dom from "./if_dom.js";
 import { nodeMap, resizeCanvas, zoom, draw } from "./if_nodemap.js";
 import { gameInit, parseAction, previousInput } from "./if_parser.js";
@@ -71,6 +71,11 @@ $(function () {
     dom.handleGlobalCheckboxes("items");
   })
 
+  $(document).on("click", "#monitorsOpen", function () {
+    $("#monitorsDisplay").css("visibility", "visible");
+    dom.handleGlobalCheckboxes("monitors");
+  })
+
   $(document).on("click", "#conDepOpen", function () {
     $("#conDepDisplay").css("visibility", "visible");
   })
@@ -99,6 +104,16 @@ $(function () {
     $("#examinesDisplay").css("visibility", "visible");
   })
 
+  $(document).on("click", "#winOpen", function () {
+    $("#globalWinDisplay").css("visibility", "visible");
+    dom.handleGlobalCheckboxes("win");
+  })
+
+  $(document).on("click", "#loseOpen", function () {
+    $("#globalLoseDisplay").css("visibility", "visible");
+    dom.handleGlobalCheckboxes("lose");
+  })
+
   $("#addGlobalAction").click(function () {
     dom.addGlobalAction();
   });
@@ -112,6 +127,18 @@ $(function () {
     let baseId = $(event.currentTarget.parentElement).attr("id");
     let listId = `${baseId}_EvoList`;
     dom.addInitEvo(listId, itemIndex);
+  });
+
+  $("#addMonitor").click(function () {
+    dom.addMonitor();
+  });
+
+  $("#addGlobalWin").click(function () {
+    dom.addGlobalWin();
+  });
+
+  $("#addGlobalLose").click(function () {
+    dom.addGlobalLose();
   });
 
   dom.loadDefaultCommands();
@@ -128,13 +155,16 @@ $(function () {
   });
 
   $(document).on('click', '.popupClose', function(event) {
-    let hideCheckboxes = ["initItemsDisplay", "globalActionsDisplay"];
+    let hideCheckboxes = ["initItemsDisplay", "globalActionsDisplay", "monitorsDisplay", "globalWinDisplay", "globalLoseDisplay"];
     let parent = event.currentTarget.parentElement;
     if ($(parent).is(':visible')){
       if (hideCheckboxes.includes(parent.id)) {
         $(parent).find(".notBox").css("visibility", "hidden");
         saveGlobalActions();
         saveInitItems();
+        saveMonitors();
+        saveGlobalWin();
+        saveGlobalLose();
       }
       $(parent).css("visibility", "hidden");
     }
@@ -239,4 +269,14 @@ $(function () {
   $(document).on("change", "#gameStyle", function(event) {
     dom.changeStyle(event.currentTarget.value);
   })
+
+  $(document).on("click", ".showHideReqs", function(event) {
+    if ($(event.currentTarget).text() == String.fromCharCode(9660)) {
+      $(event.currentTarget).html(String.fromCharCode(9650));
+      $(event.currentTarget).closest(".requirements").find(".thisBlock").css("display", "block");
+    } else if ($(event.currentTarget).text() == String.fromCharCode(9650)) {
+      $(event.currentTarget).html(String.fromCharCode(9660));
+      $(event.currentTarget).closest(".requirements").find(".thisBlock").css("display", "none");
+    }
+  });
 });

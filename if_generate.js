@@ -1,4 +1,4 @@
-import { loadDomFromNode, loadDomGlobalActions, loadDomInitItems, loadDomCustomCommands, changeStyle } from "./if_dom.js";
+import { loadDomFromNode, loadDomGlobalActions, loadDomInitItems, loadDomCustomCommands, changeStyle, loadDomMonitors, loadDomGlobalWin, loadDomGlobalLose } from "./if_dom.js";
 import { createMapFromGame } from "./if_nodemap.js";
 
 var game = {};
@@ -8,8 +8,9 @@ var gameStatus;
 var gameRating;
 var gameAuthor;
 var IFID;
-var globalActions;
-var initItems;
+var globalActions = [];
+var monitors = [];
+var initItems = [];
 var customDeposits;
 var customWithdrawals;
 var customTakes;
@@ -17,6 +18,8 @@ var customDrops;
 var customIgnorables;
 var customLooks;
 var customExamines;
+var globalWin = [];
+var globalLose = [];
 
 var node = {
   name: "",
@@ -51,6 +54,9 @@ async function saveGame() {
   saveDefaultCommands();
   saveGlobalActions();
   saveInitItems();
+  saveMonitors();
+  saveGlobalWin();
+  saveGlobalLose();
   gameFile['gameStyle'] = $("#gameStyle").val();
   gameFile['gameStatus'] = $("#gameStatus").val();
   gameFile['gameRating'] = $("#gameRating").val();
@@ -58,6 +64,7 @@ async function saveGame() {
   gameFile['IFID'] = generateIFID();
   gameFile['gameTitle'] = gameTitle;
   gameFile['globalActions'] = globalActions;
+  gameFile['monitors'] = monitors;
   gameFile['initItems'] = initItems;
   gameFile['customDeposits'] = customDeposits;
   gameFile['customWithdrawals'] = customWithdrawals;
@@ -66,6 +73,8 @@ async function saveGame() {
   gameFile['customIgnorables'] = customIgnorables;
   gameFile['customLooks'] = customLooks;
   gameFile['customExamines'] = customExamines;
+  gameFile['globalWin'] = globalWin;
+  gameFile['globalLose'] = globalLose;
   gameFile['gameContent'] = JSON.parse(JSON.stringify(game));
   window.IFS_API.saveGame(JSON.stringify(gameFile));
 }
@@ -80,6 +89,7 @@ async function loadGame() {
     gameAuthor = loadData['gameAuthor'];
     IFID = loadData['IFID'];
     globalActions = loadData['globalActions'];
+    monitors = loadData['monitors'];
     initItems = loadData['initItems'];
     customDeposits = loadData['customDeposits'];
     customWithdrawals = loadData['customWithdrawals'];
@@ -88,11 +98,16 @@ async function loadGame() {
     customIgnorables = loadData['customIgnorables'];
     customLooks = loadData['customLooks'];
     customExamines = loadData['customExamines'];
+    globalWin = loadData['globalWin'];
+    globalLose = loadData['globalLose'];
     game = loadData['gameContent'];
     cNode = loadData['gameContent']['0,0,0'];
     loadDomCustomCommands();
     loadDomInitItems(initItems);
     loadDomGlobalActions(globalActions);
+    loadDomGlobalWin(globalWin);
+    loadDomGlobalLose(globalLose);
+    loadDomMonitors(monitors);
     loadDomFromNode(cNode);
     createMapFromGame(Object.keys(game));
     $("#gameTitle").val(gameTitle);
@@ -277,6 +292,7 @@ function saveInitItems() {
       let reqChanceNot = $(`#${baseId}_reqChanceNot`).is(":checked").toString();
       let reqFailsNot = $(`#${baseId}_reqFailsNot`).is(":checked").toString();
       let reqValidsNot = $(`#${baseId}_reqValidsNot`).is(":checked").toString();
+      let reqMonitorsNot = $(`#${baseId}_reqMonitorsNot`).is(":checked").toString();
       let reqItems = $(`#${baseId}_Items`).val();
       let reqContainers = $(`#${baseId}_Containers`).val();
       let reqLocal = $(`#${baseId}_Local`).val();
@@ -299,6 +315,10 @@ function saveInitItems() {
       } else {
         reqValids = {"reqValids": $(`#${baseId}_reqValids`).val(), "consecutive": "false"};
       }
+      let reqMonitors = {"reqMonitors": $(`#${baseId}_reqMonitors`).val(),
+                        "lessThan": $(`#${baseId}_reqMonitorsLessThan`).is(":checked").toString(),
+                        "greaterThan": $(`#${baseId}_reqMonitorsGreaterThan`).is(":checked").toString()
+                      };
       let evoDes = $(`#${baseId}_Des`).val();
       let evo = {
         reqAll: reqAll,
@@ -328,6 +348,8 @@ function saveInitItems() {
         reqValids: reqValids,
         reqValidsNot: reqValidsNot,
         evoDes: evoDes,
+        reqMonitorsNot: reqMonitorsNot,
+        reqMonitors: reqMonitors
       };
       evoListItems.push(evo);
     }
@@ -335,6 +357,275 @@ function saveInitItems() {
     itemArray.push(item);
   }
   initItems = itemArray;
+}
+
+function saveGlobalWin() {
+  let globalWinArray = [];
+  let globalWinList = $("#globalWinList").children();
+  for (let i = 0; i < globalWinList.length; i++) {
+    let globalWinId = $(globalWinList[i]).attr("id");
+    //generate win
+    let globalWinDes = $(`#${globalWinId}_globalWinDes`).val();
+    let globalWinReqAll = $(`#${globalWinId}_reqAll`).is(":checked").toString();
+    let globalWinReqNot = $(`#${globalWinId}_reqNot`).is(":checked").toString();
+    let globalWinReqItemsNot = $(`#${globalWinId}_itemsNot`).is(":checked").toString();
+    let globalWinReqContainersNot = $(`#${globalWinId}_containersNot`).is(":checked").toString();
+    let globalWinReqLocalNot = $(`#${globalWinId}_localNot`).is(":checked").toString();
+    let globalWinReqGlobalNot = $(`#${globalWinId}_globalNot`).is(":checked").toString();
+    let globalWinPreActionNot = $(`#${globalWinId}_preActionNot`).is(":checked").toString();
+    let globalWinLocVisitsNot = $(`#${globalWinId}_visitsNot`).is(":checked").toString();
+    let globalWinPreNodeNot = $(`#${globalWinId}_preNodeNot`).is(":checked").toString();
+    let globalWinItemEvosNot = $(`#${globalWinId}_evosNot`).is(":checked").toString();
+    let globalWinPastDesNot = $(`#${globalWinId}_pastDesNot`).is(":checked").toString();
+    let globalWinReqChanceNot = $(`#${globalWinId}_reqChanceNot`).is(":checked").toString();
+    let globalWinReqMonitorsNot = $(`#${globalWinId}_reqMonitorsNot`).is(":checked").toString();
+    let globalWinReqFailsNot = $(`#${globalWinId}_reqFailsNot`).is(":checked").toString();
+    let globalWinReqValidsNot = $(`#${globalWinId}_reqValidsNot`).is(":checked").toString();
+    let globalWinReqItems = $(`#${globalWinId}_Items`).val();
+    let globalWinReqContainers = $(`#${globalWinId}_Containers`).val();
+    let globalWinReqLocal = $(`#${globalWinId}_Local`).val();
+    let globalWinReqGlobal = $(`#${globalWinId}_Global`).val();
+    let globalWinPreAction = $(`#${globalWinId}_preAction`).val();
+    let globalWinLocVisits = $(`#${globalWinId}_Visits`).val();
+    let globalWinPreNode = $(`#${globalWinId}_preNode`).val();
+    let globalWinItemEvos = $(`#${globalWinId}_Evos`).val();
+    let globalWinPastDes = $(`#${globalWinId}_pastDes`).val();
+    let globalWinReqChance = $(`#${globalWinId}_reqChance`).val();
+    let globalWinReqFails;
+    if ($(`#${globalWinId}_reqFailsCheck`).is(":checked")) {
+      globalWinReqFails = {"reqFails": $(`#${globalWinId}_reqFails`).val(), "consecutive": "true"};
+    } else {
+      globalWinReqFails = {"reqFails": $(`#${globalWinId}_reqFails`).val(), "consecutive": "false"};
+    }
+    let globalWinReqValids;
+    if ($(`#${globalWinId}_reqValidsCheck`).is(":checked")) {
+      globalWinReqValids = {"reqValids": $(`#${globalWinId}_reqValids`).val(), "consecutive": "true"};
+    } else {
+      globalWinReqValids = {"reqValids": $(`#${globalWinId}_reqValids`).val(), "consecutive": "false"};
+    }
+    let globalWinReqMonitors = {"reqMonitors": $(`#${globalWinId}_reqMonitors`).val(),
+                          "lessThan": $(`#${globalWinId}_reqMonitorsLessThan`).is(":checked").toString(),
+                          "greaterThan": $(`#${globalWinId}_reqMonitorsGreaterThan`).is(":checked").toString()
+                        };
+    let win = {
+      description: globalWinDes,
+      reqAll: globalWinReqAll,
+      reqNot: globalWinReqNot,
+      reqItems: globalWinReqItems,
+      reqItemsNot: globalWinReqItemsNot,
+      reqContainers: globalWinReqContainers,
+      reqContainersNot: globalWinReqContainersNot,
+      reqLocal: globalWinReqLocal,
+      reqLocalNot: globalWinReqLocalNot,
+      reqGlobal: globalWinReqGlobal,
+      reqGlobalNot: globalWinReqGlobalNot,
+      preAction: globalWinPreAction,
+      preActionNot: globalWinPreActionNot,
+      locVisits: globalWinLocVisits,
+      locVisitsNot: globalWinLocVisitsNot,
+      preNode: globalWinPreNode,
+      preNodeNot: globalWinPreNodeNot,
+      itemEvos: globalWinItemEvos,
+      itemEvosNot: globalWinItemEvosNot,
+      pastDes: globalWinPastDes,
+      pastDesNot: globalWinPastDesNot,
+      reqChance: globalWinReqChance,
+      reqChanceNot: globalWinReqChanceNot,
+      reqFails: globalWinReqFails,
+      reqFailsNot: globalWinReqFailsNot,
+      reqValids: globalWinReqValids,
+      reqValidsNot: globalWinReqValidsNot,
+      reqMonitors: globalWinReqMonitors,
+      reqMonitorsNot: globalWinReqMonitorsNot
+    };
+    globalWinArray.push(win);
+  }
+  globalWin = globalWinArray;
+}
+
+function saveGlobalLose() {
+  let globalLoseArray = [];
+  let globalLoseList = $(`#globalLoseList`).children();
+  for (let i = 0; i < globalLoseList.length; i++) {
+    let globalLoseId = $(globalLoseList[i]).attr("id");
+    //generate lose
+    let globalLoseDes = $(`#${globalLoseId}_globalLoseDes`).val();
+    let globalLoseReqAll = $(`#${globalLoseId}_reqAll`).is(":checked").toString();
+    let globalLoseReqNot = $(`#${globalLoseId}_reqNot`).is(":checked").toString();
+    let globalLoseReqItemsNot = $(`#${globalLoseId}_itemsNot`).is(":checked").toString();
+    let globalLoseReqContainersNot = $(`#${globalLoseId}_containersNot`).is(":checked").toString();
+    let globalLoseReqLocalNot = $(`#${globalLoseId}_localNot`).is(":checked").toString();
+    let globalLoseReqGlobalNot = $(`#${globalLoseId}_globalNot`).is(":checked").toString();
+    let globalLosePreActionNot = $(`#${globalLoseId}_preActionNot`).is(":checked").toString();
+    let globalLoseLocVisitsNot = $(`#${globalLoseId}_visitsNot`).is(":checked").toString();
+    let globalLosePreNodeNot = $(`#${globalLoseId}_preNodeNot`).is(":checked").toString();
+    let globalLoseItemEvosNot = $(`#${globalLoseId}_evosNot`).is(":checked").toString();
+    let globalLosePastDesNot = $(`#${globalLoseId}_pastDesNot`).is(":checked").toString();
+    let globalLoseReqChanceNot = $(`#${globalLoseId}_reqChanceNot`).is(":checked").toString();
+    let globalLoseReqMonitorsNot = $(`#${globalLoseId}_reqMonitorsNot`).is(":checked").toString();
+    let globalLoseReqFailsNot = $(`#${globalLoseId}_reqFailsNot`).is(":checked").toString();
+    let globalLoseReqValidsNot = $(`#${globalLoseId}_reqValidsNot`).is(":checked").toString();
+    let globalLoseReqItems = $(`#${globalLoseId}_Items`).val();
+    let globalLoseReqContainers = $(`#${globalLoseId}_Containers`).val();
+    let globalLoseReqLocal = $(`#${globalLoseId}_Local`).val();
+    let globalLoseReqGlobal = $(`#${globalLoseId}_Global`).val();
+    let globalLosePreAction = $(`#${globalLoseId}_preAction`).val();
+    let globalLoseLocVisits = $(`#${globalLoseId}_Visits`).val();
+    let globalLosePreNode = $(`#${globalLoseId}_preNode`).val();
+    let globalLoseItemEvos = $(`#${globalLoseId}_Evos`).val();
+    let globalLosePastDes = $(`#${globalLoseId}_pastDes`).val();
+    let globalLoseReqChance = $(`#${globalLoseId}_reqChance`).val();
+    let globalLoseReqFails;
+    if ($(`#${globalLoseId}_reqFailsCheck`).is(":checked")) {
+      globalLoseReqFails = {"reqFails": $(`#${globalLoseId}_reqFails`).val(), "consecutive": "true"};
+    } else {
+      globalLoseReqFails = {"reqFails": $(`#${globalLoseId}_reqFails`).val(), "consecutive": "false"};
+    }
+    let globalLoseReqValids;
+    if ($(`#${globalLoseId}_reqValidsCheck`).is(":checked")) {
+      globalLoseReqValids = {"reqValids": $(`#${globalLoseId}_reqValids`).val(), "consecutive": "true"};
+    } else {
+      globalLoseReqValids = {"reqValids": $(`#${globalLoseId}_reqValids`).val(), "consecutive": "false"};
+    }
+    let globalLoseReqMonitors = {"reqMonitors": $(`#${globalLoseId}_reqMonitors`).val(),
+                          "lessThan": $(`#${globalLoseId}_reqMonitorsLessThan`).is(":checked").toString(),
+                          "greaterThan": $(`#${globalLoseId}_reqMonitorsGreaterThan`).is(":checked").toString()
+                        };
+    let lose = {
+      description: globalLoseDes,
+      reqAll: globalLoseReqAll,
+      reqNot: globalLoseReqNot,
+      reqItems: globalLoseReqItems,
+      reqItemsNot: globalLoseReqItemsNot,
+      reqContainers: globalLoseReqContainers,
+      reqContainersNot: globalLoseReqContainersNot,
+      reqLocal: globalLoseReqLocal,
+      reqLocalNot: globalLoseReqLocalNot,
+      reqGlobal: globalLoseReqGlobal,
+      reqGlobalNot: globalLoseReqGlobalNot,
+      preAction: globalLosePreAction,
+      preActionNot: globalLosePreActionNot,
+      locVisits: globalLoseLocVisits,
+      locVisitsNot: globalLoseLocVisitsNot,
+      preNode: globalLosePreNode,
+      preNodeNot: globalLosePreNodeNot,
+      itemEvos: globalLoseItemEvos,
+      itemEvosNot: globalLoseItemEvosNot,
+      pastDes: globalLosePastDes,
+      pastDesNot: globalLosePastDesNot,
+      reqChance: globalLoseReqChance,
+      reqChanceNot: globalLoseReqChanceNot,
+      reqFails: globalLoseReqFails,
+      reqFailsNot: globalLoseReqFailsNot,
+      reqValids: globalLoseReqValids,
+      reqValidsNot: globalLoseReqValidsNot,
+      reqMonitors: globalLoseReqMonitors,
+      reqMonitorsNot: globalLoseReqMonitorsNot
+    };
+    globalLoseArray.push(lose);
+  }
+  globalLose = globalLoseArray;
+}
+
+function saveMonitors() {
+  let monitorArray = [];
+  let monitorList = $("#monitorList").children();
+  for (let i = 0; i < monitorList.length; i++) {
+    let monitorId = $(monitorList[i]).attr("id");
+    let monitor = $(`#${monitorId}_Monitor`).val();
+    let initial = $(`#${monitorId}_Initial`).val();
+    let onStart = $(`#${monitorId}_onStart`).is(":checked").toString();
+    let display = $(`#${monitorId}_Display`).is(":checked").toString();
+    let addSubtract = $(`#${monitorId}_addSubtract`).val();
+    let multiply = $(`#${monitorId}_Multiply`).val();
+    let divide = $(`#${monitorId}_Divide`).val();
+    let reset = $(`#${monitorId}_Reset`).val();
+    let zero = $(`#${monitorId}_Zero`).val();
+    let value = initial;
+    let reqAll = $(`#${monitorId}_reqAll`).is(":checked").toString();
+    let reqNot = $(`#${monitorId}_reqNot`).is(":checked").toString();
+    let reqItemsNot = $(`#${monitorId}_itemsNot`).is(":checked").toString();
+    let reqContainersNot = $(`#${monitorId}_containersNot`).is(":checked").toString();
+    let reqLocalNot = $(`#${monitorId}_localNot`).is(":checked").toString();
+    let reqGlobalNot = $(`#${monitorId}_globalNot`).is(":checked").toString();
+    let preActionNot = $(`#${monitorId}_preActionNot`).is(":checked").toString();
+    let locVisitsNot = $(`#${monitorId}_visitsNot`).is(":checked").toString();
+    let preNodeNot = $(`#${monitorId}_preNodeNot`).is(":checked").toString();
+    let itemEvosNot = $(`#${monitorId}_evosNot`).is(":checked").toString();
+    let pastDesNot = $(`#${monitorId}_pastDesNot`).is(":checked").toString();
+    let reqChanceNot = $(`#${monitorId}_reqChanceNot`).is(":checked").toString();
+    let reqMonitorsNot = $(`#${monitorId}_reqMonitorsNot`).is(":checked").toString();
+    let reqFailsNot = $(`#${monitorId}_reqFailsNot`).is(":checked").toString();
+    let reqValidsNot = $(`#${monitorId}_reqValidsNot`).is(":checked").toString();
+    let reqItems = $(`#${monitorId}_Items`).val();
+    let reqContainers = $(`#${monitorId}_Containers`).val();
+    let reqLocal = $(`#${monitorId}_Local`).val();
+    let reqGlobal = $(`#${monitorId}_Global`).val();
+    let preAction = $(`#${monitorId}_preAction`).val();
+    let locVisits = $(`#${monitorId}_Visits`).val();
+    let preNode = $(`#${monitorId}_preNode`).val();
+    let itemEvos = $(`#${monitorId}_Evos`).val();
+    let pastDes = $(`#${monitorId}_pastDes`).val();
+    let reqChance = $(`#${monitorId}_reqChance`).val();
+    let reqFails;
+    if ($(`#${monitorId}_reqFailsCheck`).is(":checked")) {
+      reqFails = {"reqFails": $(`#${monitorId}_reqFails`).val(), "consecutive": "true"};
+    } else {
+      reqFails = {"reqFails": $(`#${monitorId}_reqFails`).val(), "consecutive": "false"};
+    }
+    let reqValids;
+    if ($(`#${monitorId}_reqValidsCheck`).is(":checked")) {
+      reqValids = {"reqValids": $(`#${monitorId}_reqValids`).val(), "consecutive": "true"};
+    } else {
+      reqValids = {"reqValids": $(`#${monitorId}_reqValids`).val(), "consecutive": "false"};
+    }
+    let reqMonitors = {"reqMonitors": $(`#${monitorId}_reqMonitors`).val(),
+                        "lessThan": $(`#${monitorId}_reqMonitorsLessThan`).is(":checked").toString(),
+                        "greaterThan": $(`#${monitorId}_reqMonitorsGreaterThan`).is(":checked").toString()
+                      };
+    let monitorObject = {
+      monitor: monitor,
+      initial: initial,
+      onStart: onStart,
+      display: display,
+      addSubtract: addSubtract,
+      multiply: multiply,
+      divide: divide,
+      reset: reset,
+      zero: zero,
+      value: value,
+      reqAll: reqAll,
+      reqNot: reqNot,
+      reqItems: reqItems,
+      reqItemsNot: reqItemsNot,
+      reqContainers: reqContainers,
+      reqContainersNot: reqContainersNot,
+      reqLocal: reqLocal,
+      reqLocalNot: reqLocalNot,
+      reqGlobal: reqGlobal,
+      reqGlobalNot: reqGlobalNot,
+      preAction: preAction,
+      preActionNot: preActionNot,
+      locVisits: locVisits,
+      locVisitsNot: locVisitsNot,
+      preNode: preNode,
+      preNodeNot: preNodeNot,
+      itemEvos: itemEvos,
+      itemEvosNot: itemEvosNot,
+      pastDes: pastDes,
+      pastDesNot: pastDesNot,
+      reqChance: reqChance,
+      reqChanceNot: reqChanceNot,
+      reqFails: reqFails,
+      reqFailsNot: reqFailsNot,
+      reqValids: reqValids,
+      reqValidsNot: reqValidsNot,
+      reqMonitors: reqMonitors,
+      reqMonitorsNot: reqMonitorsNot
+    }
+    monitorArray.push(monitorObject);
+  }
+  monitors = monitorArray;
 }
 
 function saveGlobalActions() {
@@ -364,6 +655,7 @@ function saveGlobalActions() {
     let reqChanceNot = $(`#${baseId}_reqChanceNot`).is(":checked").toString();
     let reqFailsNot = $(`#${baseId}_reqFailsNot`).is(":checked").toString();
     let reqValidsNot = $(`#${baseId}_reqValidsNot`).is(":checked").toString();
+    let reqMonitorsNot = $(`#${baseId}_reqMonitorsNot`).is(":checked").toString();
     let reqItems = $(`#${baseId}_Items`).val();
     let reqContainers = $(`#${baseId}_Containers`).val();
     let reqLocal = $(`#${baseId}_Local`).val();
@@ -386,6 +678,10 @@ function saveGlobalActions() {
     } else {
       reqValids = {"reqValids": $(`#${baseId}_reqValids`).val(), "consecutive": "false"};
     }
+    let reqMonitors = {"reqMonitors": $(`#${baseId}_reqMonitors`).val(),
+                        "lessThan": $(`#${baseId}_reqMonitorsLessThan`).is(":checked").toString(),
+                        "greaterThan": $(`#${baseId}_reqMonitorsGreaterThan`).is(":checked").toString()
+                      };
     let action = {
       actions: actions,
       max: max,
@@ -420,7 +716,9 @@ function saveGlobalActions() {
       reqFails: reqFails,
       reqFailsNot: reqFailsNot,
       reqValids: reqValids,
-      reqValidsNot: reqValidsNot
+      reqValidsNot: reqValidsNot,
+      reqMonitorsNot: reqMonitorsNot,
+      reqMonitors: reqMonitors
     };
     actionArray.push(action);
   }
@@ -477,6 +775,7 @@ function generateNode() {
       let itemEvosNot = $(`#${direction}_evosNot`).is(":checked").toString();
       let pastDesNot = $(`#${direction}_pastDesNot`).is(":checked").toString();
       let reqChanceNot = $(`#${direction}_reqChanceNot`).is(":checked").toString();
+      let reqMonitorsNot = $(`#${direction}_reqMonitorsNot`).is(":checked").toString();
       let reqFailsNot = $(`#${direction}_reqFailsNot`).is(":checked").toString();
       let reqValidsNot = $(`#${direction}_reqValidsNot`).is(":checked").toString();
       let reqItems = $(`#${direction}_Items`).val();
@@ -502,6 +801,10 @@ function generateNode() {
       } else {
         reqValids = {"reqValids":$(`#${direction}_reqValids`).val(), "consecutive":"false"};
       }
+      let reqMonitors = {"reqMonitors": $(`#${direction}_reqMonitors`).val(),
+                        "lessThan": $(`#${direction}_reqMonitorsLessThan`).is(":checked").toString(),
+                        "greaterThan": $(`#${direction}_reqMonitorsGreaterThan`).is(":checked").toString()
+                      };
 
       if (exclude) {
         exclude = "true";
@@ -539,7 +842,9 @@ function generateNode() {
         reqFails: reqFails,
         reqFailsNot: reqFailsNot,
         reqValids: reqValids,
-        reqValidsNot: reqValidsNot
+        reqValidsNot: reqValidsNot,
+        reqMonitors: reqMonitors,
+        reqMonitorsNot: reqMonitorsNot
       };
       directions.push(object);
     }
@@ -570,6 +875,7 @@ function generateNode() {
       let itemEvosNot = $(`#${baseId}_evosNot`).is(":checked").toString();
       let pastDesNot = $(`#${baseId}_pastDesNot`).is(":checked").toString();
       let reqChanceNot = $(`#${baseId}_reqChanceNot`).is(":checked").toString();
+      let reqMonitorsNot = $(`#${baseId}_reqMonitorsNot`).is(":checked").toString();
       let reqFailsNot = $(`#${baseId}_reqFailsNot`).is(":checked").toString();
       let reqValidsNot = $(`#${baseId}_reqValidsNot`).is(":checked").toString();
       let reqItems = $(`#${baseId}_Items`).val();
@@ -598,6 +904,10 @@ function generateNode() {
         reqValids = {"reqValids": $(`#${baseId}_reqValids`).val(),
                     "consecutive": "false"};
       }
+      let reqMonitors = {"reqMonitors": $(`#${baseId}_reqMonitors`).val(),
+                        "lessThan": $(`#${baseId}_reqMonitorsLessThan`).is(":checked").toString(),
+                        "greaterThan": $(`#${baseId}_reqMonitorsGreaterThan`).is(":checked").toString()
+                      };
       let evoDes = $(`#${baseId}_Des`).val();
 
       let evo = {
@@ -627,6 +937,8 @@ function generateNode() {
         reqFailsNot: reqFailsNot,
         reqValids: reqValids,
         reqValidsNot: reqValidsNot,
+        reqMonitors: reqMonitors,
+        reqMonitorsNot: reqMonitorsNot,
         evoDes: evoDes,
         passed: "false"
       };
@@ -655,6 +967,7 @@ function generateNode() {
     let itemEvosNot = $(`#${itemId}_evosNot`).is(":checked").toString();
     let pastDesNot = $(`#${itemId}_pastDesNot`).is(":checked").toString();
     let reqChanceNot = $(`#${itemId}_reqChanceNot`).is(":checked").toString();
+    let reqMonitorsNot = $(`#${itemId}_reqMonitorsNot`).is(":checked").toString();
     let reqFailsNot = $(`#${itemId}_reqFailsNot`).is(":checked").toString();
     let reqValidsNot = $(`#${itemId}_reqValidsNot`).is(":checked").toString();
     let reqItems = $(`#${itemId}_Items`).val();
@@ -679,6 +992,10 @@ function generateNode() {
     } else {
       reqValids = {"reqValids": $(`#${itemId}_reqValids`).val(), "consecutive": "false"};
     }
+    let reqMonitors = {"reqMonitors": $(`#${itemId}_reqMonitors`).val(),
+                        "lessThan": $(`#${itemId}_reqMonitorsLessThan`).is(":checked").toString(),
+                        "greaterThan": $(`#${itemId}_reqMonitorsGreaterThan`).is(":checked").toString()
+                      };
     let item = {
       name: name,
       description: description,
@@ -709,6 +1026,8 @@ function generateNode() {
       reqFailsNot: reqFailsNot,
       reqValids: reqValids,
       reqValidsNot: reqValidsNot,
+      reqMonitors: reqMonitors,
+      reqMonitorsNot: reqMonitorsNot,
       evos: [],
     };
     let evoDivs = $(`#${itemId}_EvoList`).children();
@@ -727,6 +1046,7 @@ function generateNode() {
       let itemEvosNot = $(`#${baseId}_evosNot`).is(":checked").toString();
       let pastDesNot = $(`#${baseId}_pastDesNot`).is(":checked").toString();
       let reqChanceNot = $(`#${baseId}_reqChanceNot`).is(":checked").toString();
+      let reqMonitorsNot = $(`#${baseId}_reqMonitorsNot`).is(":checked").toString();
       let reqFailsNot = $(`#${baseId}_reqFailsNot`).is(":checked").toString();
       let reqValidsNot = $(`#${baseId}_reqValidsNot`).is(":checked").toString();
       let reqItems = $(`#${baseId}_Items`).val();
@@ -751,6 +1071,10 @@ function generateNode() {
       } else {
         reqValids = {"reqValids": $(`#${baseId}_reqValids`).val(), "consecutive": "false"};
       }
+      let reqMonitors = {"reqMonitors": $(`#${baseId}_reqMonitors`).val(),
+                        "lessThan": $(`#${baseId}_reqMonitorsLessThan`).is(":checked").toString(),
+                        "greaterThan": $(`#${baseId}_reqMonitorsGreaterThan`).is(":checked").toString()
+                      };
       let evoDes = $(`#${baseId}_Des`).val();
       let evo = {
         reqAll: reqAll,
@@ -779,6 +1103,8 @@ function generateNode() {
         reqFailsNot: reqFailsNot,
         reqValids: reqValids,
         reqValidsNot: reqValidsNot,
+        reqMonitors: reqMonitors,
+        reqMonitorsNot: reqMonitorsNot,
         evoDes: evoDes,
       };
       evoListItems.push(evo);
@@ -810,6 +1136,7 @@ function generateNode() {
     let itemEvosNot = $(`#${containerId}_evosNot`).is(":checked").toString();
     let pastDesNot = $(`#${containerId}_pastDesNot`).is(":checked").toString();
     let reqChanceNot = $(`#${containerId}_reqChanceNot`).is(":checked").toString();
+    let reqMonitorsNot = $(`#${containerId}_reqMonitorsNot`).is(":checked").toString();
     let reqFailsNot = $(`#${containerId}_reqFailsNot`).is(":checked").toString();
     let reqValidsNot = $(`#${containerId}_reqValidsNot`).is(":checked").toString();
     let reqItems = $(`#${containerId}_Items`).val();
@@ -834,6 +1161,10 @@ function generateNode() {
     } else {
       reqValids = {"reqValids": $(`#${containerId}_reqValids`).val(), "consecutive": "false"};
     }
+    let reqMonitors = {"reqMonitors": $(`#${containerId}_reqMonitors`).val(),
+                        "lessThan": $(`#${containerId}_reqMonitorsLessThan`).is(":checked").toString(),
+                        "greaterThan": $(`#${containerId}_reqMonitorsGreaterThan`).is(":checked").toString()
+                      };
     let container = {
       name: name,
       capacity: cap,
@@ -866,7 +1197,9 @@ function generateNode() {
       reqFails: reqFails,
       reqFailsNot: reqFailsNot,
       reqValids: reqValids,
-      reqValidsNot: reqValidsNot
+      reqValidsNot: reqValidsNot,
+      reqMonitors: reqMonitors,
+      reqMonitorsNot: reqMonitorsNot
     };
     containersArray.push(container);
   }
@@ -903,6 +1236,7 @@ function generateNode() {
     let itemEvosNot = $(`#${baseId}_evosNot`).is(":checked").toString();
     let pastDesNot = $(`#${baseId}_pastDesNot`).is(":checked").toString();
     let reqChanceNot = $(`#${baseId}_reqChanceNot`).is(":checked").toString();
+    let reqMonitorsNot = $(`#${baseId}_reqMonitorsNot`).is(":checked").toString();
     let reqFailsNot = $(`#${baseId}_reqFailsNot`).is(":checked").toString();
     let reqValidsNot =$(`#${baseId}_reqValidsNot`).is(":checked").toString();
     let reqItems = $(`#${baseId}_Items`).val();
@@ -927,6 +1261,10 @@ function generateNode() {
     } else {
       reqValids = {"reqValids": $(`#${baseId}_reqValids`).val(), "consecutive": "false"};
     }
+    let reqMonitors = {"reqMonitors": $(`#${baseId}_reqMonitors`).val(),
+                        "lessThan": $(`#${baseId}_reqMonitorsLessThan`).is(":checked").toString(),
+                        "greaterThan": $(`#${baseId}_reqMonitorsGreaterThan`).is(":checked").toString()
+                      };
 
     let action = {
       actions: actions,
@@ -962,7 +1300,9 @@ function generateNode() {
       reqFails: reqFails,
       reqFailsNot: reqFailsNot,
       reqValids: reqValids,
-      reqValidsNot: reqValidsNot
+      reqValidsNot: reqValidsNot,
+      reqMonitors: reqMonitors,
+      reqMonitorsNot: reqMonitorsNot
     };
     actionArray.push(action);
   }
@@ -983,6 +1323,7 @@ function generateNode() {
       let itemEvosNot = $(`#${baseId}_evosNot`).is(":checked").toString();
       let pastDesNot = $(`#${baseId}_pastDesNot`).is(":checked").toString();
       let reqChanceNot = $(`#${baseId}_reqChanceNot`).is(":checked").toString();
+      let reqMonitorsNot = $(`#${baseId}_reqMonitorsNot`).is(":checked").toString();
       let reqFailsNot = $(`#${baseId}_reqFailsNot`).is(":checked").toString();
       let reqValidsNot = $(`#${baseId}_reqValidsNot`).is(":checked").toString();
       let reqItems = $(`#${baseId}_Items`).val();
@@ -1011,6 +1352,10 @@ function generateNode() {
         reqValids = {"reqValids": $(`#${baseId}_reqValids`).val(),
                     "consecutive": "false"};
       }
+      let reqMonitors = {"reqMonitors": $(`#${baseId}_reqMonitors`).val(),
+                        "lessThan": $(`#${baseId}_reqMonitorsLessThan`).is(":checked").toString(),
+                        "greaterThan": $(`#${baseId}_reqMonitorsGreaterThan`).is(":checked").toString()
+                      };
       let evoDes = $(`#${baseId}_Des`).val();
 
       let evo = {
@@ -1040,6 +1385,8 @@ function generateNode() {
         reqFailsNot: reqFailsNot,
         reqValids: reqValids,
         reqValidsNot: reqValidsNot,
+        reqMonitors: reqMonitors,
+        reqMonitorsNot: reqMonitorsNot,
         evoDes: evoDes
       };
       actionsObject.evos.push(evo);
@@ -1064,6 +1411,7 @@ function generateNode() {
   let winItemEvosNot = $("#win_evosNot").is(":checked").toString();
   let winPastDesNot = $("#win_pastDesNot").is(":checked").toString();
   let winReqChanceNot = $(`#win_reqChanceNot`).is(":checked").toString();
+  let winReqMonitorsNot = $(`#win_reqMonitorsNot`).is(":checked").toString();
   let winReqFailsNot = $("#win_reqFailsNot").is(":checked").toString();
   let winReqValidsNot = $("#win_reqValidsNot").is(":checked").toString();
   let winReqItems = $("#win_Items").val();
@@ -1088,6 +1436,10 @@ function generateNode() {
   } else {
     winReqValids = {"reqValids": $("#win_reqValids").val(), "consecutive": "false"};
   }
+  let winReqMonitors = {"reqMonitors": $(`#win_reqMonitors`).val(),
+                        "lessThan": $(`#win_reqMonitorsLessThan`).is(":checked").toString(),
+                        "greaterThan": $(`#win_reqMonitorsGreaterThan`).is(":checked").toString()
+                      };
   let win = {
     description: winDes,
     reqAll: winReqAll,
@@ -1115,7 +1467,9 @@ function generateNode() {
     reqFails: winReqFails,
     reqFailsNot: winReqFailsNot,
     reqValids: winReqValids,
-    reqValidsNot: winReqValidsNot
+    reqValidsNot: winReqValidsNot,
+    reqMonitors: winReqMonitors,
+    reqMonitorsNot: winReqMonitorsNot
   };
   cNode.win = win;
 
@@ -1133,6 +1487,7 @@ function generateNode() {
   let loseItemEvosNot = $("#lose_evosNot").is(":checked").toString();
   let losePastDesNot = $("#lose_pastDesNot").is(":checked").toString();
   let loseReqChanceNot = $(`#lose_reqChanceNot`).is(":checked").toString();
+  let loseReqMonitorsNot = $(`#lose_reqMonitorsNot`).is(":checked").toString();
   let loseReqFailsNot = $("#lose_reqFailsNot").is(":checked").toString();
   let loseReqValidsNot = $("#lose_reqValidsNot").is(":checked").toString();
   let loseReqItems = $("#lose_Items").val();
@@ -1157,6 +1512,10 @@ function generateNode() {
   } else {
     loseReqValids = {"reqValids": $("#lose_reqValids").val(), "consecutive": "false"};
   }
+  let loseReqMonitors = {"reqMonitors": $(`#lose_reqMonitors`).val(),
+                        "lessThan": $(`#lose_reqMonitorsLessThan`).is(":checked").toString(),
+                        "greaterThan": $(`#lose_reqMonitorsGreaterThan`).is(":checked").toString()
+                      };
   let lose = {
     description: loseDes,
     reqAll: loseReqAll,
@@ -1184,7 +1543,9 @@ function generateNode() {
     reqFails: loseReqFails,
     reqFailsNot: loseReqFailsNot,
     reqValids: loseReqValids,
-    reqValidsNot: loseReqValidsNot
+    reqValidsNot: loseReqValidsNot,
+    reqMonitors: loseReqMonitors,
+    reqMonitorsNot: loseReqMonitorsNot
   };
   cNode.lose = lose;
 
@@ -1203,6 +1564,7 @@ export {
   IFID,
   globalActions,
   initItems,
+  monitors,
   customDeposits,
   customWithdrawals,
   customTakes,
@@ -1210,6 +1572,8 @@ export {
   customIgnorables,
   customLooks,
   customExamines,
+  globalWin,
+  globalLose,
   game,
   node,
   switchNode,
@@ -1218,5 +1582,8 @@ export {
   deleteNode,
   startGameSim,
   saveGlobalActions,
-  saveInitItems
+  saveInitItems,
+  saveMonitors,
+  saveGlobalWin,
+  saveGlobalLose
 };
