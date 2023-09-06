@@ -39,9 +39,10 @@ function nodeMap() {
 
   const reset = (e) => {
     if (
-      Math.sqrt(Math.pow(dragTotalX, 2) + Math.pow(dragTotalY, 2)) <=
+        Math.sqrt(Math.pow(dragTotalX, 2) + Math.pow(dragTotalY, 2)) <=
         Math.sqrt(2) &&
-      possibleClick
+        mouseStart &&
+        possibleClick
     ) {
       getClickCoords(e);
     }
