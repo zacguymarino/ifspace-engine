@@ -237,7 +237,7 @@ function getActions() {
                 "reqFails": game[currentNode].actions.actions[i].reqFails,
                 "reqValids": game[currentNode].actions.actions[i].reqValids,
             }
-            let reqCheck = checkRequirements(reqs);
+            let reqCheck = checkRequirements(reqs, false);
             if (!reqCheck && game[currentNode].actions.actions[i].fail.length == 0) {
                 continue;
             } else {
@@ -277,7 +277,7 @@ function getActions() {
                 "reqFails": globalActions[i].reqFails,
                 "reqValids": globalActions[i].reqValids
             }
-            let reqCheck = checkRequirements(reqs);
+            let reqCheck = checkRequirements(reqs, false);
             if (!reqCheck && globalActions[i].fail.length == 0) {
                 continue;
             } else {
@@ -401,7 +401,7 @@ function getDiscoveredItemsActions(location) {
             "reqFails": items[i].reqFails,
             "reqValids": items[i].reqValids
         }
-        if (checkRequirements(reqs)) {
+        if (checkRequirements(reqs, false)) {
             let variants = items[i].name.split(/\s*,\s*/);
             legalItems.push(variants);
         }
@@ -608,120 +608,151 @@ function updateMonitors(action, passed) {
     let checkActions = checkValidAction(action, passed);
     let checkDirections = checkValidDirection(action, passed);
     for (let i = 0; i < monitorList.length; i++) {
-        let addSubtractArray = monitorList[i].addSubtract.split(/\]\s*,\s*/);
-        let multiplyArray = monitorList[i].multiply.split(/\]\s*,\s*/);
-        let divideArray = monitorList[i].divide.split(/\]\s*,\s*/);
-        let resetArray = monitorList[i].reset.split(/\s*,\s*/);
-        let zeroArray = monitorList[i].zero.split(/\s*,\s*/);
-        let oldValue = monitorList[i]["value"];
-        let newValue;
-        for (let j = 0; j < addSubtractArray.length; j++) {
-            let addSubtract = addSubtractArray[j].replace(/^\[|\]$/g, '').split(/\s*,\s*/);
-            if (checkActions["action"] == addSubtract[0].toUpperCase()) {
-                let incrementor;
-                if (checkActions["valid"]) {
-                    incrementor = +addSubtract[1];
-                    newValue = +monitorList[i]["value"] + incrementor;
-                    monitorList[i]["value"] = newValue.toString();
-                } else {
-                    incrementor = +addSubtract[2];
-                    newValue = +monitorList[i]["value"] + incrementor;
-                    monitorList[i]["value"] = newValue.toString();
-                }
-            }
-            if (checkDirections["action"] == addSubtract[0].toUpperCase()) {
-                let incrementor;
-                if (checkDirections["valid"]) {
-                    incrementor = +addSubtract[1];
-                    newValue = +monitorList[i]["value"] + incrementor;
-                    monitorList[i]["value"] = newValue.toString();
-                } else {
-                    incrementor = +addSubtract[2];
-                    newValue = +monitorList[i]["value"] + incrementor;
-                    monitorList[i]["value"] = newValue.toString();
-                }
-            }
+        let reqs = {
+            "reqItemsNot": monitorList[i].reqItemsNot,
+            "reqContainersNot": monitorList[i].reqContainersNot,
+            "reqLocalNot": monitorList[i].reqLocalNot,
+            "reqGlobalNot": monitorList[i].reqGlobalNot,
+            "preActionNot": monitorList[i].preActionNot,
+            "locVisitsNot": monitorList[i].locVisitsNot,
+            "preNodeNot": monitorList[i].preNodeNot,
+            "itemEvosNot": monitorList[i].itemEvosNot,
+            "pastDesNot": monitorList[i].pastDesNot,
+            "reqChanceNot": monitorList[i].reqChanceNot,
+            "reqMonitorsNot": monitorList[i].reqMonitorsNot,
+            "reqFailsNot": monitorList[i].reqFailsNot,
+            "reqValidsNot": monitorList[i].reqValidsNot,
+            "reqAll": monitorList[i].reqAll,
+            "reqItems": monitorList[i].reqItems,
+            "reqContainers": monitorList[i].reqContainers,
+            "reqLocal": monitorList[i].reqLocal,
+            "reqGlobal": monitorList[i].reqGlobal,
+            "preAction": monitorList[i].preAction,
+            "locVisits": monitorList[i].locVisits,
+            "preNode": monitorList[i].preNode,
+            "itemEvos": monitorList[i].itemEvos,
+            "pastDes": monitorList[i].pastDes,
+            "reqChance": monitorList[i].reqChance,
+            "reqMonitors": monitorList[i].reqMonitors,
+            "reqFails": monitorList[i].reqFails,
+            "reqValids": monitorList[i].reqValids
         }
-        for (let j = 0; j < multiplyArray.length; j++) {
-            let multiply = multiplyArray[j].replace(/^\[|\]$/g, '').split(/\s*,\s*/);
-            if (checkActions["action"] == multiply[0].toUpperCase()) {
-                let factor;
-                if (checkActions["valid"]) {
-                    factor = +multiply[1];
-                    monitorList[i]["value"] = (+monitorList[i]["value"] * factor).toString();
-                } else {
-                    factor = +multiply[2];
-                    monitorList[i]["value"] = (+monitorList[i]["value"] * factor).toString();
+        if (checkRequirements(reqs, true)) {
+            let addSubtractArray = monitorList[i].addSubtract.split(/\]\s*,\s*/);
+            let multiplyArray = monitorList[i].multiply.split(/\]\s*,\s*/);
+            let divideArray = monitorList[i].divide.split(/\]\s*,\s*/);
+            let resetArray = monitorList[i].reset.split(/\s*,\s*/);
+            let zeroArray = monitorList[i].zero.split(/\s*,\s*/);
+            let oldValue = monitorList[i]["value"];
+            let newValue;
+            for (let j = 0; j < addSubtractArray.length; j++) {
+                let addSubtract = addSubtractArray[j].replace(/^\[|\]$/g, '').split(/\s*,\s*/);
+                if (checkActions["action"] == addSubtract[0].toUpperCase()) {
+                    let incrementor;
+                    if (checkActions["valid"]) {
+                        incrementor = +addSubtract[1];
+                        newValue = +monitorList[i]["value"] + incrementor;
+                        monitorList[i]["value"] = newValue.toString();
+                    } else {
+                        incrementor = +addSubtract[2];
+                        newValue = +monitorList[i]["value"] + incrementor;
+                        monitorList[i]["value"] = newValue.toString();
+                    }
+                }
+                if (checkDirections["action"] == addSubtract[0].toUpperCase()) {
+                    let incrementor;
+                    if (checkDirections["valid"]) {
+                        incrementor = +addSubtract[1];
+                        newValue = +monitorList[i]["value"] + incrementor;
+                        monitorList[i]["value"] = newValue.toString();
+                    } else {
+                        incrementor = +addSubtract[2];
+                        newValue = +monitorList[i]["value"] + incrementor;
+                        monitorList[i]["value"] = newValue.toString();
+                    }
+                }
+            }
+            for (let j = 0; j < multiplyArray.length; j++) {
+                let multiply = multiplyArray[j].replace(/^\[|\]$/g, '').split(/\s*,\s*/);
+                if (checkActions["action"] == multiply[0].toUpperCase()) {
+                    let factor;
+                    if (checkActions["valid"]) {
+                        factor = +multiply[1];
+                        monitorList[i]["value"] = (+monitorList[i]["value"] * factor).toString();
+                    } else {
+                        factor = +multiply[2];
+                        monitorList[i]["value"] = (+monitorList[i]["value"] * factor).toString();
+                    }
+                    newValue = monitorList[i]["value"];
+                }
+                if (checkDirections["action"] == multiply[0].toUpperCase()) {
+                    let factor;
+                    if (checkDirections["valid"]) {
+                        factor = +multiply[1];
+                        monitorList[i]["value"] = (+monitorList[i]["value"] * factor).toString();
+                    } else {
+                        factor = +multiply[2];
+                        monitorList[i]["value"] = (+monitorList[i]["value"] * factor).toString();
+                    }
+                    newValue = monitorList[i]["value"];
+                }
+            }
+            for (let j = 0; j < divideArray.length; j++) {
+                let divide = divideArray[j].replace(/^\[|\]$/g, '').split(/\s*,\s*/);
+                if (checkActions["action"] == divide[0].toUpperCase()) {
+                    let factor;
+                    if (checkActions["valid"]) {
+                        factor = +divide[1];
+                        monitorList[i]["value"] = Math.floor((+monitorList[i]["value"] / factor)).toString();
+                    } else {
+                        factor = +divide[2];
+                        monitorList[i]["value"] = Math.floor((+monitorList[i]["value"] / factor)).toString();
+                    }
+                    newValue = monitorList[i]["value"];
+                }
+                if (checkDirections["action"] == divide[0].toUpperCase()) {
+                    let factor;
+                    if (checkDirections["valid"]) {
+                        factor = +divide[1];
+                        monitorList[i]["value"] = Math.floor((+monitorList[i]["value"] / factor)).toString();;
+                    } else {
+                        factor = +divide[2];
+                        monitorList[i]["value"] = Math.floor((+monitorList[i]["value"] / factor)).toString();
+                    }
+                    newValue = monitorList[i]["value"];
+                }
+            }
+            for (let j = 0; j < resetArray.length; j++) {
+                let reset = resetArray[j];
+                if (checkActions["action"] == reset.toUpperCase()) {
+                    if (checkActions["valid"]) {
+                        monitorList[i]["value"] = monitorList[i]["initial"];
+                    }
+                }
+                if (checkDirections["action"] == reset.toUpperCase()) {
+                    if (checkDirections["valid"]) {
+                        monitorList[i]["value"] = monitorList[i]["initial"];
+                    }
                 }
                 newValue = monitorList[i]["value"];
             }
-            if (checkDirections["action"] == multiply[0].toUpperCase()) {
-                let factor;
-                if (checkDirections["valid"]) {
-                    factor = +multiply[1];
-                    monitorList[i]["value"] = (+monitorList[i]["value"] * factor).toString();
-                } else {
-                    factor = +multiply[2];
-                    monitorList[i]["value"] = (+monitorList[i]["value"] * factor).toString();
+            for (let j = 0; j < zeroArray.length; j++) {
+                let zero = zeroArray[j];
+                if (checkActions["action"] == zero.toUpperCase()) {
+                    if (checkActions["valid"]) {
+                        monitorList[i]["value"] = "0";
+                    }
+                }
+                if (checkDirections["action"] == zero.toUpperCase()) {
+                    if (checkDirections["valid"]) {
+                        monitorList[i]["value"] = "0";
+                    }
                 }
                 newValue = monitorList[i]["value"];
             }
-        }
-        for (let j = 0; j < divideArray.length; j++) {
-            let divide = divideArray[j].replace(/^\[|\]$/g, '').split(/\s*,\s*/);
-            if (checkActions["action"] == divide[0].toUpperCase()) {
-                let factor;
-                if (checkActions["valid"]) {
-                    factor = +divide[1];
-                    monitorList[i]["value"] = Math.floor((+monitorList[i]["value"] / factor)).toString();
-                } else {
-                    factor = +divide[2];
-                    monitorList[i]["value"] = Math.floor((+monitorList[i]["value"] / factor)).toString();
-                }
-                newValue = monitorList[i]["value"];
+            if (monitorList[i]["display"] == "true" && +oldValue != newValue) {
+                displayables.push(monitorList[i]);
             }
-            if (checkDirections["action"] == divide[0].toUpperCase()) {
-                let factor;
-                if (checkDirections["valid"]) {
-                    factor = +divide[1];
-                    monitorList[i]["value"] = Math.floor((+monitorList[i]["value"] / factor)).toString();;
-                } else {
-                    factor = +divide[2];
-                    monitorList[i]["value"] = Math.floor((+monitorList[i]["value"] / factor)).toString();
-                }
-                newValue = monitorList[i]["value"];
-            }
-        }
-        for (let j = 0; j < resetArray.length; j++) {
-            let reset = resetArray[j];
-            if (checkActions["action"] == reset.toUpperCase()) {
-                if (checkActions["valid"]) {
-                    monitorList[i]["value"] = monitorList[i]["initial"];
-                }
-            }
-            if (checkDirections["action"] == reset.toUpperCase()) {
-                if (checkDirections["valid"]) {
-                    monitorList[i]["value"] = monitorList[i]["initial"];
-                }
-            }
-            newValue = monitorList[i]["value"];
-        }
-        for (let j = 0; j < zeroArray.length; j++) {
-            let zero = zeroArray[j];
-            if (checkActions["action"] == zero.toUpperCase()) {
-                if (checkActions["valid"]) {
-                    monitorList[i]["value"] = "0";
-                }
-            }
-            if (checkDirections["action"] == zero.toUpperCase()) {
-                if (checkDirections["valid"]) {
-                    monitorList[i]["value"] = "0";
-                }
-            }
-            newValue = monitorList[i]["value"];
-        }
-        if (monitorList[i]["display"] == "true" && +oldValue != newValue) {
-            displayables.push(monitorList[i]);
         }
     }
     cMonitorDisplayables = displayables;
@@ -761,7 +792,7 @@ function getDescription (location) {
             "reqFails": thisEvo.reqFails,
             "reqValids": thisEvo.reqValids
         }
-        if (checkRequirements(reqs)) {
+        if (checkRequirements(reqs, false)) {
             save.nodes[location].description.evos[i].passed = "true";
             output = thisEvo.evoDes;
         }
@@ -809,7 +840,7 @@ function checkContainerComplete(container) {
     return true;
 }
 
-function checkRequirements(reqs) {
+function checkRequirements(reqs, isMonitor) {
     let reqAll = !reqs.reqAll ? "false" : reqs.reqAll;
     let reqItemsNot = !reqs.reqItemsNot ? "false" : reqs.reqItemsNot;
     let reqContainersNot = !reqs.reqContainersNot ? "false" : reqs.reqContainersNot;
@@ -875,7 +906,7 @@ function checkRequirements(reqs) {
                         "reqFails": savedMonitor.reqFails,
                         "reqValids": savedMonitor.reqValids
                     }
-                    if (checkRequirements(reqs)) {
+                    if (checkRequirements(reqs, false) || !isMonitor) {
                         let lessThan = reqMonitors["lessThan"];
                         let greaterThan = reqMonitors["greaterThan"];
                         let cValue = +savedMonitor["value"];
@@ -956,6 +987,8 @@ function checkRequirements(reqs) {
                                 }
                             }
                         }
+                    } else {
+                        return false;
                     }
                 }
             }
@@ -1220,7 +1253,7 @@ function checkRequirements(reqs) {
                                 "reqFails": save["items"][k].evos[l].reqFails,
                                 "reqValids": save["items"][k].evos[l].reqValids
                             }
-                            if (checkRequirements(reqs)) {
+                            if (checkRequirements(reqs, false)) {
                                 evoIndex = checkIndex;
                             }
                         }
@@ -1486,7 +1519,7 @@ function checkGlobalWin() {
                 "reqFails": globalWin[i].reqFails,
                 "reqValids": globalWin[i].reqValids
             };
-            if (checkRequirements(reqs)) {
+            if (checkRequirements(reqs, false)) {
                 let max = getMaxPoints();
                 displayMessage(globalWin[i].description, false);
                 if (max != 0) {
@@ -1531,7 +1564,7 @@ function checkGlobalLose() {
                 "reqFails": globalLose[i].reqFails,
                 "reqValids": globalLose[i].reqValids
             };
-            if (checkRequirements(reqs)) {
+            if (checkRequirements(reqs, false)) {
                 let max = getMaxPoints();
                 displayMessage(globalLose[i].description, false);
                 if (max != 0) {
@@ -1575,7 +1608,7 @@ function checkWin() {
         "reqFails": win.reqFails,
         "reqValids": win.reqValids
     }
-    if (checkRequirements(reqs) && win.description.length > 0) {
+    if (checkRequirements(reqs, false) && win.description.length > 0) {
         let max = getMaxPoints();
         displayMessage(win.description, false);
         if (max != 0) {
@@ -1617,7 +1650,7 @@ function checkLose() {
         "reqFails": lose.reqFails,
         "reqValids": lose.reqValids
     }
-    if (checkRequirements(reqs) && lose.description.length > 0) {
+    if (checkRequirements(reqs, false) && lose.description.length > 0) {
         let max = getMaxPoints();
         displayMessage(lose.description, false);
         if (max != 0) {
@@ -1670,7 +1703,7 @@ function displayItems() {
                 "reqFails": save.nodes[currentNode].items[i].reqFails,
                 "reqValids": save.nodes[currentNode].items[i].reqValids
             }
-            if (checkRequirements(reqs)) {
+            if (checkRequirements(reqs, false)) {
                 let mainName = save.nodes[currentNode].items[i].name.split(/\s*,\s*/)[0];
                 validItems.push(mainName);
             }
@@ -2007,7 +2040,7 @@ function parseAction(input) {
                                 "reqFails": actionObject.reqFails,
                                 "reqValids": actionObject.reqValids
                             }
-                            if (checkRequirements(reqs)) {
+                            if (checkRequirements(reqs, false)) {
                                 passed = true;
                                 let mainAction = actionObject.actions.split(/\s*,\s*/)[0].toUpperCase();
                                 let maxTimes;
@@ -2190,7 +2223,7 @@ function parseAction(input) {
                                                     break;
                                                 }
                                             }
-                                            if (checkRequirements(reqs)) {
+                                            if (checkRequirements(reqs, false)) {
                                             //Remove item from container and store in inventory
                                                 for (let n = 0; n < save.nodes[currentNode].containers.length; n++) {
                                                     if (save.nodes[currentNode].containers[n].name.includes(containerVariants[m])) {
@@ -2267,7 +2300,7 @@ function parseAction(input) {
                                                     break;
                                                 }
                                             }
-                                            if (checkRequirements(reqs)) {
+                                            if (checkRequirements(reqs, false)) {
                                             //Check if item is an illegal item, and if not, then
                                             //remove item from inventory and store in container
                                                 for (let n = 0; n < save.items.length; n++) {
@@ -2303,7 +2336,7 @@ function parseAction(input) {
             for (let i = 0; i < cNodeDirections.length; i++) {
                 for (let j = 0; j < cNodeDirections[i].alternatives.length; j++) {
                     if (filterIgnorables(cNodeDirections[i].alternatives[j]) == action) {
-                        if (checkRequirements(cNodeDirections[i].requirements)) {
+                        if (checkRequirements(cNodeDirections[i].requirements, false)) {
                             //Update monitors
                             updateMonitors(cNodeDirections[i].direction, true);
 
@@ -2392,7 +2425,7 @@ function parseAction(input) {
                                 "reqFails": inspectableItems[i].reqFails,
                                 "reqValids": inspectableItems[i].reqValids
                             }
-                            if (checkRequirements(reqs)) {
+                            if (checkRequirements(reqs, false)) {
                                 if (inspectableItems[i].evos.length > 0) {
                                     let messageToDisplay;
                                     for (let k = 0; k < inspectableItems[i].evos.length; k++) {
@@ -2426,7 +2459,7 @@ function parseAction(input) {
                                             "reqFails": evo.reqFails,
                                             "reqValids": evo.reqValids
                                         }
-                                        if (checkRequirements(reqs)) {
+                                        if (checkRequirements(reqs, false)) {
                                             messageToDisplay = inspectableItems[i].evos[k].evoDes;
                                         }
                                     }
@@ -2520,7 +2553,7 @@ function parseAction(input) {
                         "reqFails": evo.reqFails,
                         "reqValids": evo.reqValids
                     }
-                    if (checkRequirements(reqs)) {
+                    if (checkRequirements(reqs, false)) {
                         message = game[currentNode].actions.evos[i].evoDes;
                     }
                 }
