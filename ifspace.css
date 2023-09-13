@@ -22,6 +22,12 @@ button {
   padding: 1% 1% 1% 1%;
 }
 
+.flexCenter {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
 #zIndexBlock {
   margin-left: 10px;
 }

@@ -182,6 +182,11 @@ $(function () {
     draw();
   });
 
+  $(document).on("click", ".nodeColor", function (event) {
+    let color = $(event.currentTarget).val();
+    dom.setNodeColor(color);
+  });
+
   /////////////////////////
   //DOM and DOM Generation
   /////////////////////////
@@ -199,6 +204,10 @@ $(function () {
 
   $(window).on("resize", function (event) {
     resizeCanvas();
+  });
+
+  $(document).on("click", "#nodeColor", function () {
+    $("#nodeColorDisplay").css("visibility", "visible");
   });
 
   $(document).on("click", ".removeObject", function (event) {

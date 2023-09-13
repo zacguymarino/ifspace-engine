@@ -1,4 +1,4 @@
-import { switchNode } from "./if_generate.js";
+import { switchNode, game } from "./if_generate.js";
 
 var universe = $("#nodeMap")[0];
 var ctx = universe.getContext("2d");
@@ -9,6 +9,25 @@ var step = 25;
 var nodes = ["0,0,0"];
 
 var currentNode = "0,0,0";
+
+var palette = {
+  "0": "#003CFF",
+  "1": "#007FFF",
+  "2": "#00FFFF",
+  "3": "#43B3AE",
+  "4": "#008000",
+  "5": "#32CD32",
+  "6": "#FFFF00",
+  "7": "#FFBF00",
+  "8": "#FFA500",
+  "9": "#FF0000",
+  "10": "#FF00FF",
+  "11": "#800080",
+  "12": "#4B0082",
+  "13": "#36454F",
+  "14": "#808080",
+  "15": "#FFFFF7",
+}
 
 function createMapFromGame(loadNodes) {
   nodes = JSON.parse(JSON.stringify(loadNodes));
@@ -88,7 +107,25 @@ function nodeMap() {
   draw(); // on page load
 }
 
+function getColor(color) {
+  if (palette.hasOwnProperty(color)) {
+    return palette[color];
+  } else {
+    return palette['0'];
+  }
+}
+
 function draw() {
+  let nodeAndColorArray = [];
+  for (let i = 0; i < nodes.length; i++) {
+    if (game.hasOwnProperty(nodes[i])) {
+      nodeAndColorArray.push({
+        "node": nodes[i],
+        "color": game[nodes[i]].color
+      })
+    }
+  }
+
   let left = 0.5 - Math.ceil(universe.width / step) * step;
   let top = 0.5 - Math.ceil(universe.height / step) * step;
   let right = 2 * universe.width;
@@ -98,7 +135,6 @@ function draw() {
 
   ctx.clearRect(left, top, right - left, bottom - top);
   ctx.beginPath();
-  ctx.fillStyle = "#0000FF";
   //Get most recent offset from previous drags
   let xOffset = xTransform % step;
   let yOffset = yTransform % step;
@@ -116,14 +152,15 @@ function draw() {
   ctx.stroke();
 
   //draw nodes
-  for (let i = 0; i < nodes.length; i++) {
-    let x = JSON.parse(`[${nodes[i]}]`)[0];
-    let y = JSON.parse(`[${nodes[i]}]`)[1];
-    let z = JSON.parse(`[${nodes[i]}]`)[2];
+  for (let i = 0; i < nodeAndColorArray.length; i++) {
+    let x = JSON.parse(`[${nodeAndColorArray[i]["node"]}]`)[0];
+    let y = JSON.parse(`[${nodeAndColorArray[i]["node"]}]`)[1];
+    let z = JSON.parse(`[${nodeAndColorArray[i]["node"]}]`)[2];
 
     if ($("#zIndex").val() == z) {
       let xLoc = x * step + (step - worldSize) / 2;
       let yLoc = -1 * (y * step) + (step - worldSize) / 2;
+      ctx.fillStyle = getColor(nodeAndColorArray[i]["color"]);
       ctx.fillRect(xLoc + xTransform, yLoc + yTransform, worldSize, worldSize);
     }
   }
@@ -189,4 +226,4 @@ function makeAndSwitchNode(title) {
   draw();
 }
 
-export { nodeMap, resizeCanvas, zoom, draw, currentNode, createMapFromGame };
+export { nodeMap, resizeCanvas, zoom, draw, currentNode, createMapFromGame, palette };

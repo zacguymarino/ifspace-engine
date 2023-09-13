@@ -35,6 +35,7 @@ var node = {
   lose: {},
   hint: "",
   visits: 0,
+  color: "0"
 };
 
 var cNode = JSON.parse(JSON.stringify(node));
@@ -753,6 +754,10 @@ function generateNode() {
   //generate points
   let nodePoints = $("#points").val();
   cNode.points = nodePoints;
+
+  //generateColor
+  let color = $("#nodeColor").val();
+  cNode.color = color;
 
   //generate directions
   let checkboxes = $("#directions").find("input");

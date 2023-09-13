@@ -1,4 +1,4 @@
-import { currentNode } from "./if_nodemap.js";
+import { currentNode, palette } from "./if_nodemap.js";
 import { gameStyle, customDeposits, customWithdrawals, customTakes, customDrops, customIgnorables, customLooks, customExamines, globalActions, initItems, monitors, globalWin, globalLose } from "./if_generate.js";
 import { containerDeposits, containerWithdrawals, takeCommands, dropCommands, ignorables, lookCommands, itemInspectCommands } from "./if_parser.js";
 
@@ -433,6 +433,7 @@ function loadDomFromNode(node) {
   let location = node.location;
   let visibility = node.visibility;
   let points = node.points;
+  let color = node.color;
   let nodeDirections = node.directions;
   let descriptions = node.description;
   let items = node.items;
@@ -466,6 +467,9 @@ function loadDomFromNode(node) {
   }
 
   $("#points").val(points);
+
+  $("#nodeColorRect").css("fill", palette[color])
+  $("#nodeColor").val(color);
 
   for (let i = 0; i < nodeDirections.length; i++) {
     let checkbox = nodeDirections[i].direction;
@@ -976,6 +980,11 @@ function loadDomFromNode(node) {
   }
 
   $("#hint").val(hint);
+}
+
+function setNodeColor(color) {
+  $("#nodeColorRect").css("fill", palette[color])
+  $("#nodeColor").val(color);
 }
 
 function showHideNotBoxes(baseId, status) {
@@ -2011,5 +2020,6 @@ export {
   loadDomGlobalLose,
   showHideNotBoxes,
   changeStyle,
-  handleGlobalCheckboxes
+  handleGlobalCheckboxes,
+  setNodeColor
 };

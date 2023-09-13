@@ -43,20 +43,20 @@
             </div>
             <div class="pure-u-7-12">
                 <div class="pure-g nodeTools">
-                    <div class="pure-u-1-4">
+                    <div class="pure-u-1-5">
                         <label class="tooltip" for="location"><b>Location</b>
                             <span class="tooltiptext">Location of the current
                                 node (in x,y,z format)</span>
                         </label>
                         <span id="location" class="pure-u-22-24">0,0,0</span>
                     </div>
-                    <div class="pure-u-1-4">
+                    <div class="pure-u-1-5">
                         <label class="tooltip" for="name"><b>Name</b>
                             <span class="tooltiptext">Name of the current node</span>
                         </label>
                         <input type="text" id="name" class="pure-u-22-24" />
                     </div>
-                    <div class="pure-u-1-4">
+                    <div class="pure-u-1-5">
                         <label class="tooltip" id="visibilityLabel" for="visibility"><b>Visibility</b>
                             <span class="tooltiptext">Whether or not (checked or
                                 unchecked) node items will be listed and
@@ -65,7 +65,7 @@
                         <input type="checkbox" id="visibility"
                             class="pure-u-22-24" checked />
                     </div>
-                    <div class="pure-u-1-4">
+                    <div class="pure-u-1-5">
                         <label class="tooltip" for="points">
                             <b>Points</b>
                             <span class="tooltiptext">Points acquired for
@@ -74,6 +74,40 @@
                         </label>
                         <input type="text" id="points" value="0"
                             class="pure-u-22-24" />
+                    </div>
+                    <div class="pure-u-1-5">
+                        <label class="tooltip" for="points">
+                            <b>Color</b>
+                            <span class="tooltiptext">Color of the inactive node on the nodemap (for modularizing various settings)</span>
+                        </label>
+                        <button id="nodeColor" value="0"><svg width="16" height="16"><rect id="nodeColorRect" style="fill: #003CFF;" width="16" height="16"/></svg></button>
+                        <div class="popupScreen" id="nodeColorDisplay" style="visibility: hidden">
+                            <div class="popupContent">
+                                <label class='tooltip'>
+                                    <h1 class="popupTitle">Node Colors</h1>
+                                    <span class='popuptooltiptext'>The color of this node as displayed in the nodemap</span>
+                                </label>
+                                <div class="flexCenter">
+                                    <button class="nodeColor" value="0"><svg width="16" height="16"><rect width="16" height="16" style="fill:#003CFF"/></svg></button>
+                                    <button class="nodeColor" value="1"><svg width="16" height="16"><rect width="16" height="16" style="fill:#007FFF"/></svg></button>
+                                    <button class="nodeColor" value="2"><svg width="16" height="16"><rect width="16" height="16" style="fill:#00FFFF"/></svg></button>
+                                    <button class="nodeColor" value="3"><svg width="16" height="16"><rect width="16" height="16" style="fill:#43B3AE"/></svg></button>
+                                    <button class="nodeColor" value="4"><svg width="16" height="16"><rect width="16" height="16" style="fill:#008000"/></svg></button>
+                                    <button class="nodeColor" value="5"><svg width="16" height="16"><rect width="16" height="16" style="fill:#32CD32"/></svg></button>
+                                    <button class="nodeColor" value="6"><svg width="16" height="16"><rect width="16" height="16" style="fill:#FFFF00"/></svg></button>
+                                    <button class="nodeColor" value="7"><svg width="16" height="16"><rect width="16" height="16" style="fill:#FFBF00"/></svg></button>
+                                    <button class="nodeColor" value="8"><svg width="16" height="16"><rect width="16" height="16" style="fill:#FFA500"/></svg></button>
+                                    <button class="nodeColor" value="9"><svg width="16" height="16"><rect width="16" height="16" style="fill:#FF0000"/></svg></button>
+                                    <button class="nodeColor" value="10"><svg width="16" height="16"><rect width="16" height="16" style="fill:#FF00FF"/></svg></button>
+                                    <button class="nodeColor" value="11"><svg width="16" height="16"><rect width="16" height="16" style="fill:#800080"/></svg></button>
+                                    <button class="nodeColor" value="12"><svg width="16" height="16"><rect width="16" height="16" style="fill:#4B0082"/></svg></button>
+                                    <button class="nodeColor" value="13"><svg width="16" height="16"><rect width="16" height="16" style="fill:#36454F"/></svg></button>
+                                    <button class="nodeColor" value="14"><svg width="16" height="16"><rect width="16" height="16" style="fill:#808080"/></svg></button>
+                                    <button class="nodeColor" value="15"><svg width="16" height="16"><rect width="16" height="16" style="fill:#FFFFF7"/></svg></button>
+                                </div>
+                            </div>
+                            <button class="popupClose">Close</button>
+                        </div>
                     </div>
 
                     <button class="blockBtn" id="directionsBlockBtn">Directions</button>
