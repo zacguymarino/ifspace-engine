@@ -178,6 +178,7 @@ function loadDomGlobalActions(globalActions) {
     $(`#${baseId}_Max`).val(actions[i].max);
     $(`#${baseId}_Costs`).val(actions[i].costs);
     $(`#${baseId}_Drops`).val(actions[i].drops);
+    $(`#${baseId}_Move`).val(actions[i].move);
     $(`#${baseId}_Visibility`).val(actions[i].visibility);
     $(`#${baseId}_Response`).val(actions[i].response);
     $(`#${baseId}_Fail`).val(actions[i].fail);
@@ -387,11 +388,22 @@ function loadDomMonitors(monitors) {
     } else {
       $(`#${baseId}_Display`).prop("checked", false);
     }
+    if (monitors[i].onEnd == "true") {
+      $(`#${baseId}_onEnd`).prop("checked", true);
+    } else {
+      $(`#${baseId}_onEnd`).prop("checked", false);
+    }
+    $(`#${baseId}_Random`).val(monitors[i].random);
+    if (monitors[i].includeZero == "true") {
+      $(`#${baseId}_includeZero`).prop("checked", true);
+    } else {
+      $(`#${baseId}_includeZero`).prop("checked", false);
+    }
     $(`#${baseId}_addSubtract`).val(monitors[i].addSubtract);
     $(`#${baseId}_Multiply`).val(monitors[i].multiply);
     $(`#${baseId}_Divide`).val(monitors[i].divide);
-    $(`#${baseId}_Reset`).val(monitors[i].reset);
-    $(`#${baseId}_Zero`).val(monitors[i].zero);
+    $(`#${baseId}_passSet`).val(monitors[i].passSet);
+    $(`#${baseId}_failSet`).val(monitors[i].failSet);
     $(`#${baseId}_Items`).val(monitors[i].reqItems);
     $(`#${baseId}_Containers`).val(monitors[i].reqContainers);
     $(`#${baseId}_Local`).val(monitors[i].reqLocal);
@@ -457,6 +469,7 @@ function loadDomFromNode(node) {
 
   //add node elements
   $("#location").html(location.toString());
+  $("#setLocation").val(location.toString());
 
   $("#name").val(name);
 
@@ -707,6 +720,7 @@ function loadDomFromNode(node) {
     $(`#${baseId}_Illegal`).val(containers[i].illegal);
     $(`#${baseId}_Complete`).val(containers[i].complete);
     $(`#${baseId}_Points`).val(containers[i].points);
+
     if (containers[i].reqNot == "true") {
       $(`#${baseId}_reqNot`).prop("checked", true);
       $(`.${baseId}_notBox`).css("visibility", "visible");
@@ -714,7 +728,7 @@ function loadDomFromNode(node) {
       $(`#${baseId}_reqNot`).prop("checked", false);
       $(`.${baseId}_notBox`).css("visibility", "hidden");
     }
-
+    (containers[i].itemsListable == "true") ? $(`#${baseId}_itemsListable`).prop("checked", true) : $(`#${baseId}_itemsListable`).prop("checked", false);
     (containers[i].reqAll == "true") ? $(`#${baseId}_reqAll`).prop("checked", true) : $(`#${baseId}_reqAll`).prop("checked", false);
     (containers[i].reqItemsNot == "true") ? $(`#${baseId}_itemsNot`).prop("checked", true) : $(`#${baseId}_itemsNot`).prop("checked", false);
     (containers[i].reqContainersNot == "true") ? $(`#${baseId}_containersNot`).prop("checked", true) : $(`#${baseId}_containersNot`).prop("checked", false);
@@ -823,6 +837,7 @@ function loadDomFromNode(node) {
       $(`#${baseId}_Max`).val(actions.actions[i].max);
       $(`#${baseId}_Costs`).val(actions.actions[i].costs);
       $(`#${baseId}_Drops`).val(actions.actions[i].drops);
+      $(`#${baseId}_Move`).val(actions.actions[i].move);
       $(`#${baseId}_Visibility`).val(actions.actions[i].visibility);
       $(`#${baseId}_Response`).val(actions.actions[i].response);
       $(`#${baseId}_Fail`).val(actions.actions[i].fail);
@@ -1161,6 +1176,11 @@ function addContainer() {
                     <span class='tooltiptext'>Comma separated list of items which may not be deposited into container</span>
                     </label>`;
   let illegal = `<input type='text' id='${containerId}_Illegal'>`;
+  let itemsListableLabel = `<label class='pure-checkbox tooltip'>
+                        Items Listable
+                        <span class='tooltiptext'>If checked, the contents of the container are listed upon examining the container</span>
+                        </label>`;
+  let itemsListable = `<input type='checkbox' id='${containerId}_itemsListable'/>`;
   let pointsLabel = `<label class='tooltip'>
                     Points
                     <span class='tooltiptext'>Points awarded for this container being 'complete' [default of 0]</span>
@@ -1178,6 +1198,8 @@ function addContainer() {
     complete +
     illegalLabel +
     illegal +
+    itemsListableLabel +
+    itemsListable +
     pointsLabel +
     points +
     requirements +
@@ -1325,6 +1347,11 @@ function addGlobalAction() {
                     <span class='popuptooltiptext'>Comma separated list of items which are dropped to perform this action</span>
                     </label>`;
   let drops = `<input type='text' id='${actionId}_Drops'>`;
+  let moveLabel = `<label class='tooltip'>
+                  Move To
+                  <span class='tooltiptext'>X,Y,Z coordinates of node to which successfully calling this action moves the player</span>
+                  </label>`;
+  let move = `<input type='text' id='${actionId}_Move'>`;
   let visibilityLabel = `<label class='tooltip'>
                         Visibility
                         <span class='popuptooltiptext'>Selection for how this action affects this node's visibility</span>
@@ -1363,6 +1390,8 @@ function addGlobalAction() {
     costs +
     dropsLabel +
     drops +
+    moveLabel +
+    move +
     visibilityLabel +
     visibility +
     responseLabel +
@@ -1409,6 +1438,17 @@ function addMonitor() {
                       <span class='popuptooltiptext'>If checked, this monitor and its value will be displayed to the player when it changes</span>
                       </label>`;
   let display = `<input type='checkbox' id='${monitorId}_Display'/>`;
+  let onEndLabel = `<label class='tooltip '>
+                      Display on End:
+                      <span class='popuptooltiptext'>If checked, this monitor and its value will be displayed at the end of the game (upon winning or losing)</span>
+                      </label>`;
+  let onEnd = `<input type='checkbox' id='${monitorId}_onEnd'/>`;
+  let randomLabel = `<label class='tooltip '>
+                    Random number:
+                    <span class='popuptooltiptext'>A random number between 1 (or 0, if checked) and the input number (including the input number) - can be used as an incrementor/factor in the following inputs by inputting "random" in place of a number</span>
+                    </label>`;
+  let random = `<input type='text' id='${monitorId}_Random'>`;
+  let includeZero = `<div style="display: flex;">&nbsp;&nbsp;&nbsp;&nbsp;Include zero:&nbsp;&nbsp;&nbsp;<input type='checkbox' id='${monitorId}_includeZero'/></div>`;
   let addSubtractLabel = `<label class='tooltip'>
                           Add/Subtract Actions
                           <span class='popuptooltiptext'>Comma separated list of actions and their corresponding incrementors for the action passing and failing [for adding to or subtracting from the monitor in the form of [action, pass incrementor, fail incrementor]] (e.g. [shoot, 0, -1], [eat, 1, 0])</span>
@@ -1424,16 +1464,16 @@ function addMonitor() {
                       <span class='popuptooltiptext'>Comma separated list of actions and their corresponding factors for the action passing and failing [for dividing the monitor in the form of [action, pass factor, fail factor]] (e.g. [split, 2, 1], [deal cards, 4, 1])</span>
                       </label>`;
   let divide = `<input type='text' id='${monitorId}_Divide'>`;
-  let resetLabel = `<label class='tooltip'>
-                    Reset Actions
-                    <span class='popuptooltiptext'>Comma separated list of actions which reset this monitor to its initial value if the action is valid (e.g. refill, reset, restock, heal)</span>
+  let passSetLabel = `<label class='tooltip'>
+                    Passed Actions
+                    <span class='popuptooltiptext'>Comma separated list of actions and their corresponding value to which the monitor will be set if the action is valid (e.g. [reset, 100], [half, 50])</span>
                     </label>`;
-  let reset = `<input type='text' id='${monitorId}_Reset'>`;
-  let zeroLabel = `<label class='tooltip'>
-                    Zero Actions
-                    <span class='popuptooltiptext'>Comma separated list of actions which set this monitor to a value of 0 if the action is valid (e.g. dump bucket, release balloons)</span>
+  let passSet = `<input type='text' id='${monitorId}_passSet'>`;
+  let failSetLabel = `<label class='tooltip'>
+                    Failed Actions
+                    <span class='popuptooltiptext'>Comma separated list of actions and their corresponding value to which the monitor will be set if the action fails (e.g. [shoot target, 0], [climb tree, 0])</span>
                     </label>`;
-  let zero = `<input type='text' id='${monitorId}_Zero'>`;
+  let failSet = `<input type='text' id='${monitorId}_failSet'>`;
   let requirements = getRequirements(monitorId);
   let html = 
     newDivStart +
@@ -1446,16 +1486,21 @@ function addMonitor() {
     onStart +
     displayLabel +
     display +
+    onEndLabel +
+    onEnd +
+    randomLabel +
+    random +
+    includeZero +
     addSubtractLabel +
     addSubtract +
     multiplyLabel +
     multiply +
     divideLabel +
     divide +
-    resetLabel +
-    reset +
-    zeroLabel +
-    zero +
+    passSetLabel +
+    passSet +
+    failSetLabel +
+    failSet +
     requirements +
     newDivEnd;
 
@@ -1494,6 +1539,11 @@ function addAction() {
                     <span class='tooltiptext'>Comma separated list of items which are dropped to perform this action</span>
                     </label>`;
   let drops = `<input type='text' id='${actionId}_Drops'>`;
+  let moveLabel = `<label class='tooltip'>
+                  Move To
+                  <span class='tooltiptext'>X,Y,Z coordinates of node to which successfully calling this action moves the player</span>
+                  </label>`;
+  let move = `<input type='text' id='${actionId}_Move'>`;
   let visibilityLabel = `<label class='tooltip'>
                         Visibility
                         <span class='tooltiptext'>Selection for how this action affects this node's visibility</span>
@@ -1532,6 +1582,8 @@ function addAction() {
     costs +
     dropsLabel +
     drops +
+    moveLabel +
+    move +
     visibilityLabel +
     visibility +
     responseLabel +

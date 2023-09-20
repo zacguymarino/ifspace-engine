@@ -115,7 +115,10 @@ function getColor(color) {
   }
 }
 
-function draw() {
+function draw(newKey) {
+  if (newKey != undefined) {
+    currentNode = newKey;
+  }
   let nodeAndColorArray = [];
   for (let i = 0; i < nodes.length; i++) {
     if (game.hasOwnProperty(nodes[i])) {

@@ -1,5 +1,5 @@
 import { loadDomFromNode, loadDomGlobalActions, loadDomInitItems, loadDomCustomCommands, changeStyle, loadDomMonitors, loadDomGlobalWin, loadDomGlobalLose } from "./if_dom.js";
-import { createMapFromGame } from "./if_nodemap.js";
+import { createMapFromGame, draw } from "./if_nodemap.js";
 
 var game = {};
 var gameTitle;
@@ -23,7 +23,7 @@ var globalLose = [];
 
 var node = {
   name: "",
-  location: [],
+  location: [0,0,0],
   visibility: "true",
   points: 0,
   directions: [],
@@ -537,11 +537,14 @@ function saveMonitors() {
     let initial = $(`#${monitorId}_Initial`).val();
     let onStart = $(`#${monitorId}_onStart`).is(":checked").toString();
     let display = $(`#${monitorId}_Display`).is(":checked").toString();
+    let onEnd = $(`#${monitorId}_onEnd`).is(":checked").toString();
+    let random = $(`#${monitorId}_Random`).val();
+    let includeZero = $(`#${monitorId}_includeZero`).is(":checked").toString();
     let addSubtract = $(`#${monitorId}_addSubtract`).val();
     let multiply = $(`#${monitorId}_Multiply`).val();
     let divide = $(`#${monitorId}_Divide`).val();
-    let reset = $(`#${monitorId}_Reset`).val();
-    let zero = $(`#${monitorId}_Zero`).val();
+    let passSet = $(`#${monitorId}_passSet`).val();
+    let failSet = $(`#${monitorId}_failSet`).val();
     let value = initial;
     let reqAll = $(`#${monitorId}_reqAll`).is(":checked").toString();
     let reqNot = $(`#${monitorId}_reqNot`).is(":checked").toString();
@@ -589,11 +592,14 @@ function saveMonitors() {
       initial: initial,
       onStart: onStart,
       display: display,
+      onEnd: onEnd,
+      random: random,
+      includeZero: includeZero,
       addSubtract: addSubtract,
       multiply: multiply,
       divide: divide,
-      reset: reset,
-      zero: zero,
+      passSet: passSet,
+      failSet: failSet,
       value: value,
       reqAll: reqAll,
       reqNot: reqNot,
@@ -638,6 +644,7 @@ function saveGlobalActions() {
     let max = $(`#${baseId}_Max`).val();
     let costs = $(`#${baseId}_Costs`).val();
     let drops = $(`#${baseId}_Drops`).val();
+    let move = $(`#${baseId}_Move`).val();
     let visibility = $(`#${baseId}_Visibility`).val();
     let response = $(`#${baseId}_Response`).val();
     let fail = $(`#${baseId}_Fail`).val();
@@ -688,6 +695,7 @@ function saveGlobalActions() {
       max: max,
       costs: costs,
       drops: drops,
+      move: move,
       visibility: visibility,
       response: response,
       fail: fail,
@@ -724,6 +732,41 @@ function saveGlobalActions() {
     actionArray.push(action);
   }
   globalActions = actionArray;
+}
+
+function saveNodeLocation() {
+  let oldLocation = cNode.location;
+  let newLocation = $("#setLocation").val().split(',');
+  let oldKey = `${oldLocation[0]},${oldLocation[1]},${oldLocation[2]}`;
+  let newKey = `${newLocation[0]},${newLocation[1]},${newLocation[2]}`;
+  if (oldKey != newKey) {
+    if (newLocation.length == 3) {
+      if (oldLocation != "0,0,0") {
+        if (!game.hasOwnProperty(newKey) || oldKey == newKey) {
+          if (game.hasOwnProperty(oldKey)) {
+            Object.defineProperty(game, newKey,
+              Object.getOwnPropertyDescriptor(game, oldKey));
+            delete game[oldKey];
+          }
+          $("#location").html(newKey);
+          saveCNode();
+          createMapFromGame(Object.keys(game));
+          switchNode(newKey);
+          draw(newKey);
+        } else {
+          $("#alertMessage").html("There is already a node at that location.");
+          $("#alertMessageDisplay").css("visibility","visible");
+          $("#setLocation").val(oldKey);
+        }
+      } else {
+        $("#alertMessage").html(`You cannot move the origin node.`);
+        $("#alertMessageDisplay").css("visibility","visible");
+      }
+    } else {
+      $("#alertMessage").html(`There was in issue with the formatting of your new coordinates.`);
+      $("#alertMessageDisplay").css("visibility","visible");
+    }
+  }
 }
 
 function saveCNode() {
@@ -1128,6 +1171,7 @@ function generateNode() {
     let cap = $(`#${containerId}_Capacity`).val();
     let illegal = $(`#${containerId}_Illegal`).val();
     let complete = $(`#${containerId}_Complete`).val();
+    let itemsListable = $(`#${containerId}_itemsListable`).is(":checked").toString();
     let points = $(`#${containerId}_Points`).val();
     let reqAll = $(`#${containerId}_reqAll`).is(":checked").toString();
     let reqNot = $(`#${containerId}_reqNot`).is(":checked").toString();
@@ -1176,6 +1220,7 @@ function generateNode() {
       items: [],
       complete: complete,
       illegal: illegal,
+      itemsListable: itemsListable,
       points: points,
       reqAll: reqAll,
       reqNot: reqNot,
@@ -1225,6 +1270,7 @@ function generateNode() {
     let max = $(`#${baseId}_Max`).val();
     let costs = $(`#${baseId}_Costs`).val();
     let drops = $(`#${baseId}_Drops`).val();
+    let move = $(`#${baseId}_Move`).val();
     let visibility = $(`#${baseId}_Visibility`).val();
     let response = $(`#${baseId}_Response`).val();
     let fail = $(`#${baseId}_Fail`).val();
@@ -1276,6 +1322,7 @@ function generateNode() {
       max: max,
       costs: costs,
       drops: drops,
+      move: move,
       visibility: visibility,
       response: response,
       fail: fail,
@@ -1562,6 +1609,7 @@ function generateNode() {
 }
 
 export {
+  cNode,
   generateNode,
   gameTitle,
   gameStyle,
@@ -1590,5 +1638,6 @@ export {
   saveInitItems,
   saveMonitors,
   saveGlobalWin,
-  saveGlobalLose
+  saveGlobalLose,
+  saveNodeLocation
 };

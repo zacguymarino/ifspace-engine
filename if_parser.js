@@ -24,6 +24,7 @@ var cNodeItems;
 var cPlayerItems;
 var cContainerDeposits;
 var cContainerWithdrawals;
+var cContainerExamines;
 var cItemInspections;
 var cNodeActions;
 var badAction;
@@ -432,6 +433,21 @@ function getExistingItemsActions() {
     return itemActions;
 }
 
+function getContainerExamineActions() {
+    let localContainers = JSON.parse(JSON.stringify(save.nodes[currentNode].containers));
+    let containerExamines = [];
+    for (let i = 0; i < localContainers.length; i++) {
+        let variants = localContainers[i].name.split(/\s*,\s*/);
+        for (let j = 0; j < variants.length; j++) {
+            for (let k = 0; k < itemInspectCommands.length; k++) {
+                let newAction = `${itemInspectCommands[k]} ${variants[j].toUpperCase()}`;
+                containerExamines.push(newAction);
+            }
+        }
+    }
+    return containerExamines;
+}
+
 function getItemInspectionActions() {
     let existingItems = JSON.parse(JSON.stringify(save.items));
     let discoveredItems = JSON.parse(JSON.stringify(save.nodes[currentNode].items));
@@ -641,19 +657,35 @@ function updateMonitors(action, passed) {
             let addSubtractArray = monitorList[i].addSubtract.split(/\]\s*,\s*/);
             let multiplyArray = monitorList[i].multiply.split(/\]\s*,\s*/);
             let divideArray = monitorList[i].divide.split(/\]\s*,\s*/);
-            let resetArray = monitorList[i].reset.split(/\s*,\s*/);
-            let zeroArray = monitorList[i].zero.split(/\s*,\s*/);
+            let passSetArray = monitorList[i].passSet.split(/\]\s*,\s*/);
+            let failSetArray = monitorList[i].failSet.split(/\]\s*,\s*/);
             let oldValue = monitorList[i]["value"];
+            let randomMax = monitorList[i]["random"];
+            let includeZero = monitorList[i]["includeZero"];
+            let random;
+            if (randomMax != "") {
+                if (includeZero == "true") {
+                    random = (Math.floor(Math.random() * ((+randomMax) + 1))).toString();
+                } else {
+                    random = (Math.floor(Math.random() * (+randomMax)) + 1).toString();
+                }
+            } 
             let newValue;
             for (let j = 0; j < addSubtractArray.length; j++) {
                 let addSubtract = addSubtractArray[j].replace(/^\[|\]$/g, '').split(/\s*,\s*/);
                 if (checkActions["action"] == addSubtract[0].toUpperCase()) {
                     let incrementor;
                     if (checkActions["valid"]) {
+                        if (addSubtract[1].includes("random")) {
+                            addSubtract[1] = addSubtract[1].replace("random", random);
+                        }
                         incrementor = +addSubtract[1];
                         newValue = +monitorList[i]["value"] + incrementor;
                         monitorList[i]["value"] = newValue.toString();
                     } else {
+                        if (addSubtract[2].includes("random")) {
+                            addSubtract[2] = addSubtract[2].replace("random", random);
+                        }
                         incrementor = +addSubtract[2];
                         newValue = +monitorList[i]["value"] + incrementor;
                         monitorList[i]["value"] = newValue.toString();
@@ -662,10 +694,16 @@ function updateMonitors(action, passed) {
                 if (checkDirections["action"] == addSubtract[0].toUpperCase()) {
                     let incrementor;
                     if (checkDirections["valid"]) {
+                        if (addSubtract[1].includes("random")) {
+                            addSubtract[1] = addSubtract[1].replace("random", random);
+                        }
                         incrementor = +addSubtract[1];
                         newValue = +monitorList[i]["value"] + incrementor;
                         monitorList[i]["value"] = newValue.toString();
                     } else {
+                        if (addSubtract[2].includes("random")) {
+                            addSubtract[2] = addSubtract[2].replace("random", random);
+                        }
                         incrementor = +addSubtract[2];
                         newValue = +monitorList[i]["value"] + incrementor;
                         monitorList[i]["value"] = newValue.toString();
@@ -677,9 +715,15 @@ function updateMonitors(action, passed) {
                 if (checkActions["action"] == multiply[0].toUpperCase()) {
                     let factor;
                     if (checkActions["valid"]) {
+                        if (multiply[1].includes("random")) {
+                            multiply[1] = multiply[1].replace("random", random);
+                        }
                         factor = +multiply[1];
                         monitorList[i]["value"] = (+monitorList[i]["value"] * factor).toString();
                     } else {
+                        if (multiply[2].includes("random")) {
+                            multiply[2] = multiply[2].replace("random", random);
+                        }
                         factor = +multiply[2];
                         monitorList[i]["value"] = (+monitorList[i]["value"] * factor).toString();
                     }
@@ -688,9 +732,15 @@ function updateMonitors(action, passed) {
                 if (checkDirections["action"] == multiply[0].toUpperCase()) {
                     let factor;
                     if (checkDirections["valid"]) {
+                        if (multiply[1].includes("random")) {
+                            multiply[1] = multiply[1].replace("random", random);
+                        }
                         factor = +multiply[1];
                         monitorList[i]["value"] = (+monitorList[i]["value"] * factor).toString();
                     } else {
+                        if (multiply[2].includes("random")) {
+                            multiply[2] = multiply[2].replace("random", random);
+                        }
                         factor = +multiply[2];
                         monitorList[i]["value"] = (+monitorList[i]["value"] * factor).toString();
                     }
@@ -702,9 +752,15 @@ function updateMonitors(action, passed) {
                 if (checkActions["action"] == divide[0].toUpperCase()) {
                     let factor;
                     if (checkActions["valid"]) {
+                        if (divide[1].includes("random")) {
+                            divide[1] = divide[1].replace("random", random);
+                        }
                         factor = +divide[1];
                         monitorList[i]["value"] = Math.floor((+monitorList[i]["value"] / factor)).toString();
                     } else {
+                        if (divide[2].includes("random")) {
+                            divide[2] = divide[2].replace("random", random);
+                        }
                         factor = +divide[2];
                         monitorList[i]["value"] = Math.floor((+monitorList[i]["value"] / factor)).toString();
                     }
@@ -713,39 +769,57 @@ function updateMonitors(action, passed) {
                 if (checkDirections["action"] == divide[0].toUpperCase()) {
                     let factor;
                     if (checkDirections["valid"]) {
+                        if (divide[1].includes("random")) {
+                            divide[1] = divide[1].replace("random", random);
+                        }
                         factor = +divide[1];
                         monitorList[i]["value"] = Math.floor((+monitorList[i]["value"] / factor)).toString();;
                     } else {
+                        if (divide[2].includes("random")) {
+                            divide[2] = divide[2].replace("random", random);
+                        }
                         factor = +divide[2];
                         monitorList[i]["value"] = Math.floor((+monitorList[i]["value"] / factor)).toString();
                     }
                     newValue = monitorList[i]["value"];
                 }
             }
-            for (let j = 0; j < resetArray.length; j++) {
-                let reset = resetArray[j];
-                if (checkActions["action"] == reset.toUpperCase()) {
+            for (let j = 0; j < passSetArray.length; j++) {
+                let passSet = passSetArray[j].replace(/^\[|\]$/g, '').split(/\s*,\s*/);
+                if (checkActions["action"] == passSet[0].toUpperCase()) {
                     if (checkActions["valid"]) {
-                        monitorList[i]["value"] = monitorList[i]["initial"];
+                        if (passSet[1].includes("random")) {
+                            passSet[1] = passSet[1].replace("random", random);
+                        }
+                        monitorList[i]["value"] = passSet[1];
                     }
                 }
-                if (checkDirections["action"] == reset.toUpperCase()) {
+                if (checkDirections["action"] == passSet[0].toUpperCase()) {
                     if (checkDirections["valid"]) {
-                        monitorList[i]["value"] = monitorList[i]["initial"];
+                        if (passSet[1].includes("random")) {
+                            passSet[1] = passSet[1].replace("random", random);
+                        }
+                        monitorList[i]["value"] = passSet[1];
                     }
                 }
                 newValue = monitorList[i]["value"];
             }
-            for (let j = 0; j < zeroArray.length; j++) {
-                let zero = zeroArray[j];
-                if (checkActions["action"] == zero.toUpperCase()) {
-                    if (checkActions["valid"]) {
-                        monitorList[i]["value"] = "0";
+            for (let j = 0; j < failSetArray.length; j++) {
+                let failSet = failSetArray[j].replace(/^\[|\]$/g, '').split(/\s*,\s*/);
+                if (checkActions["action"] == failSet[0].toUpperCase()) {
+                    if (!checkActions["valid"]) {
+                        if (failSet[1].includes("random")) {
+                            failSet[1] = failSet[1].replace("random", random);
+                        }
+                        monitorList[i]["value"] = failSet[1];
                     }
                 }
-                if (checkDirections["action"] == zero.toUpperCase()) {
-                    if (checkDirections["valid"]) {
-                        monitorList[i]["value"] = "0";
+                if (checkDirections["action"] == failSet[0].toUpperCase()) {
+                    if (!checkDirections["valid"]) {
+                        if (failSet[1].includes("random")) {
+                            failSet[1] = failSet[1].replace("random", random);
+                        }
+                        monitorList[i]["value"] = failSet[1];
                     }
                 }
                 newValue = monitorList[i]["value"];
@@ -1520,6 +1594,13 @@ function checkGlobalWin() {
                 "reqValids": globalWin[i].reqValids
             };
             if (checkRequirements(reqs, false)) {
+                cMonitorDisplayables = []
+                for (let i = 0; i < save["monitors"].length; i++) {
+                    if (save["monitors"][i]["onEnd"] == "true") {
+                        cMonitorDisplayables.push(save["monitors"][i]);
+                    }
+                }
+                handleDisplayableMonitors();
                 let max = getMaxPoints();
                 displayMessage(globalWin[i].description, false);
                 if (max != 0) {
@@ -1565,6 +1646,13 @@ function checkGlobalLose() {
                 "reqValids": globalLose[i].reqValids
             };
             if (checkRequirements(reqs, false)) {
+                cMonitorDisplayables = [];
+                for (let i = 0; i < save["monitors"].length; i++) {
+                    if (save["monitors"][i]["onEnd"] == "true") {
+                        cMonitorDisplayables.push(save["monitors"][i]);
+                    }
+                }
+                handleDisplayableMonitors();
                 let max = getMaxPoints();
                 displayMessage(globalLose[i].description, false);
                 if (max != 0) {
@@ -1609,6 +1697,13 @@ function checkWin() {
         "reqValids": win.reqValids
     }
     if (checkRequirements(reqs, false) && win.description.length > 0) {
+        cMonitorDisplayables = [];
+        for (let i = 0; i < save["monitors"].length; i++) {
+            if (save["monitors"][i]["onEnd"] == "true") {
+                cMonitorDisplayables.push(save["monitors"][i]);
+            }
+        }
+        handleDisplayableMonitors();
         let max = getMaxPoints();
         displayMessage(win.description, false);
         if (max != 0) {
@@ -1651,6 +1746,13 @@ function checkLose() {
         "reqValids": lose.reqValids
     }
     if (checkRequirements(reqs, false) && lose.description.length > 0) {
+        cMonitorDisplayables = [];
+        for (let i = 0; i < save["monitors"].length; i++) {
+            if (save["monitors"][i]["onEnd"] == "true") {
+                cMonitorDisplayables.push(save["monitors"][i]);
+            }
+        }
+        handleDisplayableMonitors();
         let max = getMaxPoints();
         displayMessage(lose.description, false);
         if (max != 0) {
@@ -1851,6 +1953,7 @@ function nodeReload() {
     cPlayerItems = getExistingItemsActions();
     cContainerDeposits = getContainerDepositActions(currentNode);
     cItemInspections = getItemInspectionActions();
+    cContainerExamines = getContainerExamineActions();
     cContainerWithdrawals = getContainerWithdrawalActions(currentNode);
     cNodeActions = getActions(currentNode);
     if (gameStyle == "modern") {
@@ -2059,6 +2162,7 @@ function parseAction(input) {
                                 //Action is valid - perform action operations
                                     let costs = actionObject.costs.split(/\s*,\s*/);
                                     let drops = actionObject.drops.split(/\s*,\s*/);
+                                    let move = actionObject.move.split(/\s*,\s*/);
                                     let visibility = actionObject.visibility;
 
                                     //Handle action costs
@@ -2102,11 +2206,16 @@ function parseAction(input) {
                                         default:
                                             break;
                                     }
+                                    //Handle action move
+                                    if (move != "" && move != null) {
+                                        let node = `${move[0]},${move[1]},${move[2]}`;
+                                        parseNode(node);
+                                    }
                                     pushAction(mainAction);
                                     displayMessage(actionObject.response, false);
                                     sentMessage = true;
                                 } else {
-                                    displayMessage("Can't do that anymore.", false);
+                                    displayMessage("You cannot do that anymore.", false);
                                     sentMessage = true;
                                 }
                             } else {
@@ -2343,6 +2452,8 @@ function parseAction(input) {
                             parseNode(cNodeDirections[i].location);
                             return;
                         } else {
+                            updateMonitors(cNodeDirections[i].direction, false);
+                            handleDisplayableMonitors();
                             displayMessage("Something is preventing you from going this way.", false);
                             sentMessage = true;
                         }
@@ -2372,6 +2483,83 @@ function parseAction(input) {
                             checked = true;
                             sentMessage = true;
                             break;
+                        }
+                    }
+                    if (checked) {
+                        break;
+                    }
+                }
+            }
+
+            if (cContainerExamines.includes(action)) {
+                console.log("hello");
+                let actionContainer;
+                let checked = false;
+                for (let i = 0; i < itemInspectCommands.length; i++) {
+                    let regexp = new RegExp(`\s*${itemInspectCommands[i]}\s*`);
+                    if (action.match(regexp)) {
+                        actionContainer = action.slice(action.match(regexp)[0].length + 1);
+                        console.log(actionContainer);
+                        break;
+                    }
+                }
+                let localContainers = JSON.parse(JSON.stringify(save.nodes[currentNode].containers));
+                console.log(localContainers);
+                for (let i = 0; i < localContainers.length; i++) {
+                    let variants = localContainers[i].name.split(/\s*,\s*/);
+                    for (let j = 0; j < variants.length; j++) {
+                        if (variants[j].toUpperCase() == actionContainer) {
+                            console.log("found the container");
+                            let reqs = {
+                                "reqItemsNot": localContainers[i].reqItemsNot,
+                                "reqContainersNot": localContainers[i].reqContainersNot,
+                                "reqLocalNot": localContainers[i].reqLocalNot,
+                                "reqGlobalNot": localContainers[i].reqGlobalNot,
+                                "preActionNot": localContainers[i].preActionNot,
+                                "locVisitsNot": localContainers[i].locVisitsNot,
+                                "preNodeNot": localContainers[i].preNodeNot,
+                                "itemEvosNot": localContainers[i].itemEvosNot,
+                                "pastDesNot": localContainers[i].pastDesNot,
+                                "reqChanceNot": localContainers[i].reqChanceNot,
+                                "reqMonitorsNot": localContainers[i].reqMonitorsNot,
+                                "reqFailsNot": localContainers[i].reqFailsNot,
+                                "reqValidsNot": localContainers[i].reqValidsNot,
+                                "reqAll": localContainers[i].reqAll,
+                                "reqItems": localContainers[i].reqItems,
+                                "reqContainers": localContainers[i].reqContainers,
+                                "reqLocal": localContainers[i].reqLocal,
+                                "reqGlobal": localContainers[i].reqGlobal,
+                                "preAction": localContainers[i].preAction,
+                                "locVisits": localContainers[i].locVisits,
+                                "preNode": localContainers[i].preNode,
+                                "itemEvos": localContainers[i].itemEvos,
+                                "pastDes": localContainers[i].pastDes,
+                                "reqChance": localContainers[i].reqChance,
+                                "reqMonitors": localContainers[i].reqMonitors,
+                                "reqFails": localContainers[i].reqFails,
+                                "reqValids": localContainers[i].reqValids
+                            }
+                            if (checkRequirements(reqs, false) && localContainers[i].itemsListable == "true") {
+                                let messageToDisplay;
+                                let mainName = variants[0];
+                                let containerItems = localContainers[i].items;
+                                if (containerItems.length == 0) {
+                                    messageToDisplay = `${mainName} is empty.`;
+                                } else {
+                                    messageToDisplay = `${mainName} contains: `;
+                                    for (let k = 0; k < containerItems.length; k++) {
+                                        let itemName = containerItems[k].name.split(/\s*,\s*/)[0];
+                                        if (k == containerItems.length - 1) {
+                                            messageToDisplay += itemName;
+                                        } else {
+                                            messageToDisplay += `${itemName}, `;
+                                        }
+                                    }
+                                }
+                                displayMessage(messageToDisplay, false);
+                                sentMessage = true;
+                            }
+                            checked = true;
                         }
                     }
                     if (checked) {

@@ -48,7 +48,23 @@
                             <span class="tooltiptext">Location of the current
                                 node (in x,y,z format)</span>
                         </label>
-                        <span id="location" class="pure-u-22-24">0,0,0</span>
+                        <button class="locationButton" id="location" class="pure-u-22-24">0,0,0</button>
+                    </div>
+                    <div class="popupScreen" id="nodeLocationDisplay" style="visibility: hidden">
+                        <div class="popupContent">
+                            <label class='tooltip'>
+                                <h1 class="popupTitle">Change Location</h1>
+                                <span class='popuptooltiptext'>Changes the location of this node</span>
+                            </label>
+                            <div class="flexCenter">
+                                <label class='tooltip'>
+                                    <h3>New Location:</h3>
+                                    <span class='popuptooltiptext'>Comma separated coordinates for new location (x,y,z)</span>
+                                </label>
+                                <input id='setLocation' type='text'>
+                            </div>
+                        </div>
+                        <button class="popupClose">Close</button>
                     </div>
                     <div class="pure-u-1-5">
                         <label class="tooltip" for="name"><b>Name</b>
@@ -554,6 +570,14 @@
                     <label for="gameAuthor">Game Author:</label>
                     <input type="text" id="gameAuthor" name="gameAuthor">
                 </div>
+            </div>
+            <button class="popupClose">Close</button>
+        </div>
+        <div class="popupScreen" id="alertMessageDisplay" style="visibility: hidden">
+            <div class="popupContent">
+                <h1 class="popupTitle">Alert Message</h1>
+                <div class="flexCenter" id="alertMessage"></div>
+                </br>
             </div>
             <button class="popupClose">Close</button>
         </div>

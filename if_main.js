@@ -1,9 +1,25 @@
-import { saveGame, loadGame, deleteNode, startGameSim, saveGlobalActions, saveInitItems, saveMonitors, saveGlobalWin, saveGlobalLose } from "./if_generate.js";
+import {
+  saveGame,
+  loadGame,
+  deleteNode,
+  startGameSim,
+  saveGlobalActions,
+  saveInitItems,
+  saveMonitors,
+  saveGlobalWin,
+  saveGlobalLose,
+  saveNodeLocation,
+  cNode} from "./if_generate.js";
 import * as dom from "./if_dom.js";
 import { nodeMap, resizeCanvas, zoom, draw } from "./if_nodemap.js";
 import { gameInit, parseAction, previousInput } from "./if_parser.js";
 
 $(function () {
+  //////////
+  ///Init///
+  //////////
+  dom.loadDomFromNode(cNode);
+
   ///////////////
   //Game Testing
   ///////////////
@@ -155,16 +171,24 @@ $(function () {
   });
 
   $(document).on('click', '.popupClose', function(event) {
-    let hideCheckboxes = ["initItemsDisplay", "globalActionsDisplay", "monitorsDisplay", "globalWinDisplay", "globalLoseDisplay"];
+    let saveOnClose = [
+      "initItemsDisplay",
+      "globalActionsDisplay",
+      "monitorsDisplay",
+      "globalWinDisplay",
+      "globalLoseDisplay",
+      "nodeLocationDisplay"
+    ];
     let parent = event.currentTarget.parentElement;
     if ($(parent).is(':visible')){
-      if (hideCheckboxes.includes(parent.id)) {
+      if (saveOnClose.includes(parent.id)) {
         $(parent).find(".notBox").css("visibility", "hidden");
         saveGlobalActions();
         saveInitItems();
         saveMonitors();
         saveGlobalWin();
         saveGlobalLose();
+        saveNodeLocation();
       }
       $(parent).css("visibility", "hidden");
     }
@@ -246,6 +270,10 @@ $(function () {
   $(document).on("click", "#directions", function (event) {
     let inputs = $(event.currentTarget).find("input");
     dom.directions(inputs);
+  });
+
+  $(document).on("click", "#location", function () {
+    $("#nodeLocationDisplay").css("visibility","visible");
   });
 
   $("#addItem").click(function () {
