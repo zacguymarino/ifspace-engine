@@ -1,4 +1,4 @@
-* :not(head) {
+* :not(head, i, u, b, br) {
   display: block;
   box-sizing: border-box;
 }

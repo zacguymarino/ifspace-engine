@@ -718,6 +718,7 @@ function loadDomFromNode(node) {
     $(`#${baseId}_Name`).val(containers[i].name);
     $(`#${baseId}_Capacity`).val(containers[i].capacity);
     $(`#${baseId}_Illegal`).val(containers[i].illegal);
+    $(`#${baseId}_initItems`).val(containers[i].initItems);
     $(`#${baseId}_Complete`).val(containers[i].complete);
     $(`#${baseId}_Points`).val(containers[i].points);
 
@@ -1176,6 +1177,11 @@ function addContainer() {
                     <span class='tooltiptext'>Comma separated list of items which may not be deposited into container</span>
                     </label>`;
   let illegal = `<input type='text' id='${containerId}_Illegal'>`;
+  let initItemsLabel = `<label class='tooltip'>
+                  Initial Items
+                  <span class='tooltiptext'>Comma separated list of items from this node which begin in this container (e.g. book, paperweight, paper)</span>
+                  </label>`;
+  let initItems = `<input type='text' id='${containerId}_initItems'>`;
   let itemsListableLabel = `<label class='pure-checkbox tooltip'>
                         Items Listable
                         <span class='tooltiptext'>If checked, the contents of the container are listed upon examining the container</span>
@@ -1198,6 +1204,8 @@ function addContainer() {
     complete +
     illegalLabel +
     illegal +
+    initItemsLabel +
+    initItems +
     itemsListableLabel +
     itemsListable +
     pointsLabel +

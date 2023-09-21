@@ -1,4 +1,5 @@
-import {game, 
+import {
+    game, 
     gameTitle, 
     gameStyle, 
     gameAuthor,
@@ -14,7 +15,8 @@ import {game,
     customDrops,
     customIgnorables,
     customLooks,
-    customExamines} from './if_generate.js';
+    customExamines
+} from './if_generate.js';
 
 var currentNode;
 var previousNode;
@@ -161,6 +163,26 @@ function gameInit() {
     parseNode(currentNode);
 }
 
+function handleInitContainerItems(location) {
+    let containers = save.nodes[location].containers;
+    let items = save.nodes[location].items;
+    for (let i = 0; i < containers.length; i++) {
+        let initContainerItems = containers[i].initItems.split(/\s*,\s*/);
+        for (let j = 0; j < initContainerItems.length; j++) {
+            for (let k = 0; k < items.length; k++) {
+                let itemName = items[k].name.split(/\s*,\s*/)[0];
+                if (itemName.toUpperCase() == initContainerItems[j].toUpperCase()) {
+                    let itemCopy = JSON.parse(JSON.stringify(items[k]));
+                    //found an init item (k)
+                    //remove it from save items and add it to save container
+                    save.nodes[location].containers[i].items.push(itemCopy);
+                    save.nodes[location].items.splice(k,1);
+                }
+            }
+        }
+    }
+}
+
 function addNodeToSave (location) {
     if (!save["nodes"].hasOwnProperty(location)) {
         let visibility = JSON.parse(JSON.stringify(game[location].visibility));
@@ -178,6 +200,7 @@ function addNodeToSave (location) {
             "valids": {"total": "0", "consecutive": "0"}
         }
         save.nodes[location] = JSON.parse(JSON.stringify(nodeInit));
+        handleInitContainerItems(location);
     }
 }
 
@@ -2164,6 +2187,12 @@ function parseAction(input) {
                                     let drops = actionObject.drops.split(/\s*,\s*/);
                                     let move = actionObject.move.split(/\s*,\s*/);
                                     let visibility = actionObject.visibility;
+                                    pushAction(mainAction);
+
+                                    //Handle global actions
+                                    if (isGlobal == true) {
+                                        game[currentNode].actions.actions.splice(i, 1);
+                                    }
 
                                     //Handle action costs
                                     if (costs != "" && costs != null) {
@@ -2211,7 +2240,6 @@ function parseAction(input) {
                                         let node = `${move[0]},${move[1]},${move[2]}`;
                                         parseNode(node);
                                     }
-                                    pushAction(mainAction);
                                     displayMessage(actionObject.response, false);
                                     sentMessage = true;
                                 } else {
@@ -2221,9 +2249,6 @@ function parseAction(input) {
                             } else {
                                 displayMessage(actionObject.fail, false);
                                 sentMessage = true;
-                            }
-                            if (isGlobal == true) {
-                                game[currentNode].actions.actions.splice(i, 1);
                             }
                             //Update monitors
                             updateMonitors(action, passed);

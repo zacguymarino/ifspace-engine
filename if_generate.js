@@ -1170,6 +1170,7 @@ function generateNode() {
     let name = $(`#${containerId}_Name`).val();
     let cap = $(`#${containerId}_Capacity`).val();
     let illegal = $(`#${containerId}_Illegal`).val();
+    let initItems = $(`#${containerId}_initItems`).val();
     let complete = $(`#${containerId}_Complete`).val();
     let itemsListable = $(`#${containerId}_itemsListable`).is(":checked").toString();
     let points = $(`#${containerId}_Points`).val();
@@ -1220,6 +1221,7 @@ function generateNode() {
       items: [],
       complete: complete,
       illegal: illegal,
+      initItems: initItems,
       itemsListable: itemsListable,
       points: points,
       reqAll: reqAll,
