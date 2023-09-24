@@ -23,10 +23,12 @@ var previousNode;
 var cNodeDescription;
 var cNodeDirections;
 var cNodeItems;
+var cContainerItems;
 var cPlayerItems;
 var cContainerDeposits;
 var cContainerWithdrawals;
 var cContainerExamines;
+var cContainerItemExamines;
 var cItemInspections;
 var cNodeActions;
 var badAction;
@@ -390,6 +392,54 @@ function checkItemOrigin(item) {
     return originNode;
 }
 
+function getContainerItemActions() {
+    let itemActions = [];
+    let containers = save.nodes[currentNode].containers;
+    for (let i = 0; i < containers.length; i++) {
+        let reqs = {
+            "reqItemsNot": containers[i].reqItemsNot,
+            "reqContainersNot": containers[i].reqContainersNot,
+            "reqLocalNot": containers[i].reqLocalNot,
+            "reqGlobalNot": containers[i].reqGlobalNot,
+            "preActionNot": containers[i].preActionNot,
+            "locVisitsNot": containers[i].locVisitsNot,
+            "preNodeNot": containers[i].preNodeNot,
+            "itemEvosNot": containers[i].itemEvosNot,
+            "pastDesNot": containers[i].pastDesNot,
+            "reqChanceNot": containers[i].reqChanceNot,
+            "reqMonitorsNot": containers[i].reqMonitorsNot,
+            "reqFailsNot": containers[i].reqFailsNot,
+            "reqValidsNot": containers[i].reqValidsNot,
+            "reqAll": containers[i].reqAll,
+            "reqItems": containers[i].reqItems,
+            "reqContainers": containers[i].reqContainers,
+            "reqLocal": containers[i].reqLocal,
+            "reqGlobal": containers[i].reqGlobal,
+            "preAction": containers[i].preAction,
+            "locVisits": containers[i].locVisits,
+            "preNode": containers[i].preNode,
+            "itemEvos": containers[i].itemEvos,
+            "pastDes": containers[i].pastDes,
+            "reqChance": containers[i].reqChance,
+            "reqMonitors": containers[i].reqMonitors,
+            "reqFails": containers[i].reqFails,
+            "reqValids": containers[i].reqValids
+        }
+        if (checkRequirements(reqs, false)) {
+            for (let j = 0; j < containers[i].items.length; j++) {
+                let variants = containers[i].items[j].name.split(/\s*,\s*/);
+                for (let k = 0; k < variants.length; k++) {
+                    for (let m = 0; m < takeCommands.length; m++) {
+                        let newAction = `${takeCommands[m]} ${variants[k].toUpperCase()}`;
+                        itemActions.push(newAction);
+                    }
+                }
+            }
+        }
+    }
+    return itemActions;
+}
+
 function getDiscoveredItemsActions(location) {
     let items = JSON.parse(JSON.stringify(save.nodes[location].items));
     let itemActions = [];
@@ -469,6 +519,55 @@ function getContainerExamineActions() {
         }
     }
     return containerExamines;
+}
+
+function getContainerItemExamineActions() {
+    let containerItemActions = [];
+    let containers = save.nodes[currentNode].containers;
+    for (let i = 0; i < containers.length; i++) {
+        let reqs = {
+            "reqItemsNot": containers[i].reqItemsNot,
+            "reqContainersNot": containers[i].reqContainersNot,
+            "reqLocalNot": containers[i].reqLocalNot,
+            "reqGlobalNot": containers[i].reqGlobalNot,
+            "preActionNot": containers[i].preActionNot,
+            "locVisitsNot": containers[i].locVisitsNot,
+            "preNodeNot": containers[i].preNodeNot,
+            "itemEvosNot": containers[i].itemEvosNot,
+            "pastDesNot": containers[i].pastDesNot,
+            "reqChanceNot": containers[i].reqChanceNot,
+            "reqMonitorsNot": containers[i].reqMonitorsNot,
+            "reqFailsNot": containers[i].reqFailsNot,
+            "reqValidsNot": containers[i].reqValidsNot,
+            "reqAll": containers[i].reqAll,
+            "reqItems": containers[i].reqItems,
+            "reqContainers": containers[i].reqContainers,
+            "reqLocal": containers[i].reqLocal,
+            "reqGlobal": containers[i].reqGlobal,
+            "preAction": containers[i].preAction,
+            "locVisits": containers[i].locVisits,
+            "preNode": containers[i].preNode,
+            "itemEvos": containers[i].itemEvos,
+            "pastDes": containers[i].pastDes,
+            "reqChance": containers[i].reqChance,
+            "reqMonitors": containers[i].reqMonitors,
+            "reqFails": containers[i].reqFails,
+            "reqValids": containers[i].reqValids
+        }
+        if (containers[i].itemsListable == "true" && checkRequirements(reqs, false)) {
+            let containerItems = containers[i].items;
+            for (let j = 0; j < containerItems.length; j++) {
+                let variants = containerItems[j].name.split(/\s*,\s*/);
+                for (let k = 0; k < variants.length; k++) {
+                    for (let m = 0; m < itemInspectCommands.length; m++) {
+                        let newAction = `${itemInspectCommands[m]} ${variants[k].toUpperCase()}`;
+                        containerItemActions.push(newAction);
+                    }
+                }
+            }
+        }
+    }
+    return containerItemActions;
 }
 
 function getItemInspectionActions() {
@@ -1973,9 +2072,11 @@ function nodeReload() {
     cNodeDescription = getDescription(currentNode);
     cNodeDirections = getDirectionsActions(currentNode);
     cNodeItems = getDiscoveredItemsActions(currentNode);
+    cContainerItems = getContainerItemActions();
     cPlayerItems = getExistingItemsActions();
     cContainerDeposits = getContainerDepositActions(currentNode);
     cItemInspections = getItemInspectionActions();
+    cContainerItemExamines = getContainerItemExamineActions();
     cContainerExamines = getContainerExamineActions();
     cContainerWithdrawals = getContainerWithdrawalActions(currentNode);
     cNodeActions = getActions(currentNode);
@@ -2116,6 +2217,55 @@ function parseAction(input) {
         let foundMatch = false;
         let isGlobal = false;
         for (let h = 0; h < cNodeActions.length; h++) {
+            let actionWords = cNodeActions[h].split(" ");
+            let wordsMatch = true;
+            for (let i = 0; i < actionWords.length; i++) {
+                if (!action.includes(actionWords[i].toUpperCase())) {
+                    wordsMatch = false;
+                    break;
+                }
+            }
+            if (wordsMatch == true && action != cNodeActions[h].toUpperCase()) {
+                //potential includeOnly action
+                let potentialAction = cNodeActions[h].toUpperCase();
+                let includeOnlyMatch = false;
+                for (let i = 0; i < globalActions.length; i++) {
+                    let variants = globalActions[i].actions.toUpperCase().split(/\s*,\s*/);
+                    for (let j = 0; j < variants.length; j++) {
+                        if (filterIgnorables(variants[j]) == potentialAction) {
+                            if (globalActions[i].includeOnly == "true") {
+                                action = potentialAction;
+                                includeOnlyMatch = true;
+                                break;
+                            }
+                        }
+                        if (includeOnlyMatch = true) {
+                            break;
+                        }
+                    }
+                    if (includeOnlyMatch = true) {
+                        break;
+                    }
+                }
+                for (let i = 0; i < game[currentNode].actions.actions.length; i++) {
+                    let variants = game[currentNode].actions.actions[i].actions.toUpperCase().split(/\s*,\s*/);
+                    for (let j = 0; j < variants.length; j++) {
+                        if (filterIgnorables(variants[j]) == potentialAction) {
+                            if (game[currentNode].actions.actions[i].includeOnly == "true") {
+                                action = potentialAction;
+                                includeOnlyMatch = true;
+                                break;
+                            }
+                        }
+                        if (includeOnlyMatch = true) {
+                            break;
+                        }
+                    }
+                    if (includeOnlyMatch = true) {
+                        break;
+                    }
+                }
+            }
             if (filterIgnorables(cNodeActions[h].toUpperCase()) == action) {
                 for (let i = 0; i < globalActions.length; i++) {
                     if (isGlobal == true) {
@@ -2292,7 +2442,7 @@ function parseAction(input) {
             }
 
             if (inventoryCommands.includes(action)) {
-                pushAction("INENTORY");
+                pushAction("INVENTORY");
                 if (save.items.length > 0) {
                     displayMessage("Inventory:", false);
                     for (let i = 0; i < save.items.length; i++) {
@@ -2487,6 +2637,45 @@ function parseAction(input) {
                 }
             }
 
+            //Handle incomplete container withdrawal
+            if (cContainerItems.includes(action)) {
+                let actionItem;
+                let checked = false;
+                for (let i = 0; i < takeCommands.length; i++) {
+                    let regexp = new RegExp(`\s*${takeCommands[i]}\s*`);
+                    if (action.match(regexp)) {
+                        actionItem = action.slice(action.match(regexp)[0].length + 1);
+                        break;
+                    }
+                }
+                let containers = save.nodes[currentNode].containers;
+                for (let i = 0; i < containers.length; i++) {
+                    let containerItems = containers[i].items;
+                    for (let j = 0; j < containerItems.length; j++) {
+                        let variants = containerItems[j].name.split(/\s*,\s*/);
+                        for (let k = 0; k < variants.length; k++) {
+                            if (variants[k].toUpperCase() == actionItem) {
+                                let discoveredItem = JSON.parse(JSON.stringify(containerItems[j]));
+                                let itemName = discoveredItem.name.split(/\s*,\s*/)[0];
+                                let containerName = containers[i].name.split(/\s*,\s*/)[0];
+                                save.items.push(discoveredItem);
+                                save.nodes[currentNode].containers[i].items.splice(j,1);
+                                displayMessage(`${itemName} taken from ${containerName}.`, false);
+                                checked = true;
+                                sentMessage = true;
+                                break;
+                            }
+                        }
+                        if (checked) {
+                            break;
+                        }
+                    }
+                    if (checked) {
+                        break;
+                    }
+                }
+            }
+
             if (cNodeItems.includes(action)) {
                 let actionItem;
                 for (let i = 0; i < takeCommands.length; i++) {
@@ -2517,24 +2706,20 @@ function parseAction(input) {
             }
 
             if (cContainerExamines.includes(action)) {
-                console.log("hello");
                 let actionContainer;
                 let checked = false;
                 for (let i = 0; i < itemInspectCommands.length; i++) {
                     let regexp = new RegExp(`\s*${itemInspectCommands[i]}\s*`);
                     if (action.match(regexp)) {
                         actionContainer = action.slice(action.match(regexp)[0].length + 1);
-                        console.log(actionContainer);
                         break;
                     }
                 }
                 let localContainers = JSON.parse(JSON.stringify(save.nodes[currentNode].containers));
-                console.log(localContainers);
                 for (let i = 0; i < localContainers.length; i++) {
                     let variants = localContainers[i].name.split(/\s*,\s*/);
                     for (let j = 0; j < variants.length; j++) {
                         if (variants[j].toUpperCase() == actionContainer) {
-                            console.log("found the container");
                             let reqs = {
                                 "reqItemsNot": localContainers[i].reqItemsNot,
                                 "reqContainersNot": localContainers[i].reqContainersNot,
@@ -2593,9 +2778,26 @@ function parseAction(input) {
                 }
             }
 
+            if (cContainerItemExamines.includes(action)) {
+                let actionItem;
+                for (let i = 0; i < itemInspectCommands.length; i++) {
+                    let regexp = new RegExp(`\s*${itemInspectCommands[i]}\s*`);
+                    if (action.match(regexp)) {
+                        actionItem = action.slice(action.match(regexp)[0].length + 1);
+                        break;
+                    }
+                }
+                let inspectableItems = [];
+                for (let i = 0; i < save.nodes[currentNode].containers.length; i++) {
+                    for (let j = 0; j < save.nodes[currentNode].containers[i].items.length; j++) {
+                        inspectableItems.push(JSON.parse(JSON.stringify(save.nodes[currentNode].containers[i].items[j])));
+                    }
+                }
+                examineItem(actionItem, inspectableItems);
+            }
+
             if (cItemInspections.includes(action)) {
                 let actionItem;
-                let checked = false;
                 for (let i = 0; i < itemInspectCommands.length; i++) {
                     let regexp = new RegExp(`\s*${itemInspectCommands[i]}\s*`);
                     if (action.match(regexp)) {
@@ -2604,7 +2806,11 @@ function parseAction(input) {
                     }
                 }
                 let inspectableItems = JSON.parse(JSON.stringify(save.items.concat(save.nodes[currentNode].items)));
+                examineItem(actionItem, inspectableItems);
+            }
 
+            function examineItem(actionItem, inspectableItems) {
+                let checked = false;
                 for (let i = 0; i < inspectableItems.length; i++) {
                     let variants = inspectableItems[i].name.split(/\s*,\s*/);
                     for (let j = 0; j < variants.length; j++) {

@@ -159,6 +159,7 @@ function loadDomGlobalActions(globalActions) {
       $(`#${baseId}_reqNot`).prop("checked", false);
       $(`.${baseId}_notBox`).css("visibility", "hidden");
     }
+    (actions[i].includeOnly == "true") ? $(`#${baseId}_includeOnly`).prop("checked", true) : $(`#${baseId}_includeOnly`).prop("checked", false);
     (actions[i].reqAll == "true") ? $(`#${baseId}_reqAll`).prop("checked", true) : $(`#${baseId}_reqAll`).prop("checked", false);
     (actions[i].reqItemsNot == "true") ? $(`#${baseId}_itemsNot`).prop("checked", true) : $(`#${baseId}_itemsNot`).prop("checked", false);
     (actions[i].reqContainersNot == "true") ? $(`#${baseId}_containersNot`).prop("checked", true) : $(`#${baseId}_containersNot`).prop("checked", false);
@@ -851,6 +852,7 @@ function loadDomFromNode(node) {
         $(`.${baseId}_notBox`).css("visibility", "hidden");
       }
 
+      (actions.actions[i].includeOnly == "true") ? $(`#${baseId}_includeOnly`).prop("checked", true) : $(`#${baseId}_includeOnly`).prop("checked", false);
       (actions.actions[i].reqAll == "true") ? $(`#${baseId}_reqAll`).prop("checked", true) : $(`#${baseId}_reqAll`).prop("checked", false);
       (actions.actions[i].reqItemsNot == "true") ? $(`#${baseId}_itemsNot`).prop("checked", true) : $(`#${baseId}_itemsNot`).prop("checked", false);
       (actions.actions[i].reqContainersNot == "true") ? $(`#${baseId}_containersNot`).prop("checked", true) : $(`#${baseId}_containersNot`).prop("checked", false);
@@ -1340,6 +1342,13 @@ function addGlobalAction() {
                         <span class='popuptooltiptext'>Comma separated list of accepted action(e.g. crush egg, smash egg) [Ignores: a, an, the, to, for, at]</span>
                         </label>`;
   let actions = `<input type='text' id='${actionId}_Actions'>`;
+  let includeOnly = `<span style="display: flex">
+                        <label class='tooltip'>
+                        Need only include: 
+                        <span class='tooltiptext'>If checked, the user's input need only to include the action text (i.e. the action "pick lock lockpick" would pass with an input of "pick the lock with the lockpick")</span>
+                        </label>
+                        <input type='checkbox' id='${actionId}_includeOnly'/>
+                      </span>`;
   let maxLabel = `<label class='tooltip'>
                     Max Uses
                     <span class='popuptooltiptext'>A number for the maximum number of times this action can be called [leave blank for no maximum]</span>
@@ -1392,6 +1401,7 @@ function addGlobalAction() {
     rmvButton +
     actionLabel +
     actions +
+    includeOnly +
     maxLabel +
     max +
     costsLabel +
@@ -1532,6 +1542,13 @@ function addAction() {
                         <span class='tooltiptext'>Comma separated list of accepted action(e.g. crush egg, smash egg) [Ignores: a, an, the, to, for, at]</span>
                         </label>`;
   let actions = `<input type='text' id='${actionId}_Actions'>`;
+  let includeOnly = `<span style="display: flex">
+                        <label class='tooltip'>
+                        Need only include: 
+                        <span class='tooltiptext'>If checked, the user's input need only to include the action text (i.e. the action "pick lock lockpick" would pass with an input of "pick the lock with the lockpick")</span>
+                        </label>
+                        <input type='checkbox' id='${actionId}_includeOnly'/>
+                      </span>`;
   let maxLabel = `<label class='tooltip'>
                     Max Uses
                     <span class='tooltiptext'>A number for the maximum number of times this action can be called [leave blank for no maximum]</span>
@@ -1584,6 +1601,7 @@ function addAction() {
     rmvButton +
     actionLabel +
     actions +
+    includeOnly +
     maxLabel +
     max +
     costsLabel +

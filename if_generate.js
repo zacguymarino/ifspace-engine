@@ -641,6 +641,7 @@ function saveGlobalActions() {
   for (let i = 0; i < actionList.length; i++) {
     let baseId = $(actionList[i]).attr("id");
     let actions = $(`#${baseId}_Actions`).val();
+    let includeOnly = $(`#${baseId}_includeOnly`).is(":checked").toString();
     let max = $(`#${baseId}_Max`).val();
     let costs = $(`#${baseId}_Costs`).val();
     let drops = $(`#${baseId}_Drops`).val();
@@ -692,6 +693,7 @@ function saveGlobalActions() {
                       };
     let action = {
       actions: actions,
+      includeOnly: includeOnly,
       max: max,
       costs: costs,
       drops: drops,
@@ -1269,6 +1271,7 @@ function generateNode() {
   for (let i = 0; i < actionList.length; i++) {
     let baseId = $(actionList[i]).attr("id");
     let actions = $(`#${baseId}_Actions`).val();
+    let includeOnly = $(`#${baseId}_includeOnly`).is(":checked").toString();
     let max = $(`#${baseId}_Max`).val();
     let costs = $(`#${baseId}_Costs`).val();
     let drops = $(`#${baseId}_Drops`).val();
@@ -1321,6 +1324,7 @@ function generateNode() {
 
     let action = {
       actions: actions,
+      includeOnly: includeOnly,
       max: max,
       costs: costs,
       drops: drops,
