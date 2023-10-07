@@ -2079,7 +2079,7 @@ function nodeReload() {
     cContainerItemExamines = getContainerItemExamineActions();
     cContainerExamines = getContainerExamineActions();
     cContainerWithdrawals = getContainerWithdrawalActions(currentNode);
-    cNodeActions = getActions(currentNode);
+    cNodeActions = getActions();
     if (gameStyle == "modern") {
         updateModernDirections(cNodeDirections);
         updateModernActions(cNodeActions);
@@ -2214,7 +2214,7 @@ function parseAction(input) {
         action = filterIgnorables(action);
 
         //Handle actions
-        let foundMatch = false;
+        let foundPureActionMatch = false;
         let isGlobal = false;
         for (let h = 0; h < cNodeActions.length; h++) {
             let actionWords = cNodeActions[h].split(" ");
@@ -2230,39 +2230,43 @@ function parseAction(input) {
                 let potentialAction = cNodeActions[h].toUpperCase();
                 let includeOnlyMatch = false;
                 for (let i = 0; i < globalActions.length; i++) {
-                    let variants = globalActions[i].actions.toUpperCase().split(/\s*,\s*/);
-                    for (let j = 0; j < variants.length; j++) {
-                        if (filterIgnorables(variants[j]) == potentialAction) {
-                            if (globalActions[i].includeOnly == "true") {
-                                action = potentialAction;
-                                includeOnlyMatch = true;
+                    if (globalActions[0] != '') {
+                        let variants = globalActions[i].actions.toUpperCase().split(/\s*,\s*/);
+                        for (let j = 0; j < variants.length; j++) {
+                            if (filterIgnorables(variants[j]) == potentialAction) {
+                                if (globalActions[i].includeOnly == "true") {
+                                    action = potentialAction;
+                                    includeOnlyMatch = true;
+                                    break;
+                                }
+                            }
+                            if (includeOnlyMatch = true) {
                                 break;
                             }
                         }
                         if (includeOnlyMatch = true) {
                             break;
                         }
-                    }
-                    if (includeOnlyMatch = true) {
-                        break;
                     }
                 }
                 for (let i = 0; i < game[currentNode].actions.actions.length; i++) {
-                    let variants = game[currentNode].actions.actions[i].actions.toUpperCase().split(/\s*,\s*/);
-                    for (let j = 0; j < variants.length; j++) {
-                        if (filterIgnorables(variants[j]) == potentialAction) {
-                            if (game[currentNode].actions.actions[i].includeOnly == "true") {
-                                action = potentialAction;
-                                includeOnlyMatch = true;
+                    if (game[currentNode].actions.actions[0] != '') {
+                        let variants = game[currentNode].actions.actions[i].actions.toUpperCase().split(/\s*,\s*/);
+                        for (let j = 0; j < variants.length; j++) {
+                            if (filterIgnorables(variants[j]) == potentialAction) {
+                                if (game[currentNode].actions.actions[i].includeOnly == "true") {
+                                    action = potentialAction;
+                                    includeOnlyMatch = true;
+                                    break;
+                                }
+                            }
+                            if (includeOnlyMatch = true) {
                                 break;
                             }
                         }
                         if (includeOnlyMatch = true) {
                             break;
                         }
-                    }
-                    if (includeOnlyMatch = true) {
-                        break;
                     }
                 }
             }
@@ -2283,8 +2287,8 @@ function parseAction(input) {
                 for (let i = 0; i < game[currentNode].actions.actions.length; i++) {
                     let variants = game[currentNode].actions.actions[i].actions.toUpperCase().split(/\s*,\s*/);
                     for (let m = 0; m < variants.length; m++) {
-                        if (filterIgnorables(variants[m]) == action && foundMatch == false) {
-                            foundMatch = true;
+                        if (filterIgnorables(variants[m]) == action && foundPureActionMatch == false) {
+                            foundPureActionMatch = true;
                             let passed = false;
                             let actionObject = JSON.parse(JSON.stringify(game[currentNode].actions.actions[i]));
                             let reqs = {
@@ -2407,6 +2411,229 @@ function parseAction(input) {
                     }
                 }
             }
+        }
+        //Handle global constructed actions
+        for (let i = 0; i < globalActions.length; i++) {
+            let foundGlobalConstructedMatch = false;
+            let potentialConstructedAction = false;
+            let actionVerbs = globalActions[i].actionVerbs.split(/\s*,\s*/);
+            let primaryNouns = globalActions[i].primaryNouns.split(/\s*,\s*/);
+            let secondaryNouns = globalActions[i].secondaryNouns.split(/\s*,\s*/);
+            let requiredWords = globalActions[i].requiredWords.split(/\s*,\s*/);
+            (actionVerbs[0] == '') ? actionVerbs = [] : actionVerbs = actionVerbs;
+            (primaryNouns[0] == '') ? primaryNouns = [] : primaryNouns = primaryNouns;
+            (secondaryNouns[0] == '') ? secondaryNouns = [] : secondaryNouns = secondaryNouns;
+            (requiredWords[0] == '') ? requiredWords = [] : requiredWords = requiredWords;
+            for (let j = 0; j < actionVerbs.length; j++) {
+                if (action.includes(actionVerbs[j].toUpperCase())) {
+                    if (primaryNouns.length > 0) {
+                        for (let k = 0; k < primaryNouns.length; k++) {
+                            if (action.includes(primaryNouns[k].toUpperCase())) {
+                                if (secondaryNouns.length > 0) {
+                                    for (let m = 0; m < secondaryNouns.length; m++) {
+                                        if (action.includes(secondaryNouns[m].toUpperCase())) {
+                                            potentialConstructedAction = true;
+                                        }
+                                    }
+                                } else {
+                                    potentialConstructedAction = true;
+                                }
+                            }
+                        }
+                    } else {
+                        potentialConstructedAction = true;
+                    }
+                    if (potentialConstructedAction) {
+                        for (let k = 0; k < requiredWords.length; k++) {
+                            if (!action.includes(requiredWords[k].toUpperCase())) {
+                                potentialConstructedAction = false;
+                            }
+                        }
+                        if (potentialConstructedAction) {
+                            foundGlobalConstructedMatch = true;
+                        }
+                    }
+                }
+            }
+            if (foundGlobalConstructedMatch) {
+                let actionObject = JSON.parse(JSON.stringify(globalActions[i]));
+                handleConstructedAction(actionObject, actionVerbs, primaryNouns, secondaryNouns, requiredWords);
+            }
+        }
+        //Handle local constructed actions
+        for (let i = 0; i < game[currentNode].actions.actions.length; i++) {
+            let foundLocalConstructedMatch = false;
+            let localAction = game[currentNode].actions.actions[i];
+            let potentialConstructedAction = false;
+            let actionVerbs = localAction.actionVerbs.split(/\s*,\s*/);
+            let primaryNouns = localAction.primaryNouns.split(/\s*,\s*/);
+            let secondaryNouns = localAction.secondaryNouns.split(/\s*,\s*/);
+            let requiredWords = localAction.requiredWords.split(/\s*,\s*/);
+            (actionVerbs[0] == '') ? actionVerbs = [] : actionVerbs = actionVerbs;
+            (primaryNouns[0] == '') ? primaryNouns = [] : primaryNouns = primaryNouns;
+            (secondaryNouns[0] == '') ? secondaryNouns = [] : secondaryNouns = secondaryNouns;
+            (requiredWords[0] == '') ? requiredWords = [] : requiredWords = requiredWords;
+            for (let j = 0; j < actionVerbs.length; j++) {
+                if (action.includes(actionVerbs[j].toUpperCase())) {
+                    if (primaryNouns.length > 0) {
+                        for (let k = 0; k < primaryNouns.length; k++) {
+                            if (action.includes(primaryNouns[k].toUpperCase())) {
+                                if (secondaryNouns.length > 0) {
+                                    for (let m = 0; m < secondaryNouns.length; m++) {
+                                        if (action.includes(secondaryNouns[m].toUpperCase())) {
+                                            potentialConstructedAction = true;
+                                        }
+                                    }
+                                } else {
+                                    potentialConstructedAction = true;
+                                }
+                            }
+                        }
+                    } else {
+                        potentialConstructedAction = true;
+                    }
+                    if (potentialConstructedAction) {
+                        for (let k = 0; k < requiredWords.length; k++) {
+                            if (!action.includes(requiredWords[k].toUpperCase())) {
+                                potentialConstructedAction = false;
+                            }
+                        }
+                        if (potentialConstructedAction) {
+                            foundLocalConstructedMatch = true;
+                        }
+                    }
+                }
+            }
+            if (foundLocalConstructedMatch == true) {
+                let actionObject = JSON.parse(JSON.stringify(localAction));
+                handleConstructedAction(actionObject, actionVerbs, primaryNouns, secondaryNouns, requiredWords);
+            }
+        }
+        function handleConstructedAction(actionObject, actionVerbs, primaryNouns, secondaryNouns, requiredWords) {
+            let passed = false;
+            let reqs = {
+                "reqItemsNot": actionObject.reqItemsNot,
+                "reqContainersNot": actionObject.reqContainersNot,
+                "reqLocalNot": actionObject.reqLocalNot,
+                "reqGlobalNot": actionObject.reqGlobalNot,
+                "preActionNot": actionObject.preActionNot,
+                "locVisitsNot": actionObject.locVisitsNot,
+                "preNodeNot": actionObject.preNodeNot,
+                "itemEvosNot": actionObject.itemEvosNot,
+                "pastDesNot": actionObject.pastDesNot,
+                "reqChanceNot": actionObject.reqChanceNot,
+                "reqMonitorsNot": actionObject.reqMonitorsNot,
+                "reqFailsNot": actionObject.reqFailsNot,
+                "reqValidsNot": actionObject.reqValidsNot,
+                "reqAll": actionObject.reqAll,
+                "reqItems": actionObject.reqItems,
+                "reqContainers": actionObject.reqContainers,
+                "reqLocal": actionObject.reqLocal,
+                "reqGlobal": actionObject.reqGlobal,
+                "preAction": actionObject.preAction,
+                "locVisits": actionObject.locVisits,
+                "preNode": actionObject.preNode,
+                "itemEvos": actionObject.itemEvos,
+                "pastDes": actionObject.pastDes,
+                "reqChance": actionObject.reqChance,
+                "reqMonitors": actionObject.reqMonitors,
+                "reqFails": actionObject.reqFails,
+                "reqValids": actionObject.reqValids
+            }
+            if (checkRequirements(reqs, false)) {
+                passed = true;
+                let mainAction = `${actionVerbs[0].toUpperCase()}`;
+                if (primaryNouns.length > 0) {
+                    mainAction = `${mainAction} ${primaryNouns[0].toUpperCase()}`;
+                }
+                if (secondaryNouns.length > 0) {
+                    mainAction = `${mainAction} ${secondaryNouns[0].toUpperCase()}`;
+                }
+                if (requiredWords.length > 0) {
+                    for (let j = 0; j < requiredWords.length; j++) {
+                        mainAction = `${mainAction} ${requiredWords[j].toUpperCase()}`;
+                    }
+                }
+
+                let maxTimes;
+                if (actionObject.max != '' && actionObject.max != null) {
+                    maxTimes = +actionObject.max;
+                } else {
+                    maxTimes = 9999;
+                }
+                let usedTimes = 0;
+                for (let j = 0; j < save.actions.length; j++) {
+                    if (save.actions[j] == mainAction) {
+                        usedTimes++;
+                    }
+                }
+                if (!(usedTimes >= maxTimes)) {
+                //Action is valid - perform action operations
+                    let costs = actionObject.costs.split(/\s*,\s*/);
+                    let drops = actionObject.drops.split(/\s*,\s*/);
+                    let move = actionObject.move.split(/\s*,\s*/);
+                    let visibility = actionObject.visibility;
+                    pushAction(mainAction);
+
+                    //Handle action costs
+                    if (costs != "" && costs != null) {
+                        for (let k = 0; k < costs.length; k++) {
+                            for (let l = 0; l < save.items.length; l++) {
+                                if (save.items[l].name.includes(costs[k])) {
+                                    save.items.splice(l, 1);
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                    //Handle action drops
+                    if (drops != "" && drops != null) {
+                        for (let k = 0; k < drops.length; k++) {
+                            for (let l = 0; l < save.items.length; l++) {
+                                if (save.items[l].name.includes(drops[k])) {
+                                    save.nodes[currentNode].items.push(save.items[l]);
+                                    save.items.splice(l, 1);
+                                }
+                            }
+                        }
+                    }
+                    //Handle action visibility
+                    switch(visibility) {
+                        case 'none':
+                            break;
+                        case 'on':
+                            save.nodes[currentNode].visibility = 'true';
+                            break;
+                        case 'off':
+                            save.nodes[currentNode].visibility = 'false';
+                        case 'switch':
+                            if (save.nodes[currentNode].visibility == 'true') {
+                                save.nodes[currentNode].visibility = 'false';
+                            } else {
+                                save.nodes[currentNode].visibility = 'true';
+                            }
+                            break;
+                        default:
+                            break;
+                    }
+                    //Handle action move
+                    if (move != "" && move != null) {
+                        let node = `${move[0]},${move[1]},${move[2]}`;
+                        parseNode(node);
+                    }
+                    displayMessage(actionObject.response, false);
+                    sentMessage = true;
+                } else {
+                    displayMessage("You cannot do that anymore.", false);
+                    sentMessage = true;
+                }
+            } else {
+                displayMessage(actionObject.fail, false);
+                sentMessage = true;
+            }
+            //Update monitors
+            updateMonitors(action, passed);
+            handleDisplayableMonitors();
         }
 
         //If sentMessage is true, custom actions trump everything so do not continue

@@ -32,6 +32,10 @@ button {
   flex-wrap: wrap;
 }
 
+.divBorder {
+  border: 1px solid gray;
+}
+
 #zIndexBlock {
   margin-left: 10px;
 }

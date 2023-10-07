@@ -642,6 +642,10 @@ function saveGlobalActions() {
     let baseId = $(actionList[i]).attr("id");
     let actions = $(`#${baseId}_Actions`).val();
     let includeOnly = $(`#${baseId}_includeOnly`).is(":checked").toString();
+    let actionVerbs = $(`#${baseId}_actionVerbs`).val();
+    let primaryNouns = $(`#${baseId}_primaryNouns`).val();
+    let secondaryNouns = $(`#${baseId}_secondaryNouns`).val();
+    let requiredWords = $(`#${baseId}_requiredWords`).val();
     let max = $(`#${baseId}_Max`).val();
     let costs = $(`#${baseId}_Costs`).val();
     let drops = $(`#${baseId}_Drops`).val();
@@ -694,6 +698,10 @@ function saveGlobalActions() {
     let action = {
       actions: actions,
       includeOnly: includeOnly,
+      actionVerbs: actionVerbs,
+      primaryNouns: primaryNouns,
+      secondaryNouns: secondaryNouns,
+      requiredWords: requiredWords,
       max: max,
       costs: costs,
       drops: drops,
@@ -1272,6 +1280,10 @@ function generateNode() {
     let baseId = $(actionList[i]).attr("id");
     let actions = $(`#${baseId}_Actions`).val();
     let includeOnly = $(`#${baseId}_includeOnly`).is(":checked").toString();
+    let actionVerbs = $(`#${baseId}_actionVerbs`).val();
+    let primaryNouns = $(`#${baseId}_primaryNouns`).val();
+    let secondaryNouns = $(`#${baseId}_secondaryNouns`).val();
+    let requiredWords = $(`#${baseId}_requiredWords`).val();
     let max = $(`#${baseId}_Max`).val();
     let costs = $(`#${baseId}_Costs`).val();
     let drops = $(`#${baseId}_Drops`).val();
@@ -1325,6 +1337,10 @@ function generateNode() {
     let action = {
       actions: actions,
       includeOnly: includeOnly,
+      actionVerbs: actionVerbs,
+      primaryNouns: primaryNouns,
+      secondaryNouns: secondaryNouns,
+      requiredWords: requiredWords,
       max: max,
       costs: costs,
       drops: drops,

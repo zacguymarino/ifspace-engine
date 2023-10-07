@@ -176,6 +176,10 @@ function loadDomGlobalActions(globalActions) {
     (actions[i].reqMonitorsNot == "true") ? $(`#${baseId}_reqMonitorsNot`).prop("checked", true) : $(`#${baseId}_reqMonitorsNot`).prop("checked", false);
 
     $(`#${baseId}_Actions`).val(actions[i].actions);
+    $(`#${baseId}_actionVerbs`).val(actions[i].actionVerbs);
+    $(`#${baseId}_primaryNouns`).val(actions[i].primaryNouns);
+    $(`#${baseId}_secondaryNouns`).val(actions[i].secondaryNouns);
+    $(`#${baseId}_requiredWords`).val(actions[i].requiredWords);
     $(`#${baseId}_Max`).val(actions[i].max);
     $(`#${baseId}_Costs`).val(actions[i].costs);
     $(`#${baseId}_Drops`).val(actions[i].drops);
@@ -836,6 +840,10 @@ function loadDomFromNode(node) {
       addAction();
       let baseId = `action_${i + 1}`;
       $(`#${baseId}_Actions`).val(actions.actions[i].actions);
+      $(`#${baseId}_actionVerbs`).val(actions.actions[i].actionVerbs);
+      $(`#${baseId}_primaryNouns`).val(actions.actions[i].primaryNouns);
+      $(`#${baseId}_secondaryNouns`).val(actions.actions[i].secondaryNouns);
+      $(`#${baseId}_requiredWords`).val(actions.actions[i].requiredWords);
       $(`#${baseId}_Max`).val(actions.actions[i].max);
       $(`#${baseId}_Costs`).val(actions.actions[i].costs);
       $(`#${baseId}_Drops`).val(actions.actions[i].drops);
@@ -1334,93 +1342,7 @@ function addGlobalAction() {
   } else {
     actionId = "global_action_1";
   }
-  let newDivStart = `<div class='popupBlockElements' id='${actionId}'>`;
-  let newDivEnd = "</div>";
-  let rmvButton = `<button class='removeObject'>Remove Action</button>`;
-  let actionLabel = `<label class='tooltip'>
-                        Action(s)
-                        <span class='popuptooltiptext'>Comma separated list of accepted action(e.g. crush egg, smash egg) [Ignores: a, an, the, to, for, at]</span>
-                        </label>`;
-  let actions = `<input type='text' id='${actionId}_Actions'>`;
-  let includeOnly = `<span style="display: flex">
-                        <label class='tooltip'>
-                        Need only include: 
-                        <span class='tooltiptext'>If checked, the user's input need only to include the action text (i.e. the action "pick lock lockpick" would pass with an input of "pick the lock with the lockpick")</span>
-                        </label>
-                        <input type='checkbox' id='${actionId}_includeOnly'/>
-                      </span>`;
-  let maxLabel = `<label class='tooltip'>
-                    Max Uses
-                    <span class='popuptooltiptext'>A number for the maximum number of times this action can be called [leave blank for no maximum]</span>
-                    </label>`;
-  let max = `<input type='text' id='${actionId}_Max'>`;
-  let costsLabel = `<label class='tooltip'>
-                    Costs
-                    <span class='popuptooltiptext'>Comma separated list of items which are spent/destroyed to perform this action</span>
-                    </label>`;
-  let costs = `<input type='text' id='${actionId}_Costs'>`;
-  let dropsLabel = `<label class='tooltip'>
-                    Drops
-                    <span class='popuptooltiptext'>Comma separated list of items which are dropped to perform this action</span>
-                    </label>`;
-  let drops = `<input type='text' id='${actionId}_Drops'>`;
-  let moveLabel = `<label class='tooltip'>
-                  Move To
-                  <span class='tooltiptext'>X,Y,Z coordinates of node to which successfully calling this action moves the player</span>
-                  </label>`;
-  let move = `<input type='text' id='${actionId}_Move'>`;
-  let visibilityLabel = `<label class='tooltip'>
-                        Visibility
-                        <span class='popuptooltiptext'>Selection for how this action affects this node's visibility</span>
-                        </label>`;
-  let visibility = `<select id='${actionId}_Visibility'>
-                        <option value='none' seleted='selected'>No change</option>
-                        <option value='on'>On</option>
-                        <option value='off'>Off</option>
-                        <option value='switch'>Switch</option>
-                        </select>`;
-  let responseLabel = `<label class='tooltip'>
-                        Action Response
-                        <span class='popuptooltiptext'>Text displayed after successfully calling this action (e.g. The egg is now broken.)</span>
-                        </label>`;
-  let response = `<textarea id='${actionId}_Response' rows='3' cols='23'></textarea>`;
-  let failLabel = `<label class='tooltip'>
-                        Fail Response
-                        <span class='popuptooltiptext'>Text displayed after not meeting the action requirements (e.g. This door requires a key.)</span>
-                        </label>`;
-  let fail = `<textarea id='${actionId}_Fail' rows='3' cols='23'></textarea>`;
-  let pointsLabel = `<label class='tooltip'>
-                    Points
-                    <span class='popuptooltiptext'>Points awarded for successfully calling this action [default of 0]</span>
-                    </label>`;
-  let points = `<input type='text' id='${actionId}_Points'>`;
-  let requirements = getRequirements(actionId);
-
-  let html =
-    newDivStart +
-    rmvButton +
-    actionLabel +
-    actions +
-    includeOnly +
-    maxLabel +
-    max +
-    costsLabel +
-    costs +
-    dropsLabel +
-    drops +
-    moveLabel +
-    move +
-    visibilityLabel +
-    visibility +
-    responseLabel +
-    response +
-    failLabel +
-    fail +
-    pointsLabel +
-    points +
-    requirements +
-    newDivEnd;
-
+  let html = getActionHTML(actionId, "popuptooltiptext");
   $("#globalActionList").append(html);
 }
 
@@ -1525,53 +1447,77 @@ function addMonitor() {
     $("#monitorList").append(html);
 }
 
-function addAction() {
-  let length = $("#actionList").children().length;
-  let actionId;
-  if (length >= 1) {
-    let lastId = +$("#actionList").children().last().attr("id").split("_")[1];
-    actionId = `action_${lastId + 1}`;
-  } else {
-    actionId = "action_1";
-  }
-  let newDivStart = `<div class='blockElements' id='${actionId}'>`;
+function getActionHTML(actionId, className) {
+  let newDivStart = `<div class='popupBlockElements' id='${actionId}'>`;
   let newDivEnd = "</div>";
   let rmvButton = `<button class='removeObject'>Remove Action</button>`;
   let actionLabel = `<label class='tooltip'>
                         Action(s)
-                        <span class='tooltiptext'>Comma separated list of accepted action(e.g. crush egg, smash egg) [Ignores: a, an, the, to, for, at]</span>
+                        <span class='${className}'>The following boxes are for constructing the various accepted user inputs for this action</span>
                         </label>`;
+  let pureActionDivStart = `<div class="divBorder">
+                            <label class='tooltip'>
+                            Full Actions
+                            <span class='${className}'>Comma separated list of complete actions (Useful for when a verb and noun pair is not present or necessary - e.g. gameplay passwords and other simple dialogue) [Ignores: a, an, the, to, for, at - unless otherwise defined]</span>
+                            </label>`;
   let actions = `<input type='text' id='${actionId}_Actions'>`;
   let includeOnly = `<span style="display: flex">
                         <label class='tooltip'>
                         Need only include: 
-                        <span class='tooltiptext'>If checked, the user's input need only to include the action text (i.e. the action "pick lock lockpick" would pass with an input of "pick the lock with the lockpick")</span>
+                        <span class='tooltiptext'>If checked, the user's input need only to include the action text (i.e. the action "abracadabra" would pass with an input of "the password is abracadabra")</span>
                         </label>
                         <input type='checkbox' id='${actionId}_includeOnly'/>
                       </span>`;
+  let pureActionDivEnd = `</div>`;
+  let constructedActionDivStart = `<div class="divBorder">
+                                  <label class='tooltip'>
+                                  Constructed Action
+                                  <span class='${className}'>The following inputs are used to construct a [verb + noun(s)] action (The action is triggered if at least 1 word/phrase from each used input is present in the user's input [Note: One verb input is required and all required words are required])</span>
+                                  </label>`;
+  let actionVerbsLabel = `<label class='tooltip'>
+                          Verb(s)
+                          <span class='${className}'>Comma separated list of accepted verbs for this action (e.g. cut, break, smash)</span>
+                          </label>`;
+  let actionVerbs = `<input type='text' id='${actionId}_actionVerbs'>`;
+  let primaryNounsLabel = `<label class='tooltip'>
+                          Primary Noun(s)
+                          <span class='${className}'>Comma separated list of primary nouns for this action (e.g. lock, padlock)</span>
+                          </label>`;
+  let primaryNouns = `<input type='text' id='${actionId}_primaryNouns'>`;
+  let secondaryNounsLabel = `<label class='tooltip'>
+                            Secondary Noun(s)
+                            <span class='${className}'>Comma separated list of secondary nouns for this action (e.g. box, chest)</span>
+                            </label>`;
+  let secondaryNouns = `<input type='text' id='${actionId}_secondaryNouns'>`;
+  let requiredWordsLabel = `<label class='tooltip'>
+                            Required Word(s)
+                            <span class='${className}'>Comma separated list of required words for this action (e.g. with, use)</span>
+                            </label>`;
+  let requiredWords = `<input type='text' id='${actionId}_requiredWords'>`;
+  let constructedActionDivEnd = `</div>`;
   let maxLabel = `<label class='tooltip'>
                     Max Uses
-                    <span class='tooltiptext'>A number for the maximum number of times this action can be called [leave blank for no maximum]</span>
+                    <span class='${className}'>A number for the maximum number of times this action can be called [leave blank for no maximum]</span>
                     </label>`;
   let max = `<input type='text' id='${actionId}_Max'>`;
   let costsLabel = `<label class='tooltip'>
                     Costs
-                    <span class='tooltiptext'>Comma separated list of items which are spent/destroyed to perform this action</span>
+                    <span class='${className}'>Comma separated list of items which are spent/destroyed to perform this action</span>
                     </label>`;
   let costs = `<input type='text' id='${actionId}_Costs'>`;
   let dropsLabel = `<label class='tooltip'>
                     Drops
-                    <span class='tooltiptext'>Comma separated list of items which are dropped to perform this action</span>
+                    <span class='${className}'>Comma separated list of items which are dropped to perform this action</span>
                     </label>`;
   let drops = `<input type='text' id='${actionId}_Drops'>`;
   let moveLabel = `<label class='tooltip'>
                   Move To
-                  <span class='tooltiptext'>X,Y,Z coordinates of node to which successfully calling this action moves the player</span>
+                  <span class='${className}'>X,Y,Z coordinates of node to which successfully calling this action moves the player</span>
                   </label>`;
   let move = `<input type='text' id='${actionId}_Move'>`;
   let visibilityLabel = `<label class='tooltip'>
                         Visibility
-                        <span class='tooltiptext'>Selection for how this action affects this node's visibility</span>
+                        <span class='${className}'>Selection for how this action affects this node's visibility</span>
                         </label>`;
   let visibility = `<select id='${actionId}_Visibility'>
                         <option value='none' seleted='selected'>No change</option>
@@ -1581,17 +1527,17 @@ function addAction() {
                         </select>`;
   let responseLabel = `<label class='tooltip'>
                         Action Response
-                        <span class='tooltiptext'>Text displayed after successfully calling this action (e.g. The egg is now broken.)</span>
+                        <span class='${className}'>Text displayed after successfully calling this action (e.g. The egg is now broken.)</span>
                         </label>`;
   let response = `<textarea id='${actionId}_Response' rows='3' cols='23'></textarea>`;
   let failLabel = `<label class='tooltip'>
                         Fail Response
-                        <span class='tooltiptext'>Text displayed after not meeting the action requirements (e.g. This door requires a key.)</span>
+                        <span class='${className}'>Text displayed after not meeting the action requirements (e.g. This door requires a key.)</span>
                         </label>`;
   let fail = `<textarea id='${actionId}_Fail' rows='3' cols='23'></textarea>`;
   let pointsLabel = `<label class='tooltip'>
                     Points
-                    <span class='tooltiptext'>Points awarded for successfully calling this action [default of 0]</span>
+                    <span class='${className}'>Points awarded for successfully calling this action [default of 0]</span>
                     </label>`;
   let points = `<input type='text' id='${actionId}_Points'>`;
   let requirements = getRequirements(actionId);
@@ -1600,8 +1546,20 @@ function addAction() {
     newDivStart +
     rmvButton +
     actionLabel +
+    pureActionDivStart +
     actions +
     includeOnly +
+    pureActionDivEnd +
+    constructedActionDivStart +
+    actionVerbsLabel +
+    actionVerbs +
+    primaryNounsLabel +
+    primaryNouns +
+    secondaryNounsLabel +
+    secondaryNouns +
+    requiredWordsLabel +
+    requiredWords +
+    constructedActionDivEnd +
     maxLabel +
     max +
     costsLabel +
@@ -1620,7 +1578,19 @@ function addAction() {
     points +
     requirements +
     newDivEnd;
+  return html;
+}
 
+function addAction() {
+  let length = $("#actionList").children().length;
+  let actionId;
+  if (length >= 1) {
+    let lastId = +$("#actionList").children().last().attr("id").split("_")[1];
+    actionId = `action_${lastId + 1}`;
+  } else {
+    actionId = "action_1";
+  }
+  let html = getActionHTML(actionId, "tooltiptext");
   $("#actionList").append(html);
 }
 
