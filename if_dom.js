@@ -78,6 +78,7 @@ function loadDomInitItems(initItems) {
     let baseId = `init_item_${i + 1}`;
     $(`#${baseId}_Name`).val(items[i].name);
     $(`#${baseId}_Des`).val(items[i].description);
+    $(`#${baseId}_primaryUse`).val(items[i].primaryUse);
     $(`#${baseId}_Points`).val(items[i].points);
     $(`#${baseId}_EvoList`).val(items[i].itemEvos);
     for (let j = 0; j < items[i].evos.length; j++) {
@@ -611,6 +612,7 @@ function loadDomFromNode(node) {
     let baseId = `item_${i + 1}`;
     $(`#${baseId}_Name`).val(items[i].name);
     $(`#${baseId}_Des`).val(items[i].description);
+    $(`#${baseId}_primaryUse`).val(items[i].primaryUse);
     $(`#${baseId}_Points`).val(items[i].points);
     if (items[i].reqNot == "true") {
       $(`#${baseId}_reqNot`).prop("checked", true);
@@ -1125,6 +1127,11 @@ function addItem() {
                     <span class='tooltiptext'>Description of item (for "examine {item}" or "look {item}" command)</span>
                     </label>`;
   let des = `<textarea id='${itemId}_Des' rows='3' cols='23'></textarea>`;
+  let primaryUseLabel = `<label class='tooltip'>
+                          Primary Use
+                          <span class='tooltiptext'>Comma separated list of verbs (or array of verbs) which correspond to this item's potential actions [the words use & utilize can be accepted in place of these actions] (e.g. for a screwdriver: [screw, mount], unscrew)</span>
+                          </label>`;
+  let primaryUse = `<input type='text' id='${itemId}_primaryUse'>`;
   let pointsLabel = `<label class='tooltip'>
                         Points
                         <span class='tooltiptext'>Number of points awarded for getting this item [default of 0]</span>
@@ -1140,6 +1147,8 @@ function addItem() {
     name +
     desLabel +
     des +
+    primaryUseLabel +
+    primaryUse +
     pointsLabel +
     points +
     requirements +
@@ -1310,6 +1319,11 @@ function addInitItem() {
                     <span class='popuptooltiptext'>Description of item (for "examine {item}" or "look {item}" command)</span>
                     </label>`;
   let des = `<textarea id='${itemId}_Des' rows='3' cols='23'></textarea>`;
+  let primaryUseLabel = `<label class='tooltip'>
+                          Primary Use
+                          <span class='tooltiptext'>Comma separated list of verbs (or array of verbs) which correspond to this item's potential actions [the words use & utilize can be accepted in place of these actions] (e.g. for a screwdriver: [screw, mount], unscrew)</span>
+                          </label>`;
+  let primaryUse = `<input type='text' id='${itemId}_primaryUse'>`;
   let pointsLabel = `<label class='tooltip'>
                         Points
                         <span class='popuptooltiptext'>Number of points awarded for getting this item [default of 0]</span>
@@ -1324,6 +1338,8 @@ function addInitItem() {
     name +
     desLabel +
     des +
+    primaryUseLabel +
+    primaryUse +
     pointsLabel +
     points +
     evoButton +

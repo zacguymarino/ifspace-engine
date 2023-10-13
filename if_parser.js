@@ -47,6 +47,7 @@ var itemInspectCommands = ["INSPECT", "LOOK", "EXAMINE", "X"];
 var ignorables = ["A", "AN", "THE", "TO", "FOR", "AT"];
 var containerWithdrawals = ["TAKE", "GET", "RETRIEVE", "WITHDRAWAL", "OBTAIN"];
 var containerDeposits = ["STORE","DEPOSIT","PLACE","PUT"];
+var useWords = ["USE", "UTILIZE"];
 
 function gameInit() {
     if (customDeposits["customDeposits"] != [""]) {
@@ -740,10 +741,10 @@ function getDirectionsActions (location) {
     return directions;
 }
 
-function updateMonitors(action, passed) {
+function updateMonitors(action, passed, fromConstructed) {
     let monitorList = save["monitors"];
     let displayables = [];
-    let checkActions = checkValidAction(action, passed);
+    let checkActions = checkValidAction(action, passed, fromConstructed);
     let checkDirections = checkValidDirection(action, passed);
     for (let i = 0; i < monitorList.length; i++) {
         let reqs = {
@@ -2124,7 +2125,14 @@ function checkValidDirection(action, passed) {
     return {"valid": false, "action": null};
 }
 
-function checkValidAction(action, passed) {
+function checkValidAction(action, passed, fromConstructed) {
+    if (fromConstructed) {
+        if (passed) {
+            return {"valid": true, "action": action};
+        } else {
+            return {"valid": false, "action": action};
+        }
+    }
     let isGlobal = false;
     let foundMatch = false;
     for (let h = 0; h < cNodeActions.length; h++) {
@@ -2195,6 +2203,17 @@ function handleDisplayableMonitors() {
         cMonitorDisplayables = [];
         displayMessage(output, false);
     }
+}
+
+function getPlayerItemNameList() {
+    let itemList = [];
+    for (let i = 0; i < save.items.length; i++) {
+        let itemNames = save.items[i].name.split(/\s*,\s*/);
+        for (let j = 0; j < itemNames.length; j++) {
+            itemList.push(itemNames[j]);
+        }
+    }
+    return itemList;
 }
 
 function parseAction(input) {
@@ -2405,12 +2424,107 @@ function parseAction(input) {
                                 sentMessage = true;
                             }
                             //Update monitors
-                            updateMonitors(action, passed);
+                            updateMonitors(action, passed, false);
                             handleDisplayableMonitors();
                         }
                     }
                 }
             }
+        }
+        //Setup constructed actions
+        let useAction = false;
+        let associatedItem;
+        let variant;
+        let userActionWords = action.split(" ");
+        let userItems = getPlayerItemNameList();
+        for (let i = 0; i < useWords.length; i++) {
+            if (action.includes(useWords[i])) {
+                useAction = true;
+                break;
+            }
+        }
+        if (useAction) {
+            let itemMatch = false;
+            for (let i = 0; i < userActionWords.length; i++) {
+                for (let j = 0; j < userItems.length; j++) {
+                    if (userItems[j].toUpperCase() == userActionWords[i].toUpperCase()) {
+                        variant = userItems[j];
+                        itemMatch = true;
+                        break;
+                    }
+                }
+                if (itemMatch) {
+                    break;
+                }
+            }
+            if (itemMatch) {
+                for (let j = 0; j < save.items.length; j++) {
+                    let itemNames = save.items[j].name.split(/\s*,\s*/);
+                    for (let k = 0; k < itemNames.length; k++) {
+                        if (itemNames[k].toUpperCase() == variant.toUpperCase()) {
+                            associatedItem = save.items[j];
+                        }
+                    }
+                }
+            }
+        }
+        //function for an item's primary use handling
+        function handlePrimaryUseVerbs(actionVerbs) {
+            //Find items in user action and grab the primary use verbs from them
+            let foundItemPrimaryUses = [];
+            for (let j = 0; j < userActionWords.length; j++) {
+                for (let k = 0; k < userItems.length; k++) {
+                    if (userItems[k].toUpperCase() == userActionWords[j].toUpperCase()) {
+                        variant = userItems[k];           
+                        for (let m = 0; m < save.items.length; m++) {
+                            let itemNames = save.items[m].name.split(/\s*,\s*/);
+                            for (let n = 0; n < itemNames.length; n++) {
+                                if (itemNames[n].toUpperCase() == variant.toUpperCase()) {
+                                    let foundItem = save.items[m];
+                                    let primaryUses = foundItem.primaryUse.split(/(?<=\]),\s*(?=\[)|(?<!\[[^\]]*),\s*(?![^\[]*\])/g);
+                                    for (let p = 0; p < primaryUses.length; p++) {
+                                        let bracketSeparated = false;
+                                        if (primaryUses[p].includes("[")) {
+                                            bracketSeparated = true;
+                                        }
+                                        for (let q = 0; q < actionVerbs.length; q++) {
+                                            if (bracketSeparated) {
+                                                for (let r = 0; r < primaryUses.length; r++) {
+                                                    if (primaryUses[r].includes("[")) {
+                                                        let useArray = primaryUses[r].slice(1, -1).split(/,\s*/);
+                                                        for (let s = 0; s < actionVerbs.length; s++) {
+                                                            if (useArray.includes(actionVerbs[s])) {
+                                                                for (let t = 0; t < useArray.length; t++) {
+                                                                    foundItemPrimaryUses.push(useArray[t]);
+                                                                }
+                                                            }
+                                                        }
+                                                    } else {
+                                                        foundItemPrimaryUses.push(primaryUses[r]);
+                                                    }
+                                                }
+                                            } else {
+                                                if (primaryUses[p].toUpperCase() == actionVerbs[q].toUpperCase()) {
+                                                    for (let r = 0; r < primaryUses.length; r++) {
+                                                        foundItemPrimaryUses.push(primaryUses[r]);
+                                                    }
+                                                    break;
+                                                }
+                                            }
+
+
+
+                                        }
+                                        break;
+                                    }
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            return foundItemPrimaryUses;
         }
         //Handle global constructed actions
         for (let i = 0; i < globalActions.length; i++) {
@@ -2424,6 +2538,47 @@ function parseAction(input) {
             (primaryNouns[0] == '') ? primaryNouns = [] : primaryNouns = primaryNouns;
             (secondaryNouns[0] == '') ? secondaryNouns = [] : secondaryNouns = secondaryNouns;
             (requiredWords[0] == '') ? requiredWords = [] : requiredWords = requiredWords;
+            let foundItemPrimaryUses = handlePrimaryUseVerbs(actionVerbs);
+                //Add relevant foundItemPrimaryUses to actionVerbs array
+            for (let j = 0; j < foundItemPrimaryUses.length; j++) {
+                actionVerbs.push(foundItemPrimaryUses[j]);
+            }
+                //apply useAction words if applies
+            if (useAction && associatedItem != undefined) {
+                let primaryIndex;
+                let secondaryIndex;
+                let useIndex;
+                for (let j = 0; j < userActionWords.length; j++) {
+                    for (let k = 0; k < primaryNouns.length; k++) {
+                        if (userActionWords[j].toUpperCase() == primaryNouns[k].toUpperCase()) {
+                            primaryIndex = j;
+                        }
+                    }
+                }
+                for (let j = 0; j < userActionWords.length; j++) {
+                    if (userActionWords[j].toUpperCase() == variant.toUpperCase()) {
+                        secondaryIndex = j;
+                    }
+                }
+                for (let j = 0; j < userActionWords.length; j++) {
+                    for (let k = 0; k < useWords.length; k++) {
+                        if (userActionWords[j].toUpperCase() == useWords[k]) {
+                            useIndex = j;
+                        }
+                    }
+                }
+                if (primaryIndex != undefined && secondaryIndex != undefined && useIndex != undefined) {
+                    if (useIndex < secondaryIndex && secondaryIndex < primaryIndex) {
+                        let associatedNouns = associatedItem.name.split(/\s*,\s*/);
+                        for (let j = 0; j < associatedNouns.length; j++) {
+                            secondaryNouns.push(associatedNouns[j].toUpperCase());
+                        }
+                        for (let j = 0; j < useWords.length; j++) {
+                            actionVerbs.push(useWords[j]);
+                        }
+                    }
+                }
+            }
             for (let j = 0; j < actionVerbs.length; j++) {
                 if (action.includes(actionVerbs[j].toUpperCase())) {
                     if (primaryNouns.length > 0) {
@@ -2444,13 +2599,37 @@ function parseAction(input) {
                         potentialConstructedAction = true;
                     }
                     if (potentialConstructedAction) {
+                        let primaryIndex;
+                        let secondaryIndex;
                         for (let k = 0; k < requiredWords.length; k++) {
                             if (!action.includes(requiredWords[k].toUpperCase())) {
                                 potentialConstructedAction = false;
                             }
                         }
                         if (potentialConstructedAction) {
-                            foundGlobalConstructedMatch = true;
+                            for (let m = 0; m < userActionWords.length; m++) {
+                                for (let n = 0; n < primaryNouns.length; n++) {
+                                    if (userActionWords[m].toUpperCase() == primaryNouns[n].toUpperCase()) {
+                                        primaryIndex = m;
+                                    }
+                                }
+                            }
+                            if (variant != undefined) {
+                                for (let m = 0; m < userActionWords.length; m++) {
+                                    if (userActionWords[m].toUpperCase() == variant.toUpperCase()) {
+                                        secondaryIndex = m;
+                                    }
+                                }
+                            } else {
+                                secondaryIndex = 9999;
+                            }
+                            if (!useAction) {
+                                if (primaryIndex < secondaryIndex) {
+                                    foundGlobalConstructedMatch = true;
+                                }
+                            } else {
+                                foundGlobalConstructedMatch = true;
+                            }
                         }
                     }
                 }
@@ -2473,6 +2652,37 @@ function parseAction(input) {
             (primaryNouns[0] == '') ? primaryNouns = [] : primaryNouns = primaryNouns;
             (secondaryNouns[0] == '') ? secondaryNouns = [] : secondaryNouns = secondaryNouns;
             (requiredWords[0] == '') ? requiredWords = [] : requiredWords = requiredWords;
+            let foundItemPrimaryUses = handlePrimaryUseVerbs(actionVerbs);
+                //Add relevant foundItemPrimaryUses to actionVerbs array
+            for (let j = 0; j < foundItemPrimaryUses.length; j++) {
+                actionVerbs.push(foundItemPrimaryUses[j]);
+            }
+                //apply useAction words if applies
+            if (useAction && associatedItem != undefined) {
+                let primaryIndex;
+                let secondaryIndex;
+                for (let j = 0; j < userActionWords.length; j++) {
+                    for (let k = 0; k < primaryNouns.length; k++) {
+                        if (userActionWords[j].toUpperCase() == primaryNouns[k].toUpperCase()) {
+                            primaryIndex = j;
+                        }
+                    }
+                }
+                for (let j = 0; j < userActionWords.length; j++) {
+                    if (userActionWords[j].toUpperCase() == variant.toUpperCase()) {
+                        secondaryIndex = j;
+                    }
+                }
+                if (primaryIndex != undefined && secondaryIndex != undefined && secondaryIndex < primaryIndex) {
+                    let associatedNouns = associatedItem.name.split(/\s*,\s*/);
+                    for (let j = 0; j < associatedNouns.length; j++) {
+                        secondaryNouns.push(associatedNouns[j].toUpperCase());
+                    }
+                    for (let j = 0; j < useWords.length; j++) {
+                        actionVerbs.push(useWords[j]);
+                    }
+                }
+            }
             for (let j = 0; j < actionVerbs.length; j++) {
                 if (action.includes(actionVerbs[j].toUpperCase())) {
                     if (primaryNouns.length > 0) {
@@ -2493,23 +2703,48 @@ function parseAction(input) {
                         potentialConstructedAction = true;
                     }
                     if (potentialConstructedAction) {
+                        let primaryIndex;
+                        let secondaryIndex;
                         for (let k = 0; k < requiredWords.length; k++) {
                             if (!action.includes(requiredWords[k].toUpperCase())) {
                                 potentialConstructedAction = false;
                             }
                         }
                         if (potentialConstructedAction) {
-                            foundLocalConstructedMatch = true;
+                            for (let m = 0; m < userActionWords.length; m++) {
+                                for (let n = 0; n < primaryNouns.length; n++) {
+                                    if (userActionWords[m].toUpperCase() == primaryNouns[n].toUpperCase()) {
+                                        primaryIndex = m;
+                                    }
+                                }
+                            }
+                            if (variant != undefined) {
+                                for (let m = 0; m < userActionWords.length; m++) {
+                                    if (userActionWords[m].toUpperCase() == variant.toUpperCase()) {
+                                        secondaryIndex = m;
+                                    }
+                                }
+                            } else {
+                                secondaryIndex = 9999;
+                            }
+                            if (!useAction) {
+                                if (primaryIndex < secondaryIndex) {
+                                    foundLocalConstructedMatch = true;
+                                }
+                            } else {
+                                foundLocalConstructedMatch = true;
+                            }
                         }
                     }
                 }
             }
-            if (foundLocalConstructedMatch == true) {
+            if (foundLocalConstructedMatch) {
                 let actionObject = JSON.parse(JSON.stringify(localAction));
                 handleConstructedAction(actionObject, actionVerbs, primaryNouns, secondaryNouns, requiredWords);
             }
         }
         function handleConstructedAction(actionObject, actionVerbs, primaryNouns, secondaryNouns, requiredWords) {
+            let mainAction = action;
             let passed = false;
             let reqs = {
                 "reqItemsNot": actionObject.reqItemsNot,
@@ -2542,7 +2777,7 @@ function parseAction(input) {
             }
             if (checkRequirements(reqs, false)) {
                 passed = true;
-                let mainAction = `${actionVerbs[0].toUpperCase()}`;
+                mainAction = `${actionVerbs[0].toUpperCase()}`;
                 if (primaryNouns.length > 0) {
                     mainAction = `${mainAction} ${primaryNouns[0].toUpperCase()}`;
                 }
@@ -2632,7 +2867,7 @@ function parseAction(input) {
                 sentMessage = true;
             }
             //Update monitors
-            updateMonitors(action, passed);
+            updateMonitors(mainAction, passed, true);
             handleDisplayableMonitors();
         }
 
@@ -2849,12 +3084,12 @@ function parseAction(input) {
                     if (filterIgnorables(cNodeDirections[i].alternatives[j]) == action) {
                         if (checkRequirements(cNodeDirections[i].requirements, false)) {
                             //Update monitors
-                            updateMonitors(cNodeDirections[i].direction, true);
+                            updateMonitors(cNodeDirections[i].direction, true, false);
 
                             parseNode(cNodeDirections[i].location);
                             return;
                         } else {
-                            updateMonitors(cNodeDirections[i].direction, false);
+                            updateMonitors(cNodeDirections[i].direction, false, false);
                             handleDisplayableMonitors();
                             displayMessage("Something is preventing you from going this way.", false);
                             sentMessage = true;

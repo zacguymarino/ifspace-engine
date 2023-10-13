@@ -266,11 +266,13 @@ function saveInitItems() {
     let itemId = $(itemList[i]).attr("id");
     let name = $(`#${itemId}_Name`).val();
     let description = $(`#${itemId}_Des`).val();
+    let primaryUse = $(`#${itemId}_primaryUse`).val();
     let points = $(`#${itemId}_Points`).val();
     let itemEvos = $(`#${itemId}_Evos`).val();
     let item = {
       name: name,
       description: description,
+      primaryUse: primaryUse,
       points: points,
       itemEvos: itemEvos,
       evos: [],
@@ -1012,6 +1014,7 @@ function generateNode() {
     let itemId = $(itemList[i]).attr("id");
     let name = $(`#${itemId}_Name`).val();
     let description = $(`#${itemId}_Des`).val();
+    let primaryUse = $(`#${itemId}_primaryUse`).val();
     let points = $(`#${itemId}_Points`).val();
     let reqAll = $(`#${itemId}_reqAll`).is(":checked").toString();
     let reqNot = $(`#${itemId}_reqNot`).is(":checked").toString();
@@ -1057,6 +1060,7 @@ function generateNode() {
     let item = {
       name: name,
       description: description,
+      primaryUse: primaryUse,
       points: points,
       reqAll: reqAll,
       reqNot: reqNot,
