@@ -1,0 +1,54 @@
+{
+  "build": {
+    "devPath": "../src",
+    "distDir": "../src",
+    "withGlobalTauri": true
+  },
+  "package": {
+    "productName": "ifSpace",
+    "version": "0.0.0"
+  },
+  "tauri": {
+    "allowlist": {
+      "path": {
+        "all": true
+      },
+      "fs": {
+        "scope": ["$RESOURCE/*"],
+        "readFile": true
+      },
+      "dialog": {
+        "confirm": true,
+        "open": true,
+        "save": true,
+        "message": true
+      },
+      "shell": {
+        "all": false,
+        "open": true
+      }
+    },
+    "windows": [
+      {
+        "title": "ifSpace",
+        "width": 1300,
+        "height": 750
+      }
+    ],
+    "security": {
+      "csp": null
+    },
+    "bundle": {
+      "active": true,
+      "targets": "all",
+      "identifier": "ifspace.engine",
+      "icon": [
+        "icons/app-icon.png",
+        "icons/icon.ico"
+      ],
+      "resources": [
+        "export.txt"
+      ]
+    }
+  }
+}

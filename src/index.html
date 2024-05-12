@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta name="description" content="Welcome to ifSpace - The Interactive Fiction Universe">
+
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <!-- JQUERY -->
+        <script src="js/jquery.js"></script>
+
+        <!-- Pure CSS -->
+        <link rel="stylesheet" href="css/purecss/pure.css" />
+
+        <!-- Custom CSS File -->
+        <link rel="stylesheet" type="text/css" href="css/ifspace.css">
+
+        <!-- Custom JS Files -->
+        <script type="module" src="js/if_main.js"></script>
+
+    </head>
+    <body>
+        <div class="pure-g">
+            <div class="pure-u-5-12">
+                <button id="deleteNode">Delete Node</button>
+                <canvas id="nodeMap"></canvas>
+                <div class="globalStuff">
+                    <button class="globalButton" id="globalActionsOpen">Global Actions</button>
+                    <button class="globalButton" id="initItemsOpen">Initial Items</button>
+                    <button class="globalButton" id="monitorsOpen">Monitors</button>
+                    <button class="globalButton" id="conDepOpen">Deposits</button>
+                    <button class="globalButton" id="conWitOpen">Withdrawals</button>
+                    <button class="globalButton" id="takesOpen">Takes</button>
+                    <button class="globalButton" id="dropsOpen">Drops</button>
+                    <button class="globalButton" id="ignorablesOpen">Ignorables</button>
+                    <button class="globalButton" id="looksOpen">Looks</button>
+                    <button class="globalButton" id="examinesOpen">Examines</button>
+                    <button class="globalButton" id="winOpen">Win</button>
+                    <button class="globalButton" id="loseOpen">Lose</button>
+                </div>
+            </div>
+            <div class="pure-u-7-12">
+                <div class="pure-g nodeTools">
+                    <div class="pure-u-1-5">
+                        <label class="tooltip" for="location"><b>Location</b>
+                            <span class="tooltiptext">Location of the current
+                                node (in x,y,z format)</span>
+                        </label>
+                        <button class="locationButton" id="location" class="pure-u-22-24">0,0,0</button>
+                    </div>
+                    <div class="popupScreen" id="nodeLocationDisplay" style="visibility: hidden">
+                        <div class="popupContent">
+                            <label class='tooltip'>
+                                <h1 class="popupTitle">Change Location</h1>
+                                <span class='popuptooltiptext'>Changes the location of this node</span>
+                            </label>
+                            <div class="flexCenter">
+                                <label class='tooltip'>
+                                    <h3>New Location:</h3>
+                                    <span class='popuptooltiptext'>Comma separated coordinates for new location (x,y,z)</span>
+                                </label>
+                                <input id='setLocation' type='text'>
+                            </div>
+                        </div>
+                        <button class="popupClose">Close</button>
+                    </div>
+                    <div class="pure-u-1-5">
+                        <label class="tooltip" for="name"><b>Name</b>
+                            <span class="tooltiptext">Name of the current node</span>
+                        </label>
+                        <input type="text" id="name" class="pure-u-22-24" />
+                    </div>
+                    <div class="pure-u-1-5">
+                        <label class="tooltip" id="visibilityLabel" for="visibility"><b>Visibility</b>
+                            <span class="tooltiptext">Whether or not (checked or
+                                unchecked) node items will be listed and
+                                acquirable</span>
+                        </label>
+                        <input type="checkbox" id="visibility"
+                            class="pure-u-22-24" checked />
+                    </div>
+                    <div class="pure-u-1-5">
+                        <label class="tooltip" for="points">
+                            <b>Points</b>
+                            <span class="tooltiptext">Points acquired for
+                                visiting this node (can be negative) [default of
+                                0]</span>
+                        </label>
+                        <input type="text" id="points" value="0"
+                            class="pure-u-22-24" />
+                    </div>
+                    <div class="pure-u-1-5">
+                        <label class="tooltip" for="points">
+                            <b>Color</b>
+                            <span class="tooltiptext">Color of the inactive node on the nodemap (for modularizing various settings)</span>
+                        </label>
+                        <button id="nodeColor" value="0"><svg width="16" height="16"><rect id="nodeColorRect" style="fill: #003CFF;" width="16" height="16"/></svg></button>
+                        <div class="popupScreen" id="nodeColorDisplay" style="visibility: hidden">
+                            <div class="popupContent">
+                                <label class='tooltip'>
+                                    <h1 class="popupTitle">Node Colors</h1>
+                                    <span class='popuptooltiptext'>The color of this node as displayed in the nodemap</span>
+                                </label>
+                                <div class="flexCenter">
+                                    <button class="nodeColor" value="0"><svg width="16" height="16"><rect width="16" height="16" style="fill:#003CFF"/></svg></button>
+                                    <button class="nodeColor" value="1"><svg width="16" height="16"><rect width="16" height="16" style="fill:#007FFF"/></svg></button>
+                                    <button class="nodeColor" value="2"><svg width="16" height="16"><rect width="16" height="16" style="fill:#00FFFF"/></svg></button>
+                                    <button class="nodeColor" value="3"><svg width="16" height="16"><rect width="16" height="16" style="fill:#43B3AE"/></svg></button>
+                                    <button class="nodeColor" value="4"><svg width="16" height="16"><rect width="16" height="16" style="fill:#008000"/></svg></button>
+                                    <button class="nodeColor" value="5"><svg width="16" height="16"><rect width="16" height="16" style="fill:#32CD32"/></svg></button>
+                                    <button class="nodeColor" value="6"><svg width="16" height="16"><rect width="16" height="16" style="fill:#FFFF00"/></svg></button>
+                                    <button class="nodeColor" value="7"><svg width="16" height="16"><rect width="16" height="16" style="fill:#FFBF00"/></svg></button>
+                                    <button class="nodeColor" value="8"><svg width="16" height="16"><rect width="16" height="16" style="fill:#FFA500"/></svg></button>
+                                    <button class="nodeColor" value="9"><svg width="16" height="16"><rect width="16" height="16" style="fill:#FF0000"/></svg></button>
+                                    <button class="nodeColor" value="10"><svg width="16" height="16"><rect width="16" height="16" style="fill:#FF00FF"/></svg></button>
+                                    <button class="nodeColor" value="11"><svg width="16" height="16"><rect width="16" height="16" style="fill:#800080"/></svg></button>
+                                    <button class="nodeColor" value="12"><svg width="16" height="16"><rect width="16" height="16" style="fill:#4B0082"/></svg></button>
+                                    <button class="nodeColor" value="13"><svg width="16" height="16"><rect width="16" height="16" style="fill:#36454F"/></svg></button>
+                                    <button class="nodeColor" value="14"><svg width="16" height="16"><rect width="16" height="16" style="fill:#808080"/></svg></button>
+                                    <button class="nodeColor" value="15"><svg width="16" height="16"><rect width="16" height="16" style="fill:#FFFFF7"/></svg></button>
+                                </div>
+                            </div>
+                            <button class="popupClose">Close</button>
+                        </div>
+                    </div>
+                    <div class="toolbarContainer">
+                        <button class="blockBtn" id="directionsBlockBtn">Directions</button>
+                        <button class="blockBtn" id="descriptionsBlockBtn">Descriptions</button>
+                        <button class="blockBtn" id="itemsBlockBtn">Items</button>
+                        <button class="blockBtn" id="containersBlockBtn">Containers</button>
+                        <button class="blockBtn" id="actionsBlockBtn">Actions</button>
+                        <button class="blockBtn" id="winBlockBtn">Win</button>
+                        <button class="blockBtn" id="loseBlockBtn">Lose</button>
+                        <button class="blockBtn" id="hintBlockBtn">Hint</button>
+                    </div>
+                    <div id="directionsBlock" class="pure-u-1-1 tabElements" style="display:
+                        none;">
+                        <details>
+                            <summary class="boldAccordion">Directions</summary>
+                            <span>The directions in which a
+                                player can move from this node (conditions may
+                                be applied below)</span>
+                        </details>
+                        <div id="directions">
+                            <label for="N" class="pure-checkbox">
+                                <input type="checkbox" id="N" /> North
+                            </label>
+                            <label for="NE" class="pure-checkbox">
+                                <input type="checkbox" id="NE" /> North-East
+                            </label>
+                            <label for="E" class="pure-checkbox">
+                                <input type="checkbox" id="E" /> East
+                            </label>
+                            <label for="SE" class="pure-checkbox">
+                                <input type="checkbox" id="SE" /> South-East
+                            </label>
+                            <label for="S" class="pure-checkbox">
+                                <input type="checkbox" id="S" /> South
+                            </label>
+                            <label for="SW" class="pure-checkbox">
+                                <input type="checkbox" id="SW" /> South-West
+                            </label>
+                            <label for="W" class="pure-checkbox">
+                                <input type="checkbox" id="W" /> West
+                            </label>
+                            <label for="NW" class="pure-checkbox">
+                                <input type="checkbox" id="NW" /> North-West
+                            </label>
+                            <label for="Up" class="pure-checkbox">
+                                <input type="checkbox" id="Up" /> Up
+                            </label>
+                            <label for="Down" class="pure-checkbox">
+                                <input type="checkbox" id="Down" /> Down
+                            </label>
+                        </div>
+                        <div id="editDirections" class="container"></div>
+                    </div>
+                    <div id="descriptionsBlock" class="pure-u-1-1 tabElements"
+                        style="display: none;">
+                        <details>
+                            <summary class="boldAccordion">Description(s)</summary>
+                            <span >The various texts
+                                displayed upon entering this node</span>
+                        </details>
+                        <label class='tooltip'>
+                            Default
+                            <span class='tooltiptext'>The default text upon
+                                first entering this node or after entering the
+                                'look' command</span>
+                        </label>
+                        <textarea class="desSettings" id="defaultDes" rows="4" style="width: 90%;"></textarea>
+                        <label class='tooltip'>
+                            Basic
+                            <span class='tooltiptext'>Text displayed upon
+                                revisiting this node</span>
+                        </label>
+                        <textarea class="desSettings" id="basicDes" rows="2" style="width: 90%;"></textarea>
+                        <label class='tooltip'>
+                            Evolution
+                            <span class='tooltiptext'>Description evolution
+                                settings and text</span>
+                        </label>
+                        <button class="addEvoDes">Add Evolution</button>
+                        <div id="evoListDescriptions" class="container"></div>
+                    </div>
+                    <div id="itemsBlock" class="pure-u-1-1 tabElements"
+                        style="display: none;">
+                        <details>
+                            <summary class="boldAccordion">
+                                Items
+                            </summary>
+                            <span>Items to be found in this
+                                node</span>
+                        </details>
+                        <button id="addItem">Add Item</button>
+                        <div id="itemList" class="container"></div>
+                    </div>
+                    <div id="containersBlock" class="pure-u-1-1 tabElements"
+                        style="display: none;">
+                        <details>
+                            <summary class="boldAccordion">
+                                Containers
+                            </summary>
+                            <span>Containers within a node
+                                to place/keep/store items</span>
+                        </details>
+                        <button id="addContainer">Add Container</button>
+                        <div id="containerList" class="container"></div>
+                    </div>
+                    <div id="actionsBlock" class="pure-u-1-1 tabElements"
+                        style="display: none;">
+                        <label class='tooltip'>
+                            <b>Actions</b>
+                            <span class='tooltiptext'>Custom actions for this
+                                node (not item-acquiring or direction related)
+                                [e.g. break egg, open window]</span>
+                        </label>
+                        <button id="addAction">Add Action</button>
+                        <div id="actionList" class="container"></div>
+                        <details>
+                            <summary class="boldAccordion">
+                                Invalid Response
+                            </summary>
+                            <span>Text displayed after an
+                                invalid action is entered</span>
+                        </details>
+                        <textarea id='invalidAction' rows="2" style="width:
+                            90%;"></textarea>
+                        <label class='tooltip'>
+                            Evolution
+                            <span class='tooltiptext'>Invalid action evolution
+                                settings and text</span>
+                        </label>
+                        <button class="addEvoInvalid">Add Evolution</button>
+                        <div id="evoListInvalids" class="container"></div>
+                    </div>
+                    <div id="winBlock" class="pure-u-1-1 tabElements" style="display: none;">
+                        <details>
+                            <summary class="boldAccordion">
+                                Win Description
+                            </summary>
+                            <span>Text displayed after the
+                                player meets the win requirements and wins the
+                                game (leave blank if node has no win potential)</span>
+                        </details>
+                        <textarea id="winDes" rows="4" style="width: 50%;"></textarea>
+                    </div>
+                    <div id="loseBlock" class="pure-u-1-1 tabElements" style="display: none;">
+                        <details>
+                            <summary class="boldAccordion">
+                                Lose Description
+                            </summary>
+                            <span>Text displayed after the
+                                player meets the lose requirements and loses the
+                                game (leave blank if node has no lose potential)</span>
+                        </details>
+                        <textarea id="loseDes" rows="4" style="width: 50%;"></textarea>
+                    </div>
+                    <div id="hintBlock" class="pure-u-1-1 tabElements"
+                        style="display: none;">
+                        <details>
+                            <summary class="boldAccordion">
+                                Hint
+                            </summary>
+                            <span>Message displayed after a "Help" command and/or after 5 consecutive
+                                failed inputs</span>
+                        </details>
+                        <textarea id="hint" rows="4" style="width: 90%;"></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="bottomBar">
+                <div class="bottomBarSection">
+                    <button class="zoom" id="zoomIn">Zoom In</button>
+                    <button class="zoom" id="zoomOut">Zoom Out</button>
+                    <div id="zIndexBlock">
+                        <label for="zIndex">Z-Index</label>
+                        <input id="zIndex" type="number" step="1" value="0">
+                    </div>
+                </div>
+                <div class="bottomBarSection">
+                    <button id="testGame">Test Game</button>
+                </div>
+                <div class="bottomBarSection">
+                    <button id="settingsOpen">Game Settings</button>
+                    <div>
+                        <label class="tooltip">
+                            Game title:
+                            <span class="tooltiptext">The title of this game</span>
+                        </label>
+                        <input id="gameTitle" type="text" size="15">
+                    </div>
+                    <button id="loadGame">Load Game</button>
+                    <button id="saveGame">Save Game</button>
+                    <button id="exportGame">Export Game</button>
+                </div>
+            </div>
+        </div>
+        <div id="gameSim">
+            <div id="gameContainer">
+                <div id="outputSim"></div>
+            </div>
+            <div class="gameSimTools">
+                <button id="restartGameSim">Restart Game</button>
+            </div>
+        </div>
+        <div class="popupScreen" id="globalActionsDisplay" style="visibility: hidden">
+            <div class="popupContent">
+                <label class='tooltip'>
+                    <h1 class="popupTitle">Global Actions</h1>
+                    <span class='popuptooltiptext'>Custom actions available in every node
+                         (not item-acquiring or direction related)
+                        [e.g. break egg, open window]</span>
+                </label>
+                <button id="addGlobalAction">Add Global Action</button>
+                <div id="globalActionList" class="container"></div>
+            </div>
+            <button class="popupClose">Close</button>
+        </div>
+        <div class="popupScreen" id="initItemsDisplay" style="visibility: hidden">
+            <div class="popupContent">
+                <label class='tooltip'>
+                    <h1 class="popupTitle">Initial Items</h1>
+                    <span class='popuptooltiptext'>Items to start in the player's inventory</span>
+                </label>
+                <button id="addInitItem">Add Initial Item</button>
+                <div id="initItemList" class="container"></div>
+            </div>
+            <button class="popupClose">Close</button>
+        </div>
+        <div class="popupScreen" id="monitorsDisplay" style="visibility: hidden">
+            <div class="popupContent">
+                <label class="tooltip">
+                    <h1 class="popupTitle">Monitors</h1>
+                    <span class="popuptooltiptext">Custom values which can be monitored and updated based on gameplay events</span>
+                </label>
+                <button id="addMonitor">Add Monitor</button>
+                <div id="monitorList" class="container"></div>
+            </div>
+            <button class="popupClose">Close</button>
+        </div>
+        <div class="popupScreen popupBlockElements" id="conDepDisplay" style="visibility: hidden">
+            <div class="popupContent">
+                <label class='tooltip'>
+                    <h1 class="popupTitle">Container Deposit Commands</h1>
+                    <span class='popuptooltiptext'>Verb commands for depositing items into a container (in form of [Verb + item + [in, on, etc.] + container])</span>
+                </label>
+                <h3>Default commands:</h3>
+                <span id="defaultContainerDeposits"></span>
+                <label class='pure-checkbox tooltip'>
+                    <h3>Include Defaults:</h3>
+                    <span class='popuptooltiptext'>If checked, the default deposit commands are included in conjunction with any custom deposit commands</span>
+                </label>
+                <input type='checkbox' id='includeDefaultContainerDeposits' checked/>
+                <label class='tooltip'>
+                    <h3>Custom Container Deposits:</h3>
+                    <span class='popuptooltiptext'>Comma separated verbs to be used as container deposit commands (e.g. hang, bury, hide)</span>
+                </label>
+                <input class="customDefaultActions" id='customContainerDepositCommands' type='text'>
+            </div>
+            <button class="popupClose">Close</button>
+        </div>
+        <div class="popupScreen popupBlockElements" id="conWitDisplay" style="visibility: hidden">
+            <div class="popupContent">
+                <label class='tooltip'>
+                    <h1 class="popupTitle">Container Withdrawal Commands</h1>
+                    <span class='popuptooltiptext'>Verb commands for withdrawaling items from a container (in form of [Verb + item + [from, off, etc.] + container])</span>
+                </label>
+                <h3>Default commands:</h3>
+                <span id="defaultContainerWithdrawals"></span>
+                <label class='pure-checkbox tooltip'>
+                    <h3>Include Defaults:</h3>
+                    <span class='popuptooltiptext'>If checked, the default withdrawal commands are included in conjunction with any custom withdrawal commands</span>
+                </label>
+                <input type='checkbox' id='includeDefaultContainerWithdrawals' checked/>
+                <label class='tooltip'>
+                    <h3>Custom Container Withdrawals:</h3>
+                    <span class='popuptooltiptext'>Comma separated verbs to be used as container withdrawal commands (e.g. pull, extract, fish)</span>
+                </label>
+                <input class="customDefaultActions" id='customContainerWithdrawalCommands' type='text'>
+            </div>
+            <button class="popupClose">Close</button>
+        </div>
+        <div class="popupScreen popupBlockElements" id="takesDisplay" style="visibility: hidden">
+            <div class="popupContent">
+                <label class='tooltip'>
+                    <h1 class="popupTitle">Take Commands</h1>
+                    <span class='popuptooltiptext'>Verb commands for 'taking' items (in form of [Verb + item])</span>
+                </label>
+                <h3>Default commands:</h3>
+                <span id="defaultTakes"></span>
+                <label class='pure-checkbox tooltip'>
+                    <h3>Include Defaults:</h3>
+                    <span class='popuptooltiptext'>If checked, the default take commands are included in conjunction with any custom take commands</span>
+                </label>
+                <input type='checkbox' id='includeDefaultTakes' checked/>
+                <label class='tooltip'>
+                    <h3>Custom Take Commands:</h3>
+                    <span class='popuptooltiptext'>Comma separated verbs to be used as take commands (e.g. seize, collect, recieve)</span>
+                </label>
+                <input class="customDefaultActions" id='customTakeCommands' type='text'>
+            </div>
+            <button class="popupClose">Close</button>
+        </div>
+        <div class="popupScreen popupBlockElements" id="dropsDisplay" style="visibility: hidden">
+            <div class="popupContent">
+                <label class='tooltip'>
+                    <h1 class="popupTitle">Drop Commands</h1>
+                    <span class='popuptooltiptext'>Verb commands for 'dropping' items (in form of [Verb + item])</span>
+                </label>
+                <h3>Default commands:</h3>
+                <span id="defaultDrops"></span>
+                <label class='pure-checkbox tooltip'>
+                    <h3>Include Defaults:</h3>
+                    <span class='popuptooltiptext'>If checked, the default drop commands are included in conjunction with any custom drop commands</span>
+                </label>
+                <input type='checkbox' id='includeDefaultDrops' checked/>
+                <label class='tooltip'>
+                    <h3>Custom Drop Commands:</h3>
+                    <span class='popuptooltiptext'>Comma separated verbs to be used as drop commands (e.g. release, reject)</span>
+                </label>
+                <input class="customDefaultActions" id='customDropCommands' type='text'>
+            </div>
+            <button class="popupClose">Close</button>
+        </div>
+        <div class="popupScreen popupBlockElements" id="ignorablesDisplay" style="visibility: hidden">
+            <div class="popupContent">
+                <label class='tooltip'>
+                    <h1 class="popupTitle">Ignorable Words</h1>
+                    <span class='popuptooltiptext'>Words to be ignored by the parser</span>
+                </label>
+                <h3>Default ignorables:</h3>
+                <span id="defaultIgnorables"></span>
+                <label class='pure-checkbox tooltip'>
+                    <h3>Include Defaults:</h3>
+                    <span class='popuptooltiptext'>If checked, the default ignorables are included in conjunction with any custom ignorables</span>
+                </label>
+                <input type='checkbox' id='includeDefaultIgnorables' checked/>
+                <label class='tooltip'>
+                    <h3>Custom Ignorables:</h3>
+                    <span class='popuptooltiptext'>Comma separated words to be ignored (e.g. here, there)</span>
+                </label>
+                <input class="customDefaultActions" id='customIgnorables' type='text'>
+            </div>
+            <button class="popupClose">Close</button>
+        </div>
+        <div class="popupScreen popupBlockElements" id="looksDisplay" style="visibility: hidden">
+            <div class="popupContent">
+                <label class='tooltip'>
+                    <h1 class="popupTitle">Look Words</h1>
+                    <span class='popuptooltiptext'>Look verbs for looking around the area/node</span>
+                </label>
+                <h3>Default looks:</h3>
+                <span id="defaultLooks"></span>
+                <label class='pure-checkbox tooltip'>
+                    <h3>Include Defaults:</h3>
+                    <span class='popuptooltiptext'>If checked, the default looks are included in conjunction with any custom looks</span>
+                </label>
+                <input type='checkbox' id='includeDefaultLooks' checked/>
+                <label class='tooltip'>
+                    <h3>Custom Looks:</h3>
+                    <span class='popuptooltiptext'>Comma separated look words (e.g. scan, view)</span>
+                </label>
+                <input class="customDefaultActions" id='customLooks' type='text'>
+            </div>
+            <button class="popupClose">Close</button>
+        </div>
+        <div class="popupScreen popupBlockElements" id="examinesDisplay" style="visibility: hidden">
+            <div class="popupContent">
+                <label class='tooltip'>
+                    <h1 class="popupTitle">Examine Words</h1>
+                    <span class='popuptooltiptext'>Examine verbs for examining an item (in form of [Verb + item])</span>
+                </label>
+                <h3>Default examines:</h3>
+                <span id="defaultExamines"></span>
+                <label class='pure-checkbox tooltip'>
+                    <h3>Include Defaults:</h3>
+                    <span class='popuptooltiptext'>If checked, the default examines are included in conjunction with any custom examines</span>
+                </label>
+                <input type='checkbox' id='includeDefaultExamines' checked/>
+                <label class='tooltip'>
+                    <h3>Custom Examines:</h3>
+                    <span class='popuptooltiptext'>Comma separated examine words (e.g. checkout, view)</span>
+                </label>
+                <input class="customDefaultActions" id='customExamines' type='text'>
+            </div>
+            <button class="popupClose">Close</button>
+        </div>
+        <div class="popupScreen" id="globalWinDisplay" style="visibility: hidden">
+            <div class="popupContent" id="globalWinContent">
+                <label class="tooltip">
+                    <h1 class="popupTitle">Global Wins</h1>
+                    <span class="popuptooltiptext">The requirements and output for winning the game in various cases</span>
+                </label>
+                <button id="addGlobalWin">Add Global Win</button>
+                <div id="globalWinList" class="container"></div>
+            </div>
+            <button class="popupClose">Close</button>
+        </div>
+        <div class="popupScreen" id="globalLoseDisplay" style="visibility: hidden">
+            <div class="popupContent" id="globalLoseContent">
+                <label class="tooltip">
+                    <h1 class="popupTitle">Global Lose</h1>
+                    <span class="popuptooltiptext">The requirements and output for losing the game in various cases</span>
+                </label>
+                <button id="addGlobalLose">Add Global Lose</button>
+                <div id="globalLoseList" class="container"></div>
+            </div>
+            <button class="popupClose">Close</button>
+        </div>
+        <div class="popupScreen" id="settingsDisplay" style="visibility: hidden">
+            <h1 class="popupTitle">Game Settings</h1>
+            <div class="settings">
+                <div>
+                    <label for="gameStyle">Game Style:</label>
+                    <select id="gameStyle" name="gameStyle">
+                        <option selected="selected" value="classic">Classic</option>
+                        <option value="modern">Modern</option>
+                        <option value="gamebook">Gamebook</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="gameStatus">Game Status:</label>
+                    <select id="gameStatus" name="gameStatus">
+                        <option value="private">Private</option>
+                        <option selected="selected" value="wip">Work In Progress</option>
+                        <option value="beta">Beta Test</option>
+                        <option value="complete">Complete</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="gameRating">Game Rating:</label>
+                    <select id="gameRating" name="gameRating">
+                        <option selected="selected" value="unrated">U (unrated)</option>
+                        <option value="everyone">E (everyone)</option>
+                        <option value="discretion">D (discretion)</option>
+                        <option value="mature">M (mature)</option>
+                        <option value="adult">A (adult)</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="gameAuthor">Game Author:</label>
+                    <input type="text" id="gameAuthor" name="gameAuthor">
+                </div>
+            </div>
+            <button class="popupClose">Close</button>
+        </div>
+        <div class="popupScreen" id="alertMessageDisplay" style="visibility: hidden">
+            <div class="popupContent">
+                <h1 class="popupTitle">Alert Message</h1>
+                <div class="flexCenter" id="alertMessage"></div>
+                </br>
+            </div>
+            <button class="popupClose">Close</button>
+        </div>
+    </body>
+</html>
