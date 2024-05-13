@@ -443,6 +443,14 @@
   .boldAccordion {
     font-weight: bold;
   }
+
+  .inputText {
+    font-size: 17px;
+  }
+
+  .outputText {
+    font-size: 20px;
+  }
   
   summary.boldAccordion::after {
     content: " ";

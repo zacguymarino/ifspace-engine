@@ -143,6 +143,12 @@
             margin-bottom: 6px !important;
             width: 55%;
         }
+        .inputText {
+            font-size: 17px;
+        }
+        .outputText {
+            font-size: 20px;
+        }
         @media only screen and (max-width: 768px) {
             #gameSim {
                 width: 100%;
@@ -175,6 +181,7 @@
         var gameTitle = adventure.gameTitle;
         var gameStyle = adventure.gameStyle;
         var gameAuthor = adventure.gameAuthor;
+        var gameRating = adventure.gameRating;
         var IFID = adventure.IFID;
         var globalActions = adventure.globalActions;
         var initItems = adventure.initItems;
@@ -570,6 +577,28 @@
                     gameSimIFID.innerText = `IFID: ${IFID}`;
                 }
 
+                if (gameRating) {
+                    let outputSim = document.getElementById("outputSim");
+                    let h6 = document.createElement("h6");
+                    switch (gameRating) {
+                        case "unrated":
+                            h6.innerText = "Rating: Unrated";
+                            outputSim.appendChild(h6);
+                            break;
+                        case "everyone":
+                            h6.innerText = "Rating: Everyone";
+                            outputSim.appendChild(h6);
+                            break;
+                        case "discretion":
+                            h6.innerText = "Rating: Discretion";
+                            outputSim.appendChild(h6);
+                            break;
+                        case "mature":
+                            h6.innerText = "Rating: Mature";
+                            outputSim.appendChild(h6);
+                    }
+                }
+
                 if (gameAuthor.length > 0) {
                     gameSimAuthor = document.createElement("h6");
                     gameSimAuthor.innerText = `Created by: ${gameAuthor}`;
@@ -601,7 +630,9 @@
             nodeReload();
             if (playing) {
                 let nodeTitle = document.createElement("h3");
-                nodeTitle.innerText = game[currentNode].name;
+                let u = document.createElement("u");
+                u.innerText = game[currentNode].name;
+                nodeTitle.appendChild(u);
                 document.getElementById("outputSim").appendChild(nodeTitle);
                 handleDisplayableMonitors();
                 displayMessage(cNodeDescription, false);
@@ -1508,11 +1539,13 @@
                 let p = document.createElement("p");
                 let b = document.createElement("b");
                 p.classList.add("scrollTo");
+                p.classList.add("inputText");
                 b.innerHTML = `&nbsp;&nbsp;>&nbsp;${message}`;
                 p.appendChild(b);
                 outputSim.appendChild(p);
             } else {
                 let p = document.createElement("p");
+                p.classList.add("outputText");
                 p.innerText = message;
                 outputSim.appendChild(p);
             }
@@ -1521,7 +1554,6 @@
                 outputSim.lastChild.scrollIntoView(true);
             } else {
                 scrollToElements[0].scrollIntoView(true);
-                //$('.scrollTo').first()[0].scrollIntoView(true);
             }
         }
 

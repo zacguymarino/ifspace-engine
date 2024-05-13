@@ -5,6 +5,7 @@ var game = adventure.gameContent;
 var gameTitle = adventure.gameTitle;
 var gameStyle = adventure.gameStyle;
 var gameAuthor = adventure.gameAuthor;
+var gameRating = adventure.gameRating;
 var IFID = adventure.IFID;
 var globalActions = adventure.globalActions;
 var initItems = adventure.initItems;
@@ -191,40 +192,6 @@ function updateInputEvents() {
             console.log("Something went wrong.");
     }
 }
-/*
-$(document).on("keydown", "#classicStyleInput", function (event) {
-    if (event.which == 13) {
-      try {
-        parseAction($("#classicStyleInput").val());
-      } catch (error) {
-        console.log(error);
-      }
-      $("#classicStyleInput").val("");
-      event.preventDefault();
-    }
-    if (event.which == 38) {
-        $("#classicStyleInput").val(previousInput);
-    }
-})
-*/
-/*
-$(document).on("click", ".modernActionButton", function (event) {
-    parseAction($(event.currentTarget).attr("value"));
-    event.preventDefault;
-})
-*/
-/*
-$(document).on("click", ".modernDirectionButton", function (event) {
-    parseAction($(event.currentTarget).attr("value"));
-    event.preventDefault;
-})
-*/
-/*
-$(document).on("click", ".gamebookDirectionButton", function (event) {
-    parseAction($(event.currentTarget).attr("value"));
-    event.preventDefault;
-})
-*/
 
 function restartGame(load) {
     addSimInput();
@@ -400,6 +367,28 @@ async function gameInit(load) {
             gameSimIFID.innerText = `IFID: ${IFID}`;
         }
 
+        if (gameRating) {
+            let outputSim = document.getElementById("outputSim");
+            let h6 = document.createElement("h6");
+            switch (gameRating) {
+                case "unrated":
+                    h6.innerText = "Rating: Unrated";
+                    outputSim.appendChild(h6);
+                    break;
+                case "everyone":
+                    h6.innerText = "Rating: Everyone";
+                    outputSim.appendChild(h6);
+                    break;
+                case "discretion":
+                    h6.innerText = "Rating: Discretion";
+                    outputSim.appendChild(h6);
+                    break;
+                case "mature":
+                    h6.innerText = "Rating: Mature";
+                    outputSim.appendChild(h6);
+            }
+        }
+
         if (gameAuthor.length > 0) {
             gameSimAuthor = document.createElement("h6");
             gameSimAuthor.innerText = `Created by: ${gameAuthor}`;
@@ -431,7 +420,9 @@ function parseNode(location) {
     nodeReload();
     if (playing) {
         let nodeTitle = document.createElement("h3");
-        nodeTitle.innerText = game[currentNode].name;
+        let u = document.createElement("u");
+        u.innerText = game[currentNode].name;
+        nodeTitle.appendChild(u);
         document.getElementById("outputSim").appendChild(nodeTitle);
         handleDisplayableMonitors();
         displayMessage(cNodeDescription, false);
@@ -1338,11 +1329,13 @@ function displayMessage(message, input) {
         let p = document.createElement("p");
         let b = document.createElement("b");
         p.classList.add("scrollTo");
+        p.classList.add("inputText");
         b.innerHTML = `&nbsp;&nbsp;>&nbsp;${message}`;
         p.appendChild(b);
         outputSim.appendChild(p);
     } else {
         let p = document.createElement("p");
+        p.classList.add("outputText");
         p.innerText = message;
         outputSim.appendChild(p);
     }
@@ -1351,7 +1344,6 @@ function displayMessage(message, input) {
         outputSim.lastChild.scrollIntoView(true);
     } else {
         scrollToElements[0].scrollIntoView(true);
-        //$('.scrollTo').first()[0].scrollIntoView(true);
     }
 }
 

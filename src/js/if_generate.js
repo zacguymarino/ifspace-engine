@@ -1722,6 +1722,7 @@ export {
   gameTitle,
   gameStyle,
   gameAuthor,
+  gameRating,
   IFID,
   globalActions,
   initItems,

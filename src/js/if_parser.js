@@ -3,6 +3,7 @@ import {
     gameTitle, 
     gameStyle, 
     gameAuthor,
+    gameRating,
     IFID,
     globalActions,
     monitors,
@@ -167,6 +168,21 @@ async function gameInit(load) {
         if (IFID) {
             $('#outputSim').append(`<h6>IFID: ${IFID}</h6>`);
         }
+        if (gameRating) {
+            switch (gameRating) {
+                case "unrated":
+                    $('#outputSim').append(`<h6>Rating: Unrated</h6>`);
+                    break;
+                case "everyone":
+                    $('#outputSim').append(`<h6>Rating: Everyone</h6>`);
+                    break;
+                case "discretion":
+                    $('#outputSim').append(`<h6>Rating: Discretion</h6>`);
+                    break;
+                case "mature":
+                    $('#outputSim').append(`<h6>Rating: Mature</h6>`);
+            }
+        }
         if (gameAuthor.length > 0) {
             $('#outputSim').append(`<h6>Created by: ${gameAuthor}</h6>`);
         }
@@ -229,9 +245,9 @@ function displayMessage(message, input) {
         return;
     }
     if (input) {
-        $('#outputSim').append(`<p class='scrollTo'><b>&nbsp;&nbsp;>&nbsp;${message}</b></p>`);
+        $('#outputSim').append(`<p class='scrollTo inputText'><b>&nbsp;&nbsp;>&nbsp;${message}</b></p>`);
     } else {
-        $('#outputSim').append(`<p>${message}</p>`);
+        $('#outputSim').append(`<p class="outputText">${message}</p>`);
     }
     if ($(".scrollTo").length == 0) {
         $('#outputSim')[0].lastElementChild.scrollIntoView(true);
@@ -2112,7 +2128,7 @@ function parseNode(location) {
     addVisit(currentNode);
     nodeReload();
     if (playing) {
-        $('#outputSim').append(`<h3>${game[currentNode].name}</h3>`);
+        $('#outputSim').append(`<h3><u>${game[currentNode].name}</u></h3>`);
         handleDisplayableMonitors();
         displayMessage(cNodeDescription, false);
         displayItems();
