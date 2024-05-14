@@ -80,6 +80,7 @@ async function saveGame() {
       gameFile['gameTitle'] = gameTitle;
       gameFile['gameRating'] = $("#gameRating").val();
       gameFile['gameAuthor'] = $("#gameAuthor").val();
+      gameFile['gameRating'] = $("#gameRating").val();
       gameFile['gameStyle'] = $("#gameStyle").val();
       gameFile['gameStatus'] = $("#gameStatus").val();
       gameFile['IFID'] = generateIFID();

@@ -359,6 +359,7 @@ async function gameInit(load) {
         let gameSimTitle = document.createElement("h1");
         let gameSimIFID;
         let gameSimAuthor;
+        let gameSimRating;
         gameSimTitle.classList.add("scrollTo");
         gameSimTitle.innerText = gameTitle;
 
@@ -368,24 +369,20 @@ async function gameInit(load) {
         }
 
         if (gameRating) {
-            let outputSim = document.getElementById("outputSim");
-            let h6 = document.createElement("h6");
+            gameSimRating = document.createElement("h6");
             switch (gameRating) {
                 case "unrated":
-                    h6.innerText = "Rating: Unrated";
-                    outputSim.appendChild(h6);
+                    gameSimRating.innerText = "Rating: Unrated";
                     break;
                 case "everyone":
-                    h6.innerText = "Rating: Everyone";
-                    outputSim.appendChild(h6);
+                    gameSimRating.innerText = "Rating: Everyone";
                     break;
                 case "discretion":
-                    h6.innerText = "Rating: Discretion";
-                    outputSim.appendChild(h6);
+                    gameSimRating.innerText = "Rating: Discretion";
                     break;
                 case "mature":
-                    h6.innerText = "Rating: Mature";
-                    outputSim.appendChild(h6);
+                    gameSimRating.innerText = "Rating: Mature";
+                    break;
             }
         }
 
@@ -399,6 +396,9 @@ async function gameInit(load) {
         outputSimElement.appendChild(gameSimTitle);
         if (IFID) {
             outputSimElement.appendChild(gameSimIFID);
+        }
+        if (gameRating) {
+            outputSimElement.appendChild(gameSimRating);
         }
         if (gameAuthor.length > 0) {
             outputSimElement.appendChild(gameSimAuthor);
@@ -1336,7 +1336,7 @@ function displayMessage(message, input) {
     } else {
         let p = document.createElement("p");
         p.classList.add("outputText");
-        p.innerText = message;
+        p.innerHTML= message;
         outputSim.appendChild(p);
     }
     let scrollToElements = document.getElementsByClassName("scrollTo");
