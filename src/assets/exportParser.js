@@ -1885,7 +1885,7 @@ function handlePrimaryUseVerbs(actionVerbs, userActionWords, userItems) {
     return foundItemPrimaryUses;
 }
 
-function handleConstructedAction(actionObject, actionVerbs, primaryNouns, secondaryNouns, requiredWords) {
+function handleConstructedAction(action, actionObject, actionVerbs, primaryNouns, secondaryNouns, requiredWords) {
     let mainAction = action;
     let passed = false;
     let reqs = {
@@ -1999,18 +1999,16 @@ function handleConstructedAction(actionObject, actionVerbs, primaryNouns, second
                 parseNode(node);
             }
             displayMessage(actionObject.response, false);
-            sentMessage = true;
         } else {
             displayMessage("You cannot do that anymore.", false);
-            sentMessage = true;
         }
     } else {
         displayMessage(actionObject.fail, false);
-        sentMessage = true;
     }
     //Update monitors
     updateMonitors(mainAction, passed, true);
     handleDisplayableMonitors();
+    return true;
 }
 
 function examineItem(actionItem, inspectableItems) {
@@ -3155,7 +3153,9 @@ function parseAction(input) {
             }
             if (foundGlobalConstructedMatch) {
                 let actionObject = JSON.parse(JSON.stringify(globalActions[i]));
-                handleConstructedAction(actionObject, actionVerbs, primaryNouns, secondaryNouns, requiredWords);
+                if (handleConstructedAction(action, actionObject, actionVerbs, primaryNouns, secondaryNouns, requiredWords)) {
+                    sentMessage = true;
+                }
             }
         }
         //Handle local constructed actions
@@ -3267,7 +3267,9 @@ function parseAction(input) {
             }
             if (foundLocalConstructedMatch) {
                 let actionObject = JSON.parse(JSON.stringify(localAction));
-                handleConstructedAction(actionObject, actionVerbs, primaryNouns, secondaryNouns, requiredWords);
+                if (handleConstructedAction(action, actionObject, actionVerbs, primaryNouns, secondaryNouns, requiredWords)) {
+                    sentMessage = true;
+                }
             }
         }
 
