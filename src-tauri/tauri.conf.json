@@ -6,7 +6,7 @@
   },
   "package": {
     "productName": "ifSpace",
-    "version": "0.0.0"
+    "version": "2.0.0"
   },
   "tauri": {
     "allowlist": {
