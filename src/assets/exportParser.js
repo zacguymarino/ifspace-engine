@@ -1347,6 +1347,29 @@ function displayMessage(message, input) {
     }
 }
 
+function checkItemOrigin(item) {
+    //Checks if item is in its original node or has been moved to another node
+    //If another node, local actions requirement is void
+    let originNode = false;
+    let checked = false;
+    let gameNodes = Object.keys(game);
+    for (let i = 0; i < gameNodes.length; i++) {
+        let nodeItems = game[gameNodes[i]].items;
+        for (let j = 0; j < nodeItems.length; j++) {
+            if (nodeItems[j].name == item.name) {
+                checked = true;
+                if (gameNodes[i] == currentNode) {
+                    originNode = true;
+                }
+            }
+        }
+        if (checked) {
+            break;
+        }
+    }
+    return originNode;
+}
+
 function displayItems() {
     let validItems = [];
     if (save.nodes[currentNode].items.length > 0 && save.nodes[currentNode].visibility == 'true') {
