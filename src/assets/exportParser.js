@@ -2020,6 +2020,10 @@ function handleConstructedAction(action, actionObject, actionVerbs, primaryNouns
             if (move != "" && move != null) {
                 let node = `${move[0]},${move[1]},${move[2]}`;
                 parseNode(node);
+                displayMessage(actionObject.response, false);
+                updateMonitors(mainAction, passed, true);
+                handleDisplayableMonitors();
+                return;
             }
             displayMessage(actionObject.response, false);
         } else {
@@ -2999,6 +3003,10 @@ function parseAction(input) {
                                         if (move != "" && move != null) {
                                             let node = `${move[0]},${move[1]},${move[2]}`;
                                             parseNode(node);
+                                            displayMessage(actionObject.response, false);
+                                            updateMonitors(action, passed, false);
+                                            handleDisplayableMonitors();
+                                            return;
                                         }
                                         displayMessage(actionObject.response, false);
                                         sentMessage = true;

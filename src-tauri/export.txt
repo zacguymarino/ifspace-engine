@@ -368,40 +368,6 @@
                     console.log("Something went wrong.");
             }
         }
-        /*
-        $(document).on("keydown", "#classicStyleInput", function (event) {
-            if (event.which == 13) {
-            try {
-                parseAction($("#classicStyleInput").val());
-            } catch (error) {
-                console.log(error);
-            }
-            $("#classicStyleInput").val("");
-            event.preventDefault();
-            }
-            if (event.which == 38) {
-                $("#classicStyleInput").val(previousInput);
-            }
-        })
-        */
-        /*
-        $(document).on("click", ".modernActionButton", function (event) {
-            parseAction($(event.currentTarget).attr("value"));
-            event.preventDefault;
-        })
-        */
-        /*
-        $(document).on("click", ".modernDirectionButton", function (event) {
-            parseAction($(event.currentTarget).attr("value"));
-            event.preventDefault;
-        })
-        */
-        /*
-        $(document).on("click", ".gamebookDirectionButton", function (event) {
-            parseAction($(event.currentTarget).attr("value"));
-            event.preventDefault;
-        })
-        */
 
         function restartGame(load) {
             addSimInput();
@@ -2230,6 +2196,10 @@
                     if (move != "" && move != null) {
                         let node = `${move[0]},${move[1]},${move[2]}`;
                         parseNode(node);
+                        displayMessage(actionObject.response, false);
+                        updateMonitors(mainAction, passed, true);
+                        handleDisplayableMonitors();
+                        return;
                     }
                     displayMessage(actionObject.response, false);
                 } else {
@@ -3209,6 +3179,10 @@
                                                 if (move != "" && move != null) {
                                                     let node = `${move[0]},${move[1]},${move[2]}`;
                                                     parseNode(node);
+                                                    displayMessage(actionObject.response, false);
+                                                    updateMonitors(action, passed, false);
+                                                    handleDisplayableMonitors();
+                                                    return;
                                                 }
                                                 displayMessage(actionObject.response, false);
                                                 sentMessage = true;
