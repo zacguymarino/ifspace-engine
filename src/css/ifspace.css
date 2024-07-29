@@ -1,491 +1,508 @@
+@font-face {
+  font-family:nohemi;
+  src: '../assets/Nohemi-VF.ttf';
+}
 * :not(head, i, u, b, br) {
-    display: block;
-    box-sizing: border-box;
-  }
-  
-  body {
-    background-color: #191919;
-    color: white;
-  }
-  
-  button {
-    background-color: #1b1b1b;
-    color: white;
-    border: 1px solid white;
-    border-radius: 3px;
-    margin-top: 10px;
-    padding: 1% 1% 1% 1%;
-  }
-  
-  .locationButton {
-    width: 70%;
-  }
-  
-  .flexCenter {
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-  }
-  
-  .divBorder {
-    border: 1px solid gray;
-  }
+  display: block;
+  box-sizing: border-box;
+}
+*{
+  font-family:'nohemi';
+}
+body {
+  background-color: #191919;
+  color: white;
+}
 
-  #zIndexBlock {
-    width: 60px;
-  }
-  
-  #zIndex {
+button {
+  background-color: #1b1b1b;
+  color: white;
+  border: 1px solid white;
+  border-radius: 3px;
+  margin-top: 10px;
+  padding: 1% 1% 1% 1%;
+}
+
+.locationButton {
+  width: 70%;
+}
+
+.flexCenter {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.divBorder {
+  border: 1px solid gray;
+}
+
+#zIndexBlock {
+  width: 60px;
+}
+
+#zIndex {
+  width: 100%;
+  height: 35px;
+}
+#zIndex::-webkit-inner-spin-button {
+  height: 35px;
+}
+
+button:hover {
+  transition: 0.1s ease-in-out;
+  background-color: #4d4d4d;
+}
+
+button:active {
+  background-color: #1e1e1e;
+  transition: 0.1s ease-in-out;
+}
+
+input[type="text"],
+input[type="number"] {
+  border-radius: 3px;
+  border: none;
+  background-color: #4d4d4d;
+  color: white;
+  padding: 0.5em 0.5em 0.5em 0.5em;
+}
+
+input[type="text"]:focus,
+input[type="number"]:focus {
+  outline: 2px solid white;
+}
+
+input[type="text"]:hover,
+input[type="number"]:hover {
+  background-color: rgb(88, 88, 88);
+  transition: 0.1s ease-in;
+}
+
+.customDefaultActions {
+  height: 30px;
+  width: 40%;
+}
+
+.blockElements {
+  min-width: 285px;
+  display: block;
+  color: #f0f0f0;
+  padding: 0.5em;
+}
+
+.reqLine {
+  display: flex;
+  justify-content: flex-start;
+  gap: 8px;
+}
+
+.tabElements * {
+  color: #f0f0f0;
+  padding: 0.5em;
+}
+
+.container {
+  display: flex;
+  justify-content: flex-start;
+  overflow: auto;
+}
+
+.blockElementSizer > input {
+  width: 95%;
+}
+
+.bottomBar {
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 10px;
+}
+
+.bottomBarSection {
+  display: flex;
+  gap: 10px;
+  margin-top: 5px;
+}
+
+.bottomBarSection > * {
+  display: inline;
+}
+
+.popupScreen {
+  position: absolute;
+  width:40rem;
+  border: 1.5px solid white;
+  background-color: #1e1e1e;
+  top: 5%;
+  right: 15rem;
+  z-index: 1;
+  padding-left: 10rem;
+  padding-right: 10rem;
+  color: white;
+}
+
+.popupClose {
+  margin: 1rem auto 1rem auto;
+  padding: 0.5rem 2rem 0.5rem 2rem;
+}
+
+.desSettings {
+  white-space: pre-wrap;
+}
+
+.settings {
+  margin-top: 25px;
+  display: flex;
+  justify-content: space-around;
+  width: 90%;
+  height: 35vh;
+  margin: auto;
+  color: black;
+}
+
+.popupTitle {
+  text-align: center;
+  color: white;
+}
+
+.centerText {
+  text-align: center;
+}
+
+.nodeTools {
+  display: flex;
+  justify-content: space-evenly;
+  overflow: auto;
+  height: 85vh;
+  border: solid 1px black;
+}
+
+.toolbarContainer {
+  width: 100%;
+  display: flex;
+  justify-content: space-evenly;
+  gap: 10px;
+}
+
+.fullSize {
+  width: 100%;
+  height: 100%;
+}
+
+#deleteNode {
+  position: absolute;
+  z-index: 1;
+  top: 10px;
+  left: 10px;
+  background-color: #1b1b1b;
+  color: #f0f0f0;
+  padding: 1% 2% 1% 2%;
+}
+
+#deleteNode:hover {
+  background-color: #4d4d4d;
+  transition: 0.1s ease-in-out;
+}
+
+#deleteNode:active {
+  background-color: #1e1e1e;
+  transition: 0.1s ease-in-out;
+}
+
+#gameSim {
+  display: none;
+  margin: auto;
+  margin-top: 16px;
+  margin-bottom: 25px;
+  width: 65%;
+  height: 92vh;
+  border: 1px solid white;
+}
+
+.gameSimTools {
+  display: flex;
+  justify-content: space-evenly;
+}
+
+#gameContainer {
+  margin: auto;
+  height: 92%;
+}
+
+#outputSim {
+  margin: auto;
+  width: 90%;
+  height: 80%;
+  border: 1px solid white;
+  border-top: none;
+  overflow: auto;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+#inputSim {
+  margin: auto;
+  width: 90%;
+  height: 20%;
+  overflow: auto;
+  font-style: bold;
+  display: flex;
+  justify-content: space-around;
+}
+
+.modernInput {
+  width: 50%;
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.gamebookInput {
+  width: 75%;
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.inputButton {
+  height: 25px;
+  display: inline-flex;
+  align-items: center;
+}
+
+#gamebookStyleDirections {
+  width: 100%;
+}
+
+#classicStyleInput {
+  width: 80%;
+  height: 35px;
+  margin: auto;
+  padding: 1% 1% 1% 1%;
+}
+
+/*TOOLTIPS*/
+
+/* Tooltip text */
+.tooltip .tooltiptext {
+  visibility: hidden;
+  width: 37%;
+  background-color: #555;
+  color: #fff;
+  text-align: center;
+  padding: 5px 0;
+  border-radius: 3px;
+
+  /* Position the tooltip text */
+  position: absolute;
+  z-index: 1;
+  bottom: 15vh;
+  left: 8px;
+
+  /* Fade in tooltip */
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.tooltip .popuptooltiptext {
+  visibility: hidden;
+  width: 37%;
+  background-color: #555;
+  color: #fff;
+  text-align: center;
+  padding: 5px 0;
+  border-radius: 3px;
+
+  /* Position the tooltip text */
+  position: absolute;
+  z-index: 1;
+  top: 4vh;
+  right: 18px;
+
+  /* Fade in tooltip */
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+/* Show the tooltip text when you mouse over the tooltip container */
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+  opacity: 1;
+}
+
+.tooltip:hover .popuptooltiptext {
+  visibility: visible;
+  opacity: 1;
+}
+
+#directions {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: nowrap;
+}
+
+#directions input {
+  margin-right: 30px;
+}
+
+input[type="checkbox"] {
+  accent-color: #4d4d4d;
+  width: 20px;
+  height: 20px;
+}
+.nodeTools button {
+  background-color: #191919;
+}
+
+.nodeTools button:hover {
+  transition: 0.1s ease-in-out;
+  background-color: #4d4d4d;
+}
+
+.nodeTools button:active {
+  background-color: #1e1e1e;
+  transition: 0.1s ease-in-out;
+}
+
+textarea {
+  background-color: #4d4d4d;
+  border-radius: 0px;
+}
+
+textarea:hover {
+  background-color: rgb(88, 88, 88);
+  transition: 0.1s ease-in;
+  outline: none;
+}
+
+textarea:focus {
+  outline: 1px solid white;
+  transition: 0.1s ease-in-out;
+}
+
+textarea:active {
+  outline: 1px solid white;
+  transition: 0.1s ease-in-out;
+}
+
+.nodeTools {
+  margin-top: 10px;
+  padding: 10px;
+  border: 1px solid #ffffff;
+}
+
+#nodeMap {
+  margin-top: 10px;
+  margin-left: 5px;
+  border: 1px solid #ffffff;
+}
+
+.globalStuff {
+  border: 1px solid #ffffff;
+  height: 23%;
+  margin-left: 5px;
+  width: 40vw;
+  display: flex;
+  justify-content: space-evenly;
+  gap: 10px;
+  flex-wrap: wrap;
+  overflow-y: auto;
+}
+
+.globalButton {
+  height: 40px;
+}
+
+.popupBlockElements {
+  color: white;
+}
+
+.popupBlockElements * {
+  display: block;
+  padding: 0.5em;
+}
+
+.popupBlockElements > textarea {
+  color: #ffffff;
+}
+
+.popupContent {
+  overflow-y: auto;
+  max-height: 80vh;
+}
+
+select {
+  color: white;
+  background-color: #4d4d4d;
+  border-radius: 3px;
+}
+
+select:hover {
+  background-color: #737272;
+  transition: 0.1s ease-in-out;
+}
+
+select:focus {
+  background-color: #737272;
+  transition: 0.1s ease-in-out;
+}
+
+.boldAccordion {
+  font-weight: bold;
+}
+
+.inputText {
+  font-size: 17px;
+}
+
+.outputText {
+  font-size: 20px;
+}
+
+summary.boldAccordion::after {
+  content: " ";
+  margin-top: 0%;
+  background-color: rgb(0, 0, 0);
+  width: 0%;
+  transition: 100ms ease-out;
+}
+
+summary.boldAccordion:hover::after {
+  margin-top: 7px;
+  content: " ";
+  display: block;
+  background-color: white;
+  height: 1px;
+  width: 40%;
+  transition: 100ms ease-in-out;
+}
+
+@media only screen and (max-width: 768px) {
+  #gameSim {
     width: 100%;
-    height: 35px;
-  }
-  #zIndex::-webkit-inner-spin-button {
-    height: 35px;
-  }
-  
-  button:hover {
-    transition: 0.1s ease-in-out;
-    background-color: #4d4d4d;
-  }
-  
-  button:active {
-    background-color: #1e1e1e;
-    transition: 0.1s ease-in-out;
-  }
-  
-  input[type="text"],
-  input[type="number"] {
-    border-radius: 3px;
     border: none;
-    background-color: #4d4d4d;
-    color: white;
   }
-  
-  input[type="text"]:focus,
-  input[type="number"]:focus {
-    outline: 2px solid white;
+  #outputSim {
+    border-top: 1px solid white;
+    width: 98%;
+    padding-left: 4px;
+    padding-right: 4px;
   }
-  
-  input[type="text"]:hover,
-  input[type="number"]:hover {
-    background-color: rgb(88, 88, 88);
-    transition: 0.1s ease-in;
+  #inputSim {
+    width: 98%;
   }
-  
-  .customDefaultActions {
-    height: 30px;
-    width: 40%;
-  }
-  
-  .blockElements {
-    min-width: 285px;
-    display: block;
-    color: #f0f0f0;
-    padding: 0.5em;
-  }
-  
-  .reqLine {
-    display: flex;
-    justify-content: flex-start;
-    gap: 8px;
-  }
-  
-  .tabElements * {
-    color: #f0f0f0;
-    padding: 0.5em;
-  }
-  
-  .container {
-    display: flex;
-    justify-content: flex-start;
-    overflow: auto;
-  }
-  
-  .blockElementSizer > input {
+  #classicStyleInput {
     width: 95%;
   }
-  
-  .bottomBar {
-    width: 100%;
-    display: flex;
-    justify-content: space-around;
-    margin-bottom: 10px;
-  }
-  
-  .bottomBarSection {
-    display: flex;
-    gap: 10px;
-    margin-top: 5px;
-  }
-  
-  .bottomBarSection > * {
-    display: inline;
-  }
-  
-  .popupScreen {
-    position: fixed;
-    width: 75%;
-    border: 3px solid black;
-    background-color: #f0f8ff;
-    top: 5%;
-    left: 12.5%;
-    z-index: 1;
-  }
-  
-  .popupClose {
-    margin: auto;
-  }
-  
-  .desSettings {
-      white-space: pre-wrap;
-  }
-  
-  .settings {
-    margin-top: 25px;
-    display: flex;
-    justify-content: space-around;
-    width: 90%;
-    height: 35vh;
-    margin:auto;
-    color: black;
-  }
-  
-  .popupTitle {
-    text-align: center;
-    color: black;
-  }
-  
-  .centerText {
-    text-align: center;
-  }
-  
-  .nodeTools {
-    display: flex;
-    justify-content: space-evenly;
-    overflow: auto;
-    height: 85vh;
-    border: solid 1px black;
-  }
-
-  .toolbarContainer {
-    width: 100%;
-    display: flex;
-    justify-content: space-evenly;
-    gap: 10px;
-  }
-  
-  .fullSize {
-    width: 100%;
-    height: 100%;
-  }
-  
-  #deleteNode {
-    position: absolute;
-    z-index: 1;
-    top: 10px;
-    left: 10px;
-    background-color: #1b1b1b;
-    color: #f0f0f0;
-    padding: 1% 2% 1% 2%;
-  }
-  
-  #deleteNode:hover {
-    background-color: #4d4d4d;
-    transition: 0.1s ease-in-out;
-  }
-  
-  #deleteNode:active {
-    background-color: #1e1e1e;
-    transition: 0.1s ease-in-out;
-  }
-  
-  #gameSim {
-    display: none;
-    margin: auto;
-    margin-top: 16px;
-    margin-bottom: 25px;
-    width: 65%;
-    height: 92vh;
-    border: 1px solid white;
-  }
-  
-  .gameSimTools {
-    display: flex;
-    justify-content: space-evenly;
-  }
-  
-  #gameContainer {
-    margin: auto;
-    height: 92%;
-  }
-  
-  #outputSim {
-    margin: auto;
-    width: 90%;
-    height: 80%;
-    border: 1px solid white;
-    border-top: none;
-    overflow: auto;
-    padding-left: 10px;
-    padding-right: 10px;
-  }
-  
-  #inputSim {
-    margin: auto;
-    width: 90%;
-    height: 20%;
-    overflow: auto;
-    font-style: bold;
-    display: flex;
-    justify-content: space-around;
-  }
-  
-  .modernInput {
-    width: 50%;
-    display: flex;
-    gap: 10px;
-    justify-content: center;
-    flex-wrap: wrap;
-  }
-  
-  .gamebookInput {
-    width: 75%;
-    display: flex;
-    gap: 10px;
-    justify-content: center;
-    flex-wrap: wrap;
-  }
-  
-  .inputButton {
-    height: 25px;
-    display: inline-flex;
-    align-items: center;
-  }
-  
-  #gamebookStyleDirections {
-    width: 100%;
-  }
-  
-  #classicStyleInput {
-    width: 80%;
-    height: 35px;
-    margin: auto;
-    padding: 1% 1% 1% 1%;
-  }
-  
-  /*TOOLTIPS*/
-  
-  /* Tooltip text */
-  .tooltip .tooltiptext {
-    visibility: hidden;
-    width: 37%;
-    background-color: #555;
-    color: #fff;
-    text-align: center;
-    padding: 5px 0;
-    border-radius: 3px;
-  
-    /* Position the tooltip text */
-    position: absolute;
-    z-index: 1;
-    bottom: 15vh;
-    left: 8px;
-  
-    /* Fade in tooltip */
-    opacity: 0;
-    transition: opacity 0.3s;
-  }
-  
-  .tooltip .popuptooltiptext {
-    visibility: hidden;
-    width: 37%;
-    background-color: #555;
-    color: #fff;
-    text-align: center;
-    padding: 5px 0;
-    border-radius: 3px;
-  
-    /* Position the tooltip text */
-    position: absolute;
-    z-index: 1;
-    top: 4vh;
-    right: 18px;
-  
-    /* Fade in tooltip */
-    opacity: 0;
-    transition: opacity 0.3s;
-  }
-  
-  /* Show the tooltip text when you mouse over the tooltip container */
-  .tooltip:hover .tooltiptext {
-    visibility: visible;
-    opacity: 1;
-  }
-  
-  .tooltip:hover .popuptooltiptext {
-    visibility: visible;
-    opacity: 1;
-  }
-  
-  #directions {
-    display: flex;
-    justify-content: space-between;
-    flex-wrap: nowrap;
-  }
-  
-  #directions input {
-    margin-right: 30px;
-  }
-  
-  input[type="checkbox"] {
-    accent-color: #4d4d4d;
-    width: 20px;
-    height: 20px;
-  }
-  .nodeTools button {
-    background-color: #191919;
-  }
-  
-  .nodeTools button:hover {
-    transition: 0.1s ease-in-out;
-    background-color: #4d4d4d;
-  }
-  
-  .nodeTools button:active {
-    background-color: #1e1e1e;
-    transition: 0.1s ease-in-out;
-  }
-  
-  textarea {
-    background-color: #4d4d4d;
-    border-radius: 0px;
-  }
-
-  textarea:hover {
-    background-color: rgb(88, 88, 88);
-    transition: 0.1s ease-in;
-    outline: none;
-  }
-
-  textarea:focus {
-    outline: 1px solid white;
-    transition: 0.1s ease-in-out;
-  }
-
-  textarea:active {
-    outline: 1px solid white;
-    transition: 0.1s ease-in-out;
-  }
-  
-  .nodeTools {
-    margin-top: 10px;
-    padding: 10px;
-    border: 1px solid #ffffff;
-  }
-  
-  #nodeMap {
-    margin-top: 10px;
-    margin-left: 5px;
-    border: 1px solid #ffffff;
-  }
-  
-  .globalStuff {
-    border: 1px solid #ffffff;
-    height: 23%;
-    margin-left: 5px;
-    width: 40vw;
-    display: flex;
-    justify-content: space-evenly;
-    gap: 10px;
-    flex-wrap: wrap;
-    overflow-y: auto;
-  }
-  
-  .globalButton {
-      height: 40px;
-  }
-  
-  .popupBlockElements {
-      color: black;
-  }
-  
-  .popupBlockElements *{
-    display: block;
-    padding: 0.5em;
-  }
-  
-  .popupBlockElements > textarea {
-    color: #ffffff;
-  }
-  
-  .popupContent {
-    overflow-y: scroll;
-    max-height: 80vh;
-  }
-  
-  
-  select {
-    color: white;
-    background-color: #4d4d4d;
-    border-radius: 3px;
-  }
-  
-  select:hover {
-    background-color: #737272;
-    transition: 0.1s ease-in-out;
-  }
-  
-  select:focus {
-    background-color: #737272;
-    transition: 0.1s ease-in-out;
-  }
-  
-  .boldAccordion {
-    font-weight: bold;
-  }
-
-  .inputText {
-    font-size: 17px;
-  }
-
-  .outputText {
-    font-size: 20px;
-  }
-  
-  summary.boldAccordion::after {
-    content: " ";
-    margin-top: 0%;
-    background-color: rgb(0, 0, 0);
-    width: 0%;
-    transition: 100ms ease-out;
-  }
-  
-  summary.boldAccordion:hover::after {
-    margin-top: 7px;
-    content: " ";
-    display: block;
-    background-color: white;
-    height: 1px;
-    width: 40%;
-    transition: 100ms ease-in-out;
-  }
-
-  @media only screen and (max-width: 768px) {
-    #gameSim {
-        width: 100%;
-        border: none;
-    }
-    #outputSim {
-        border-top: 1px solid white;
-        width: 98%;
-        padding-left: 4px;
-        padding-right: 4px;
-    }
-    #inputSim {
-        width: 98%;
-    }
-    #classicStyleInput {
-        width: 95%;
-    }
 }
-  
+#nodeColorDisplay {
+  background-color: #1e1e1e;
+  color: #ffffff;
+}
+.nodeColor {
+  border: none;
+  margin: 0.5rem;
+}
