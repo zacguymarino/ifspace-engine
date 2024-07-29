@@ -3,7 +3,7 @@ name = "ifSpace"
 version = "0.0.1"
 description = "ifSpace - Engine"
 authors = ["Zac Marino"]
-edition = "2021"
+edition = "2024"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
