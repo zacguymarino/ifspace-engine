@@ -17,6 +17,13 @@ import {gameInit, parseAction, previousInput} from './if_parser.js';
 import { confirm } from './api/dialog.js';
 
 $(function() {
+    //////////////////////////////
+    ///Page Reload Notification///
+    //////////////////////////////
+    window.addEventListener('beforeunload', (event) => {
+      event.preventDefault();
+    });
+
     //////////
     ///Init///
     //////////

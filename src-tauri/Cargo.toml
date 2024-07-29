@@ -1,6 +1,6 @@
 [package]
 name = "ifSpace"
-version = "0.0.0"
+version = "0.0.1"
 description = "ifSpace - Engine"
 authors = ["Zac Marino"]
 edition = "2021"
